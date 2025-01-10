@@ -1,0 +1,10 @@
+<h2>Bejelentkezés</h2>
+<form [formGroup]="form" (ngSubmit)="onSubmit($event)">
+  <input formControlName="email" placeholder="Email" type="email" />
+  <input formControlName="password" type="password" placeholder="Password" />
+  <button type="submit">Bejelentkezés</button>
+</form>
+
+<div *ngIf="errorMessage">
+  {{errorMessage}}
+</div>

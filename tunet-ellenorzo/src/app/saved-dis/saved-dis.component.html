@@ -1,0 +1,8 @@
+<div class="card">
+    <button (click)="openSaved()">{{i+1}}. mentett megoldás</button>
+    <div *ngFor="let s of saved; let j = index">
+        <div *ngIf="opened">
+            <app-disease [diseaseName]="s" [i]="j"></app-disease>
+        </div>
+    </div>
+</div>

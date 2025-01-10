@@ -1,0 +1,20 @@
+Gyógyszer neve: <input type="text">
+
+Ismétlés: 
+<select [(ngModel)]="frequency" (change)="onChange()">
+    <option></option>
+    <option *ngFor="let frequency of frequencies" [value]="frequency">
+      {{ frequency }}
+    </option>
+</select>
+
+Értesítés ideje: 
+<div>
+    
+</div>
+<div>
+
+</div>
+<div>
+
+</div>

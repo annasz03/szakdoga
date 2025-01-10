@@ -1,0 +1,4 @@
+@if(authService.currentUserSig()===null){
+    <button (click)="navigateToLogin()">Bejelentkezés</button>
+    <button (click)="navigateToRegister()">Regisztráció</button>
+}

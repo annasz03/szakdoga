@@ -1,0 +1,15 @@
+<button (click)="openSavedResults()">Elmentett eredmények</button>
+<button (click)="openUploadedDocs()">Feltöltött dokumentumok</button>
+<button (click)="openNotifications()">Értesítések</button>
+
+<div *ngIf="savedRes">
+    <app-saved-diseases></app-saved-diseases>
+</div>
+
+<div *ngIf="uploaded">
+    <app-uploaded-docs></app-uploaded-docs>
+</div>
+
+<div *ngIf="notifications">
+    <app-notification-page></app-notification-page>
+</div>

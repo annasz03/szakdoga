@@ -1,0 +1,11 @@
+<input type="file" (change)="fileSelect($event)" />
+<input type="text" [(ngModel)]="comment" placeholder="Megjegyzés.." />
+
+<button (click)="uploadDoc()">Kép feltöltése</button>
+<div *ngIf="errorMessage">
+    {{errorMessage}}
+</div>
+
+<div *ngFor="let doc of savedDocuments">
+    <app-document [fileName]="doc.filename" [text]="doc.text"></app-document>
+</div>

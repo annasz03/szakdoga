@@ -1,0 +1,7 @@
+<div *ngFor="let res of result; let i = index">
+  <app-disease [diseaseName]="res.key" [i]="i"></app-disease>
+</div>
+<div>
+  <button (click)="saveResult()">Mentés</button>
+</div>
+  

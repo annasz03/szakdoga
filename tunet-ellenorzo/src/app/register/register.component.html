@@ -1,0 +1,23 @@
+  <h2>Regisztráció</h2>
+  <form [formGroup]="form" (ngSubmit)="onSubmit($event)">
+    <input formControlName="email" placeholder="Email" />
+    <input formControlName="password" type="password" placeholder="Password" />
+    <input formControlName="username" placeholder="Username" />
+    <input formControlName="birth" type="date" />
+
+    <fieldset>
+      <legend>Nem:</legend>
+      <label>
+        <input type="radio" formControlName="gender" value="male" /> Férfi
+      </label>
+      <label>
+        <input type="radio" formControlName="gender" value="female" /> Nő
+      </label>
+    </fieldset>
+
+    <button type="submit">Regisztráció</button>
+  </form>
+
+  <div *ngIf="errorMessage">
+    {{errorMessage}}
+  </div>

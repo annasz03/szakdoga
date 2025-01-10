@@ -1,0 +1,7 @@
+<div *ngIf="errorMessage">
+  {{errorMessage}}
+</div>
+<div *ngFor="let saved of savedDiseases; let i = index">
+    <!--TODO: timestampel vagy nevvel ellatni a mentest hogy azonosithato legyen-->
+    <app-saved-dis [saved]="saved" [i]="i"></app-saved-dis>
+</div>

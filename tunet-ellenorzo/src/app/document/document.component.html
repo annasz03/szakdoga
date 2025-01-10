@@ -1,0 +1,13 @@
+<div *ngIf="isImage()">
+    <img [src]="getUrl()" [height]="height" [width]="width" (click)="onImageClick()" />
+  </div>
+  <div *ngIf="isPdf()">
+    <img src="../../assets/pdf.png" (click)="openPdf()" [height]="height" [width]="width">
+  </div>
+  
+  <div *ngIf="inFocus">
+    {{text}}
+    <button (click)="delete()">Törlés</button>
+    <!--TODO: modositas-->
+  </div>
+  

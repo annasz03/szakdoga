@@ -1,0 +1,18 @@
+<!--név-->
+<input type="text" [(ngModel)]="nameValue">
+<!--város-->
+<select [(ngModel)]="selectedArea">
+    <option *ngFor="let a of area" [value]="a.value">{{ a.value }}</option>
+</select>
+<!--specialitás-->
+<select [(ngModel)]="selectedSpec">
+    <option *ngFor="let s of spec" [value]="s.value"> {{ s.value }}</option>
+</select>
+
+<button (click)="search()">Keresés</button>
+<button (click)="removeFilters()">Szűrés törlése</button>
+
+<!--orvosok listazasa-->
+<div *ngFor="let doc of doctorsList">
+    <app-doctor [doc]="doc"></app-doctor>
+</div>

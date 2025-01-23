@@ -1,6 +1,17 @@
-<div>
-    <button (click)="navigateSymptomChecker()">Tünet ellenőrző</button>
-    <button (click)="navigateProfile()">Profil</button>
-    <button (click)="navigateDoctorFinder()">Orvos kereső</button>
-    <button (click)="navigateSignOut()">Kijelentkezés</button>
+<div class="navbar">
+    <a (click)="navigateSymptomChecker()">Tünet ellenőrző</a>
+    <a (click)="navigateProfile()">Profil</a>
+    <a (click)="navigateDoctorFinder()">Orvos kereső</a>
+    <a (click)="navigateSignOut()">Kijelentkezés</a>
 </div>
+
+<input type="checkbox" [(ngModel)]="model" class="openSidebarMenu" id="openSidebarMenu">
+  <label for="openSidebarMenu" class="sidebarIconToggle">
+      <div class="spinner diagonal part-1"></div>
+      <div class="spinner horizontal"></div>
+      <div class="spinner diagonal part-2"></div>
+  </label>
+  <div id="sidebarMenu">
+        <div class="main-content-wrapper">
+        </div>
+    </div>

@@ -1,9 +1,18 @@
-  <h2>Regisztráció</h2>
-  <form [formGroup]="form" (ngSubmit)="onSubmit($event)">
-    <input formControlName="email" placeholder="Email" />
-    <input formControlName="password" type="password" placeholder="Password" />
-    <input formControlName="username" placeholder="Username" />
-    <input formControlName="birth" type="date" />
+<div class="form">
+  <h2 class="title">Regisztráció</h2>
+  <form [formGroup]="form" (ngSubmit)="onSubmit($event)" class="registerForm">
+    <mat-form-field class="inputF">
+      <p>E-mail cím: <input matInput formControlName="email" placeholder="Email" />
+    </mat-form-field>
+    <mat-form-field class="inputF">
+      <p>Jelszó: <input matInput formControlName="password" type="password" placeholder="Password" />
+    </mat-form-field>
+    <mat-form-field class="inputF">
+      <p>Felhasználónév: <input matInput formControlName="username" placeholder="Username" />
+    </mat-form-field>
+    <mat-form-field class="inputF">
+      <p>Születési dátum: <input matInput formControlName="birth" type="date" />
+    </mat-form-field>
 
     <fieldset>
       <legend>Nem:</legend>
@@ -15,9 +24,13 @@
       </label>
     </fieldset>
 
-    <button type="submit">Regisztráció</button>
+    <button class="button" type="submit">Regisztráció</button>
   </form>
 
   <div *ngIf="errorMessage">
     {{errorMessage}}
   </div>
+
+  Van már fiókod? <a routerLink="/login">Jelenkezz be!</a>
+</div>
+<router-outlet></router-outlet>

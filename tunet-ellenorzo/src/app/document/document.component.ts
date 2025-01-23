@@ -22,6 +22,8 @@ export class DocumentComponent {
 
   currentUser:any;
 
+  @Input() docType="";
+  
   constructor(private dataService:DataService, private authService: AuthService,private sanitizer: DomSanitizer){}
 
   ngOnInit(){
@@ -32,18 +34,6 @@ export class DocumentComponent {
 
   getUrl(){
     return `http://localhost:3000/uploads/${this.fileName}`;
-  }
-
-  onImageClick(){
-    if(this.inFocus){
-      this.inFocus=false;
-      this.height="100"
-      this.width="100"
-    }else{
-      this.inFocus=true;
-      this.height="200"
-      this.width="200"
-    }
   }
 
   delete(){

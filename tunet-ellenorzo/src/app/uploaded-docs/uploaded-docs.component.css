@@ -1,0 +1,16 @@
+.doc-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.doc {
+    padding: 8px;
+    text-align: center;
+}
+
+.button{
+    margin-left: 1%;
+    width: 48%;
+}

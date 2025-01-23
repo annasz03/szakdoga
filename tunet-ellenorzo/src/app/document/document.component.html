@@ -1,13 +1,14 @@
 <div *ngIf="isImage()">
-    <img [src]="getUrl()" [height]="height" [width]="width" (click)="onImageClick()" />
+    <img [src]="getUrl()" />
   </div>
   <div *ngIf="isPdf()">
     <img src="../../assets/pdf.png" (click)="openPdf()" [height]="height" [width]="width">
   </div>
   
-  <div *ngIf="inFocus">
+  <div>
     {{text}}
     <button (click)="delete()">Törlés</button>
     <!--TODO: modositas-->
+    <!--TODO: képeket nagyba megnyitni-->
   </div>
   

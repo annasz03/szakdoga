@@ -1,9 +1,11 @@
 .profile{
     margin: 5%;
     padding: 5%;
-    background-color: rgba(255, 255, 255, 0.803);
+    background-color: rgba(255, 255, 255, 0.71);
     border-radius: 5%;
     font-weight: 500 !important;
+    display: flex;
+    flex-direction: column;
 }
 
 .profilePic{
@@ -11,6 +13,61 @@
     width: 5rem;
 }
 
+.profileData {
+    margin-bottom: 20px;
+}
+
 .displayName{
     font-size:xx-large;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+@media (min-width: 780px) {
+    .content {
+        flex-direction: row;
+    }
+
+    .left {
+        flex: 1;
+    }
+
+    .right {
+        flex: 2;
+    }
+}
+
+@media (max-width: 780px) {
+    .vertical-line {
+        display: none;
+    }
+}
+
+.page{
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.right{
+    background-color: rgba(255, 255, 255, 0.648);
+    border-radius: 5%;
+    padding: 2%;
+}
+
+.stripe {
+    width: 100%;
+    height: 1px;
+    background-color: gray;
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
+
+.vertical-line {
+    width: 1px;
+    height: 100px;
+    background-color: gray;
 }

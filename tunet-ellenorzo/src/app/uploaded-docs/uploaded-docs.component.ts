@@ -15,41 +15,62 @@ import { FormsModule } from '@angular/forms';
 export class UploadedDocsComponent {
   selectedFile: File | null = null;
   imageUrl: string | null = null;
-  comment:string="";
-  //TODO: PDF preview
-  //TODO: kep es pdf ket kulon ablakban jelenjen meg
+  comment: string = "";
+
+  docType = "img";
   fileTypes = ["image/jpeg", "image/png", "image/gif", "application/pdf"];
 
-  savedDocuments:any;
+  savedDocuments: any;
+  errorMessage = "";
+  currentUser: any;
 
-  errorMessage="";
-  currentUser:any;
+  focusedDocument: string | null = null;
 
-  constructor(private dataService:DataService, private authService: AuthService){}
+  constructor(private dataService: DataService, private authService: AuthService) {}
 
   ngOnInit() {
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
     });
 
-    setTimeout(()=>{
+    setTimeout(() => {
       this.getAllDocuments();
 
       this.dataService.getRefresh.subscribe({
         next: () => {
           this.getAllDocuments();
         }
-      })
-    },100)
+      });
+    }, 100);
   }
 
-  getAllDocuments(){
+  getAllDocuments() {
     this.dataService.getAllDoc(this.currentUser.uid).subscribe({
       next: (result) => {
-        this.savedDocuments=result.result;
-        console.log(this.savedDocuments)
+        this.savedDocuments = result.result;
+        console.log(this.savedDocuments);
       }
-    })
+    });
+  }
+
+  get filteredDocuments() {
+    if (this.docType === 'img') {
+      return this.savedDocuments?.filter((doc: any) => this.isImage(doc.filename));
+    } else if (this.docType === 'pdf') {
+      return this.savedDocuments?.filter((doc: any) => this.isPdf(doc.filename));
+    }
+    return this.savedDocuments;
+  }
+  
+  isImage(fileName: string): boolean {
+    const imageExtensions = ['jpg', 'jpeg', 'png'];
+    const extension = fileName.split('.').pop()?.toLowerCase();
+    return extension ? imageExtensions.includes(extension) : false;
+  }
+  
+  isPdf(fileName: string): boolean {
+    const extension = fileName.split('.').pop()?.toLowerCase();
+    return extension === 'pdf';
   }
 
   fileSelect(event: any) {
@@ -63,21 +84,29 @@ export class UploadedDocsComponent {
 
   uploadDoc() {
     if (this.selectedFile && this.fileTypes.includes(this.selectedFile!.type)) {
-      this.errorMessage="";
-      
+      this.errorMessage = "";
+
       const formData = new FormData();
       formData.append('file', this.selectedFile, this.selectedFile.name);
       formData.append('text', this.comment);
-      this.dataService.uploadDoc(this.currentUser.uid,formData).subscribe(
+      this.dataService.uploadDoc(this.currentUser.uid, formData).subscribe(
         (response: any) => {
-          console.log(response)
+          console.log(response);
         }
       );
-    }else {
-      this.errorMessage="Nem megfelelő file formátum";
+    } else {
+      this.errorMessage = "Nem megfelelő file formátum";
     }
-    setTimeout(()=>{
+    setTimeout(() => {
       this.getAllDocuments();
-    },100)
+    }, 100);
+  }
+
+  pdf() {
+    this.docType = "pdf";
+  }
+
+  img() {
+    this.docType = "img";
   }
 }

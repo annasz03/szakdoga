@@ -6,22 +6,29 @@
         </span>
     </div>
 
-    <div class="left">
-        <button class="button" (click)="openSavedResults()">Elmentett eredmények</button>
-        <button class="button-small" (click)="openUploadedDocs()">Feltöltött dokumentumok</button>
-        <button class="button-small" (click)="openNotifications()">Értesítések</button>
-    </div>
-    <div class="right">
-        <div *ngIf="savedRes">
-            <app-saved-diseases></app-saved-diseases>
+    <div class="stripe"></div>
+
+    <div class="content">
+        <div class="left">
+            <div (click)="openSavedResults()" class="page">Elmentett eredmények</div>
+            <div class="stripe"></div>
+            <div (click)="openUploadedDocs()" class="page">Feltöltött dokumentumok</div>
+            <div class="stripe"></div>
+            <!--<div (click)="openNotifications()">Értesítések</div>-->
         </div>
-    
-        <div *ngIf="uploaded">
-            <app-uploaded-docs></app-uploaded-docs>
-        </div>
-    
-        <div *ngIf="notifications">
-            <app-notification-page></app-notification-page>
+
+        <div class="vertical-line"></div>
+
+        <div class="right">
+            <div *ngIf="savedRes">
+                <app-saved-diseases></app-saved-diseases>
+            </div>
+            <div *ngIf="uploaded">
+                <app-uploaded-docs></app-uploaded-docs>
+            </div>
+            <div *ngIf="notifications">
+                <app-notification-page></app-notification-page>
+            </div>
         </div>
     </div>
 </div>

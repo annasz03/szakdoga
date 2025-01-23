@@ -15,7 +15,7 @@ import { AuthService } from '../auth.service';
 })
 export class ProfilePageComponent {
 
-  savedRes=false;
+  savedRes=true;
   uploaded=false;
   notifications=false;
 

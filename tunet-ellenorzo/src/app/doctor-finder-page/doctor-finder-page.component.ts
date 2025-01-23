@@ -5,13 +5,15 @@ import { DataService } from '../data.service';
 import { IDoctorResponse } from '../doctorres.interface';
 import { DoctorComponent } from '../doctor/doctor.component';
 import { filter } from 'rxjs';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 type selectType = { key: number; value: string };
 
 @Component({
   selector: 'app-doctor-finder-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, DoctorComponent],
+  imports: [CommonModule, FormsModule, DoctorComponent, MatInputModule, MatFormFieldModule],
   templateUrl: './doctor-finder-page.component.html',
   styleUrl: './doctor-finder-page.component.css'
 })

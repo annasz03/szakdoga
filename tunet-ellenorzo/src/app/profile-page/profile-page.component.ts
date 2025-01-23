@@ -3,7 +3,8 @@ import { SavedDiseasesComponent } from '../saved-diseases/saved-diseases.compone
 import { UploadedDocsComponent } from '../uploaded-docs/uploaded-docs.component';
 import { CommonModule } from '@angular/common';
 import { NotificationPageComponent } from '../notification-page/notification-page.component';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { DataService } from '../data.service';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-profile-page',
@@ -17,6 +18,16 @@ export class ProfilePageComponent {
   savedRes=false;
   uploaded=false;
   notifications=false;
+
+  currentUser:any;
+
+  constructor(private dataService:DataService, private authService: AuthService){}
+
+  ngOnInit(){
+    this.authService.user$.subscribe(user => {
+      this.currentUser = user;
+    });
+  }
 
   openSavedResults(){
     this.savedRes=true;

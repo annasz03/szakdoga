@@ -58,3 +58,91 @@ body { margin: 0; font-family: 'font', san;
   box-shadow: none;
   transform: translateY(0);
 }
+
+.button-small{
+  appearance: none;
+  background-color: #0288D1;
+  border: 2px solid #0288D1;
+  border-radius: 15px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: Roobert,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-size: 14px;
+  font-weight: 500;
+  line-height: normal;
+  margin: 0;
+  min-height: 40px;
+  min-width: 0;
+  outline: none;
+  text-align: center;
+  text-decoration: none;
+  transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: 130px;
+  will-change: transform;
+  margin-top: 2%;
+  margin-bottom: 2%;
+  margin-left: 1%;
+}
+
+.button-small:disabled {
+  pointer-events: none;
+}
+
+.button-small:hover {
+  box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+  transform: translateY(-2px);
+}
+
+.button-small:active {
+  box-shadow: none;
+  transform: translateY(0);
+}
+
+.button-xsmall{
+  appearance: none;
+  background-color: #0288D1;
+  border: 2px solid #0288D1;
+  border-radius: 15px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: Roobert,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-size: 14px;
+  font-weight: 500;
+  line-height: normal;
+  margin: 0;
+  min-height: 20px;
+  min-width: 0;
+  outline: none;
+  text-align: center;
+  text-decoration: none;
+  transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: 30px;
+  will-change: transform;
+  margin-top: 1%;
+  margin-bottom: 1%;
+  margin-left: 1%;
+}
+
+.button-xsmall:disabled {
+  pointer-events: none;
+}
+
+.button-xsmall:hover {
+  box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+  transform: translateY(-2px);
+}
+
+.button-xsmall:active {
+  box-shadow: none;
+  transform: translateY(0);
+}

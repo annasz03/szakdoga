@@ -1,7 +1,11 @@
-<div *ngFor="let res of result; let i = index">
-  <app-disease [diseaseName]="res.key" [i]="i"></app-disease>
+<div class="result">
+  <div *ngFor="let res of result; let i = index">
+    <div class="resCard">
+      <app-disease [diseaseName]="res.key" [i]="i"></app-disease>
+    </div>
+  </div>
+  <div>
+    <button class="button-small" (click)="saveResult()">Mentés</button>
+  </div>
+    
 </div>
-<div>
-  <button (click)="saveResult()">Mentés</button>
-</div>
-  

@@ -1,6 +1,8 @@
 <div>
-    {{doc.value.picture}}
-    {{doc.value.name}}
+    <!--{{doc.value.picture}}-->
+    <div class="name">
+        {{doc.value.name}}
+    </div>
     {{doc.value.speciality}}
     <div *ngFor="let d of doc.value.area | keyvalue">
             {{d.key}},

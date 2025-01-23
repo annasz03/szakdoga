@@ -1,6 +1,6 @@
 <div class="card" *ngIf="res">
     {{i+1}} - {{ res.value?.name }}
-  <button (click)="openDiseaseData()">></button>
+  <button class="button-xsmall" (click)="openDiseaseData()">></button>
 
   <div *ngIf="opened">
     <table mat-table [dataSource]="dataSource | keyvalue">

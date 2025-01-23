@@ -10,13 +10,14 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule,FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 
 
 @Component({
   selector: 'app-symptom-checker',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule,MatAutocompleteModule,MatInputModule,],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule,MatAutocompleteModule,MatInputModule,MatFormFieldModule, MatInputModule],
   templateUrl: './symptom-checker.component.html',
   styleUrls: ['./symptom-checker.component.css'],
 })

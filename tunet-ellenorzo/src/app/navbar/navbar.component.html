@@ -1,17 +1,19 @@
-<div class="navbar">
+<div class="off-screen-menu" id="offScreenMenu">
     <a (click)="navigateSymptomChecker()">Tünet ellenőrző</a>
     <a (click)="navigateProfile()">Profil</a>
     <a (click)="navigateDoctorFinder()">Orvos kereső</a>
     <a (click)="navigateSignOut()">Kijelentkezés</a>
 </div>
-
-<input type="checkbox" [(ngModel)]="model" class="openSidebarMenu" id="openSidebarMenu">
-  <label for="openSidebarMenu" class="sidebarIconToggle">
-      <div class="spinner diagonal part-1"></div>
-      <div class="spinner horizontal"></div>
-      <div class="spinner diagonal part-2"></div>
-  </label>
-  <div id="sidebarMenu">
-        <div class="main-content-wrapper">
-        </div>
+<nav>
+    <div class="navbar" id="navbar">
+        <span></span>
+        <span></span>
+        <span></span>
     </div>
+    <div class="title">
+        Tünet ellenőrző
+    </div>
+    <div class="profile" (click)="navigateProfile()">
+        <img src="../../assets/avatar.png" class="avatar">
+    </div>
+</nav>

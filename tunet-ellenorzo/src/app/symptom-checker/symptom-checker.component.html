@@ -1,64 +1,77 @@
+<div class="form">
+  
 <!-- Személyes adatok -->
 <div *ngIf="personalFromVisible">
-    <form [formGroup]="personalInformation">
-      <label for="age">Kor:</label>
-      <input type="number" formControlName="age" required>
-  
-      <label for="gender">Nem:</label>
-      <select id="gender" formControlName="gender" required>
-        <option value="male">Férfi</option>
-        <option value="female">Nő</option>
-      </select>
-  
-      <button type="submit" (click)="formVisible()">Tovább</button>
-    </form>
-  </div>
-  
-<!-- Tünetek -->
-<div *ngIf="!personalFromVisible">
-  <form [formGroup]="symptomsForm">
-    <label>Tünetek:</label>
-    <div formArrayName="symptoms">
-      <div *ngFor="let control of symptomArray.controls; let i = index">
-        <input type="text" matInput [formControlName]="i" [matAutocomplete]="auto" (input)="filterSymptoms(i)">
-        <mat-autocomplete #auto="matAutocomplete">
-          <mat-option *ngFor="let symptom of filteredSymptoms" [value]="symptom">
-            {{ symptom }}
-          </mat-option>
-        </mat-autocomplete>
-        
-        <button type="button" (click)="removeSymptom(i)">-</button>
-      </div>
-    </div>
-    <button type="button" (click)="addSymptom()">+</button>
-
+  <form [formGroup]="personalInformation">
     <div>
-      <label for="pain">Van fájdalom?</label>
-      <select formControlName="pain" (change)="onPainChange($event)" value="no">
-        <option value="yes">Igen</option>
-        <option value="no" selected>Nem</option>
-      </select>
+      <mat-form-field class="inputF">
+        <label for="age">Kor:</label><p>
+        <input type="number" formControlName="age" required>
+      </mat-form-field>
     </div>
 
     <div>
-      <div *ngIf="isPainful">
-        <label for="painLocation">Ha igen, hol?</label>
-        <div formArrayName="painLocation">
-          <div *ngFor="let control of painLocationArray.controls; let i = index">
-            <select [formControlName]="i">
-              <option *ngFor="let pain of painLocation" [value]="pain">{{ pain }}</option>
-            </select>
-            <button type="button" (click)="removePain(i)">-</button>
-          </div>
-        </div>
-        <button type="button" (click)="addPain()">+</button>
-      </div>
-    </div>
+      <mat-form-field class="inputF">
+        <label for="gender">Nem:</label><p>
+        <select id="gender" formControlName="gender" required>
+          <option value="male">Férfi</option>
+          <option value="female">Nő</option>
+        </select>
+      </mat-form-field>
+    </div>  
 
-    <button type="submit" (click)="symptomCheckerResult()">OK</button>
+    <div>
+      <button class="button-small" type="submit" (click)="formVisible()">Tovább</button>
+    </div>
   </form>
 </div>
 
-  <div>
-    {{errorMessage}}
+<!-- Tünetek -->
+<div *ngIf="!personalFromVisible">
+<form [formGroup]="symptomsForm">
+  <label>Tünetek:</label>
+  <div formArrayName="symptoms">
+    <div *ngFor="let control of symptomArray.controls; let i = index">
+      <input type="text" matInput [formControlName]="i" [matAutocomplete]="auto" (input)="filterSymptoms(i)">
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let symptom of filteredSymptoms" [value]="symptom">
+          {{ symptom }}
+        </mat-option>
+      </mat-autocomplete>
+      
+      <button class="button-xsmall" type="button" (click)="removeSymptom(i)">-</button>
+    </div>
   </div>
+  <button class="button-xsmall" type="button" (click)="addSymptom()">+</button>
+
+  <div>
+    <label for="pain">Van fájdalom?</label><p>
+    <select formControlName="pain" (change)="onPainChange($event)" value="no">
+      <option value="yes">Igen</option>
+      <option value="no" selected>Nem</option>
+    </select>
+  </div>
+
+  <div>
+    <div *ngIf="isPainful">
+      <label for="painLocation">Ha igen, hol?</label>
+      <div formArrayName="painLocation">
+        <div *ngFor="let control of painLocationArray.controls; let i = index">
+          <select [formControlName]="i">
+            <option *ngFor="let pain of painLocation" [value]="pain">{{ pain }}</option>
+          </select>
+          <button class="button-small" type="button" (click)="removePain(i)">-</button>
+        </div>
+      </div>
+      <button class="button-small" type="button" (click)="addPain()">+</button>
+    </div>
+  </div>
+
+  <button class="button-small" type="submit" (click)="symptomCheckerResult()">OK</button>
+</form>
+</div>
+
+<div>
+  {{errorMessage}}
+</div>
+</div>

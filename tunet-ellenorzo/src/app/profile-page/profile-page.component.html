@@ -1,15 +1,27 @@
-<button (click)="openSavedResults()">Elmentett eredmények</button>
-<button (click)="openUploadedDocs()">Feltöltött dokumentumok</button>
-<button (click)="openNotifications()">Értesítések</button>
+<div class="profile">
+    <div class="profileData">
+        <img src="../../assets/avatar.png" class="profilePic">
+        <span class="displayName">
+            {{currentUser.displayName}}
+        </span>
+    </div>
 
-<div *ngIf="savedRes">
-    <app-saved-diseases></app-saved-diseases>
-</div>
-
-<div *ngIf="uploaded">
-    <app-uploaded-docs></app-uploaded-docs>
-</div>
-
-<div *ngIf="notifications">
-    <app-notification-page></app-notification-page>
+    <div class="left">
+        <button class="button" (click)="openSavedResults()">Elmentett eredmények</button>
+        <button class="button-small" (click)="openUploadedDocs()">Feltöltött dokumentumok</button>
+        <button class="button-small" (click)="openNotifications()">Értesítések</button>
+    </div>
+    <div class="right">
+        <div *ngIf="savedRes">
+            <app-saved-diseases></app-saved-diseases>
+        </div>
+    
+        <div *ngIf="uploaded">
+            <app-uploaded-docs></app-uploaded-docs>
+        </div>
+    
+        <div *ngIf="notifications">
+            <app-notification-page></app-notification-page>
+        </div>
+    </div>
 </div>

@@ -29,19 +29,42 @@ export class RegisterComponent {
     username: ['', Validators.required],
     birth: ['', Validators.required],
     gender: ['', Validators.required]
-  });
-  
+  });  
 
   onSubmit(event:Event): void {
+    if(this.formatCheck()){
+      const rawForm = this.form.getRawValue();
+      this.authService.register(rawForm.email, rawForm.username,rawForm.password)
+      .subscribe({
+        next: ()=> {
+        this.router.navigateByUrl('/home')},
+      })
+    }
+  }
+
+  
+  formatCheck():boolean{
     const rawForm = this.form.getRawValue();
-    this.authService.register(rawForm.email, rawForm.username,rawForm.password)
-    .subscribe({
-      next: ()=> {
-      this.router.navigateByUrl('/home')},
-      error: (err) => {
-        this.errorMessage = err.code;
-      }
-    })
+    if(!rawForm.email.includes("@")){
+      this.errorMessage="Nem megfelelő az e-mail cím!";
+      return false;
+    }else if(!this.isValidPassword(rawForm.password)){
+      this.errorMessage="A jelszónak legalább 8 karakter hosszúnak kell lennie és tartalmaznia kell nagy betűt és speciális karaktert!"
+      return false;
+    }else if(rawForm.username.length===0){
+      this.errorMessage="Nem adott meg felhasználónevet!"
+      return false;
+    }else if(rawForm.birth){
+      //TODO: évcheck
+      console.log(rawForm.birth)
+    }
+
+    return true;
+  }
+
+  isValidPassword(password: string): boolean {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
+    return passwordRegex.test(password);
   }
 
 }

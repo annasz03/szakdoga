@@ -28,7 +28,7 @@ export class RegisterComponent {
     password: ['', Validators.required],
     username: ['', Validators.required],
     birth: ['', Validators.required],
-    gender: ['', Validators.required]
+    gender: ['male', Validators.required]
   });  
 
   onSubmit(event:Event): void {
@@ -54,12 +54,16 @@ export class RegisterComponent {
     }else if(rawForm.username.length===0){
       this.errorMessage="Nem adott meg felhasználónevet!"
       return false;
-    }else if(rawForm.birth){
-      //TODO: évcheck
-      console.log(rawForm.birth)
+    }else if(this.isValidDate(rawForm.birth)){
+      this.errorMessage="Érvénytelen születési év!"
     }
 
     return true;
+  }
+
+  isValidDate(date:string){
+    const year = parseInt(date.substring(0, 4), 10);
+    return year > 1900 && year < 2025;
   }
 
   isValidPassword(password: string): boolean {

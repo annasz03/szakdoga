@@ -2,22 +2,22 @@
   
 <!-- Személyes adatok -->
 <div *ngIf="personalFromVisible">
+  <div class="title">
+    Személyes adatok
+  </div>
   <form [formGroup]="personalInformation">
-    <div>
-      <mat-form-field class="inputF">
+    <div class="inp">
         <label for="age">Kor:</label><p>
         <input type="number" formControlName="age" required>
-      </mat-form-field>
+
     </div>
 
-    <div>
-      <mat-form-field class="inputF">
+    <div class="inp">
         <label for="gender">Nem:</label><p>
         <select id="gender" formControlName="gender" required>
           <option value="male">Férfi</option>
           <option value="female">Nő</option>
         </select>
-      </mat-form-field>
     </div>  
 
     <div>
@@ -28,6 +28,9 @@
 
 <!-- Tünetek -->
 <div *ngIf="!personalFromVisible">
+  <div class="title">
+    Tünetek
+  </div>
 <form [formGroup]="symptomsForm">
   <label>Tünetek:</label>
   <div formArrayName="symptoms">
@@ -60,10 +63,10 @@
           <select [formControlName]="i">
             <option *ngFor="let pain of painLocation" [value]="pain">{{ pain }}</option>
           </select>
-          <button class="button-small" type="button" (click)="removePain(i)">-</button>
+          <button class="button-xsmall" type="button" (click)="removePain(i)">-</button>
         </div>
       </div>
-      <button class="button-small" type="button" (click)="addPain()">+</button>
+      <button class="button-xsmall" type="button" (click)="addPain()">+</button>
     </div>
   </div>
 

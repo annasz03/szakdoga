@@ -9,4 +9,18 @@
 label{
     font-weight: 800;
     font-size: large;
+    margin: 0;
+}
+
+select{
+    width: 170px;
+}
+
+.inp{
+    margin-left: 2%;
+}   
+
+.title{
+    font-size: xx-large;
+    margin-bottom: 1.5rem;
 }

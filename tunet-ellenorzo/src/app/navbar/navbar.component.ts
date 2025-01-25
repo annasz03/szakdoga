@@ -52,6 +52,9 @@ export class NavbarComponent {
   navigateDoctorFinder(){
     this.router.navigateByUrl('/doctor-finder');
   }
-  
 
+  navigateHome(){
+    this.router.navigateByUrl('/home');
+  }
+  
 }

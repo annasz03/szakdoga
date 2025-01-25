@@ -105,6 +105,7 @@ export class SymptomCheckerComponent {
     if(this.personalInformation.invalid){
       this.errorMessage="nem jo adatok"
     }else{
+      this.errorMessage="";
       this.personalFromVisible = !this.personalFromVisible;
     }
   }

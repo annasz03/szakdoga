@@ -10,15 +10,9 @@ import { Router } from '@angular/router';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
-  authService = inject(AuthService)
   constructor(private router: Router) {}
-  
-  logout(){
-    this.authService.logout();
-    this.router.navigateByUrl('/auth');
-  }
 
-  openSymptomChecker(){
+  navigateToSymptomChecker(){
     this.router.navigateByUrl('/symptom-checker')
   }
 }

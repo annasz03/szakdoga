@@ -50,15 +50,10 @@ export class DoctorFinderPageComponent {
     let filteredDoctors:IDoctorResponse['result'];
     
       filteredDoctors = this.allDoctorsList;
-
-      console.log(filteredDoctors)
-      console.log(this.selectedArea)
-      console.log(this.selectedSpec)
       
       //TODO:spec es area szurese
       if((this.nameValue==="" && this.selectedArea===undefined && this.selectedSpec===undefined) || (this.nameValue==="" && this.selectedArea==="" && this.selectedSpec==="")){
         this.dataService.getAllDoctor().subscribe((data: IDoctorResponse) => {
-          console.log(data.result)
           filteredDoctors = data.result;
         });
       }else{
@@ -86,7 +81,6 @@ export class DoctorFinderPageComponent {
       }
 
       this.doctorsList=filteredDoctors;
-      console.log(this.doctorsList)
   }
 
   removeFilters(){

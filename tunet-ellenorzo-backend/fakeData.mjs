@@ -22,17 +22,15 @@ const fakeData = new Map([
           'hideg időjárás',
         ],
         prevention: [
-          'gyakori kézmosás',
           'egészséges táplálkozás',
           'rendszeres testmozgás',
-          'megfelelő ruházat hideg időben',
         ],
         treatment: [
-          'bőséges folyadékbevitel',
+          'sok folyadékbevitel',
           'pihenés',
-          'tüneti kezelés, például fájdalomcsillapító és orrspray használata',
+          'fájdalomcsillapító',
         ],
-        riskFactors: ['stressz', 'alváshiány', 'zsúfolt helyeken tartózkodás'],
+        riskFactors: ['stressz', 'alváshiány'],
         painful: false,
         painLocation: [],
       },
@@ -48,12 +46,10 @@ const fakeData = new Map([
           'gyakori vizelet',
           'fájdalmas ürítés',
           'véres vizelet',
-          'hátfájás',
         ],
         associatedDiseases: [
           'húgyúti fertőzés',
           'veseproblémák',
-          'csontáttétek',
         ],
         description:
           'A prosztatarák a prosztata mirigy rosszindulatú daganatos megbetegedése, amely gyakran lassan alakul ki.',

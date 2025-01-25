@@ -13,11 +13,6 @@ export class DoctorComponent {
   @Input() doc:any;
   opened=false;
 
-  constructor(){}
-
-  ngOnInit(){
-  }
-
   openMoreData(){
     this.opened=!this.opened;
   }

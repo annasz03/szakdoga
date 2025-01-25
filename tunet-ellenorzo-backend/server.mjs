@@ -9,7 +9,6 @@ import specialty from './doctorSpecData.mjs';
 import fs from 'fs/promises';
 import path from 'path';
 import multer from 'multer';
-import fakeDocumentsData from './fakeDocumentsData.json' assert { type: 'json' };
 
 
 const app = express();
@@ -181,7 +180,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
-//fileba iras
 const dataFilePath = path.resolve('./fakeDocumentsData.json');
 
 async function loadData() {

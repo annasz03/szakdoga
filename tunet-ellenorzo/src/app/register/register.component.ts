@@ -1,7 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';

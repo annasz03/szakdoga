@@ -16,11 +16,6 @@ export class SavedDisComponent {
 
   opened=false;
 
-  constructor(){}
-
-  ngOnInit(){
-  }
-
   openSaved(){
     this.opened=!this.opened
   }

@@ -20,12 +20,14 @@ export class ProfilePageComponent {
   notifications=false;
 
   currentUser:any;
+  displayName: any;
 
   constructor(private dataService:DataService, private authService: AuthService){}
 
   ngOnInit(){
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
+      this.displayName=user?.displayName
     });
   }
 

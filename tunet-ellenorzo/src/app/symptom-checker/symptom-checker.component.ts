@@ -103,7 +103,7 @@ export class SymptomCheckerComponent {
 
   formVisible() {
     if(this.personalInformation.invalid){
-      this.errorMessage="nem jo adatok"
+      this.errorMessage="Kérem megfelelően töltse ki a kért adatokat!"
     }else{
       this.errorMessage="";
       this.personalFromVisible = !this.personalFromVisible;
@@ -139,15 +139,20 @@ export class SymptomCheckerComponent {
       pain: pain === 'yes',
       painLocation:painLocation as string[] || [],
     };
-  
-    this.dataService.symptomCheckerReq(this.symptomRes).subscribe({
-      next: (response) => {
-        this.resultService.setResult(response);
-        this.router.navigateByUrl('/symptom-checker-result');
-      }, error: (err) => {
-        this.errorMessage = err;
-      }
-    });
+  console.log(this.symptomRes.symptoms.length)
+  console.log(this.symptomRes.symptoms)
+    if(this.symptomRes.symptoms.length===1 && this.symptomRes.symptoms[0]===''){
+      this.errorMessage="Kérem megfelelően töltse ki a kért adatokat!"
+    }else {
+      this.dataService.symptomCheckerReq(this.symptomRes).subscribe({
+        next: (response) => {
+          this.resultService.setResult(response);
+          this.router.navigateByUrl('/symptom-checker-result');
+        }, error: (err) => {
+          this.errorMessage = err;
+        }
+      });
+    }
   }
 
   filterSymptoms(index: number): void {

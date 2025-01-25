@@ -54,15 +54,18 @@ export class RegisterComponent {
     }else if(rawForm.username.length===0){
       this.errorMessage="Nem adott meg felhasználónevet!"
       return false;
-    }else if(this.isValidDate(rawForm.birth)){
+    }else if(!this.isValidDate(rawForm.birth)){
       this.errorMessage="Érvénytelen születési év!"
+      return false;
     }
 
     return true;
   }
 
   isValidDate(date:string){
+    console.log(date)
     const year = parseInt(date.substring(0, 4), 10);
+    console.log(year)
     return year > 1900 && year < 2025;
   }
 

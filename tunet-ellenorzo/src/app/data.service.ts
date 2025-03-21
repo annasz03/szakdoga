@@ -23,31 +23,6 @@ export class DataService {
         return this.http.post<any>(this.apiUrl + 'result', symptomRes);
     }
 
-    getAllDoctor(){
-      return this.http.get<any>(this.apiUrl+'doctors');
-    }
-
-    getDoctor(id: number){
-      return this.http.get<any>(this.apiUrl+`doctors/${id}`);
-    }
-    
-    getAllArea(){
-      return this.http.get<any>(this.apiUrl+'area');
-    }
-
-    getAllSpec(){
-      return this.http.get<any>(this.apiUrl+'spec');
-    }
-
-    getAllDoc(uid:string){
-      console.log("get all doc")
-      return this.http.get<any>(this.apiUrl+'doc/'+ uid);
-    }
-
-    uploadDoc(uid:string, doc:any){
-      return this.http.post<any>(this.apiUrl+'upload/'+ uid, doc);
-    }
-
     deleteDoc(uid:string, fileName:any){
       return this.http.get<any>(this.apiUrl+'delete/'+uid+"/"+fileName);
     }

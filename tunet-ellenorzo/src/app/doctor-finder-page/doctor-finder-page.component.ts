@@ -4,87 +4,124 @@ import { FormsModule } from '@angular/forms';
 import { DataService } from '../data.service';
 import { IDoctorResponse } from '../doctorres.interface';
 import { DoctorComponent } from '../doctor/doctor.component';
-import { filter } from 'rxjs';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { Firestore, collection, getDocs } from '@angular/fire/firestore';
+import { Observable, from } from 'rxjs';
 
-type selectType = { key: number; value: string };
+type selectType = { key: string; value: string };
 
 @Component({
   selector: 'app-doctor-finder-page',
   standalone: true,
   imports: [CommonModule, FormsModule, DoctorComponent, MatInputModule, MatFormFieldModule],
   templateUrl: './doctor-finder-page.component.html',
-  styleUrl: './doctor-finder-page.component.css'
+  styleUrls: ['./doctor-finder-page.component.css']
 })
 export class DoctorFinderPageComponent {
   nameValue = '';
+  selectedArea: any;
+  selectedSpec: any;
 
-  doctorsList:any;
-  allDoctorsList:any;
+  specList: selectType[] = [];
+  area: selectType[] = [];
+  loading = true;
 
-  spec: selectType[]=[];
-  area: selectType[]=[];
+  doctors: IDoctorResponse[]=[];
+  constructor(private dataService: DataService, private firestore: Firestore) {}
 
-  selectedArea:any;
-  selectedSpec:any;
+  ngOnInit() {
+    this.loading = true;
 
-  constructor(private dataService: DataService){} 
-
-  ngOnInit(){
-    this.dataService.getAllDoctor().subscribe((data: IDoctorResponse) => {
-      this.allDoctorsList = data.result;
-      this.doctorsList=this.allDoctorsList;
+    //area
+    const ref = collection(this.firestore, 'areas');
+    getDocs(ref).then(snapshot => {
+      snapshot.forEach(doc => {
+        const docData = doc.data();
+        if (docData) {
+          this.area.push({ key: doc.id, value: docData['name'] });
+        }
+      });
+      this.loading = false;
+    }).catch(error => {
+      console.error("Hiba: ", error);
+      this.loading = false;
     });
 
-    this.dataService.getAllArea().subscribe(data => {
-      this.area=data.result;
+    //spec
+    const ref2 = collection(this.firestore, 'doctor_spec');
+    getDocs(ref2).then(snapshot => {
+      snapshot.forEach(doc => {
+        const docData = doc.data();
+        if (docData) {
+          this.specList.push({ key: doc.id, value: docData['name'] });
+        }
+      });
+      this.loading = false;
+    }).catch(error => {
+      console.error("Hiba: ", error);
+      this.loading = false;
     });
 
-    this.dataService.getAllSpec().subscribe(data => {
-      this.spec=data.result;
-    });
+    //doctorok
+    this.getAllDoctor();
   }
-  
+
   search() {
-    let filteredDoctors:IDoctorResponse['result'];
-    
-      filteredDoctors = this.allDoctorsList;
-      
-      //TODO:spec es area szurese
-      if((this.nameValue==="" && this.selectedArea===undefined && this.selectedSpec===undefined) || (this.nameValue==="" && this.selectedArea==="" && this.selectedSpec==="")){
-        this.dataService.getAllDoctor().subscribe((data: IDoctorResponse) => {
-          filteredDoctors = data.result;
-        });
-      }else{
-        console.log("van filter")
-        //nev szerint
-        if(this.nameValue!==""){
-          filteredDoctors = filteredDoctors.filter((doctor) =>
-            doctor.value.name.toLowerCase().includes(this.nameValue.toLowerCase())
-          );
-        }
-        //spec szerint
-        if(this.selectedSpec!=="" && this.selectedSpec!==undefined){
-          filteredDoctors = filteredDoctors.filter((doctor) =>
-            doctor.value.speciality.includes(this.selectedSpec)
-          );
-        }
+    let filteredDoctors: IDoctorResponse[] = this.doctors;
+    console.log(filteredDoctors)
 
-        //area szerint
-        console.log(filteredDoctors)
-        if(this.selectedArea!=="" && this.selectedArea!==undefined){
-          filteredDoctors = filteredDoctors.filter((doctor) =>
-            doctor.value.cities.includes(this.selectedArea)
-          );
-        }
+    if ((this.nameValue === "" && this.selectedArea === undefined && this.selectedSpec === undefined) ||
+      (this.nameValue === "" && this.selectedArea === "" && this.selectedSpec === "")) {
+        this.getAllDoctor();
+        filteredDoctors=this.doctors
+    } else {
+      if (this.nameValue !== "") {
+        filteredDoctors = filteredDoctors.filter((doctor) =>
+          doctor.name.toLowerCase().includes(this.nameValue.toLowerCase())
+        );
       }
+      if (this.selectedSpec !== "" && this.selectedSpec !== undefined) {
+        filteredDoctors = filteredDoctors.filter((doctor) =>
+          doctor.speciality.includes(this.selectedSpec)
+        );
+      }
+      if (this.selectedArea !== "" && this.selectedArea !== undefined) {
+        filteredDoctors = filteredDoctors.filter((doctor) =>
+          doctor.cities.includes(this.selectedArea)
+        );
+      }
+    }
 
-      this.doctorsList=filteredDoctors;
+    console.log(filteredDoctors)
+    this.doctors = filteredDoctors;
   }
 
-  removeFilters(){
-    this.doctorsList=this.allDoctorsList;
+  getAllDoctor(){
+    const ref = collection(this.firestore, 'doctors');
+    getDocs(ref).then(snapshot => {
+      snapshot.forEach(doc => {
+        const docData = doc.data();
+        if (docData) {
+          this.doctors.push({
+            name: docData['name'],
+            gender: docData['gender'],
+            speciality: docData['specs'],
+            cities: docData['cities'],
+            phone: docData['phone'],
+            available: docData['available']
+          });
+        }
+      });
+      this.loading = false;
+    }).catch(error => {
+      console.error("Hiba: ", error);
+      this.loading = false;
+    });
   }
-  
+
+  removeFilters() {
+    this.doctors=[];
+    this.getAllDoctor();
+  }
 }

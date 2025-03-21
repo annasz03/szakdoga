@@ -4,6 +4,8 @@ import { DocumentComponent } from '../document/document.component';
 import { DataService } from '../data.service';
 import { AuthService } from '../auth.service';
 import { FormsModule } from '@angular/forms';
+import { addDoc, collection, Firestore, getDocs, query, where, } from '@angular/fire/firestore';
+
 
 @Component({
   selector: 'app-uploaded-docs',
@@ -25,8 +27,9 @@ export class UploadedDocsComponent {
   currentUser: any;
 
   focusedDocument: string | null = null;
+  documents:any;
 
-  constructor(private dataService: DataService, private authService: AuthService) {}
+  constructor(private dataService: DataService, private authService: AuthService, private firestore: Firestore) {}
 
   ngOnInit() {
     this.authService.user$.subscribe(user => {
@@ -45,58 +48,74 @@ export class UploadedDocsComponent {
   }
 
   getAllDocuments() {
-    this.dataService.getAllDoc(this.currentUser.uid).subscribe({
-      next: (result) => {
-        this.savedDocuments = result.result;
-        console.log(this.savedDocuments);
-      }
+    const documentsCollection = collection(this.firestore, 'documents');
+    const q = query(documentsCollection, where('userId', '==', this.currentUser.uid));
+
+    getDocs(q).then((querySnapshot) => {
+      this.documents = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      console.log('Dokumentumok betöltve:', this.documents);
+    }).catch(error => {
+      console.error('Hiba: ', error);
     });
+    
   }
 
   get filteredDocuments() {
-    if (this.docType === 'img') {
-      return this.savedDocuments?.filter((doc: any) => this.isImage(doc.filename));
-    } else if (this.docType === 'pdf') {
-      return this.savedDocuments?.filter((doc: any) => this.isPdf(doc.filename));
-    }
-    return this.savedDocuments;
+    if (!this.documents) return [];
+  
+    return this.documents.filter((doc: any) => {
+      if (this.docType === 'img') {
+        return this.isImage(doc.type);
+      } else if (this.docType === 'pdf') {
+        return this.isPdf(doc.type);
+      }
+      return true;
+    });
   }
   
-  isImage(fileName: string): boolean {
-    const imageExtensions = ['jpg', 'jpeg', 'png'];
-    const extension = fileName.split('.').pop()?.toLowerCase();
-    return extension ? imageExtensions.includes(extension) : false;
+  
+  isImage(fileType: string): boolean {
+    return fileType?.startsWith('image/');
   }
   
-  isPdf(fileName: string): boolean {
-    const extension = fileName.split('.').pop()?.toLowerCase();
-    return extension === 'pdf';
+  isPdf(fileType: string): boolean {
+    return fileType === 'application/pdf';
   }
+  
 
   fileSelect(event: any) {
     this.selectedFile = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = (e: any) => this.imageUrl = e.target.result;
-    if (this.selectedFile) {
-      reader.readAsDataURL(this.selectedFile);
-    }
   }
 
   uploadDoc() {
     if (this.selectedFile && this.fileTypes.includes(this.selectedFile!.type)) {
       this.errorMessage = "";
 
-      const formData = new FormData();
-      formData.append('file', this.selectedFile, this.selectedFile.name);
-      formData.append('text', this.comment);
-      this.dataService.uploadDoc(this.currentUser.uid, formData).subscribe(
-        (response: any) => {
-          console.log(response);
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64Data = reader.result as string;
+        const documentsCollection = collection(this.firestore, 'documents');
+
+        const newDoc= {
+          file: base64Data,
+          type: this.selectedFile!.type,
+          comment: this.comment,
+          userId: this.currentUser.uid
         }
-      );
-    } else {
-      this.errorMessage = "Nem megfelelő file formátum";
-    }
+
+        addDoc(documentsCollection,newDoc).then((docref)=>{
+          console.log('Sikeres hozzáadás');
+            }).catch((error) => {
+              console.error('Nem sikerült', error);
+        })
+      };
+      reader.readAsDataURL(this.selectedFile!);
+      } else {
+        this.errorMessage = "Nem megfelelő file formátum";
+      }
     setTimeout(() => {
       this.getAllDocuments();
     }, 100);

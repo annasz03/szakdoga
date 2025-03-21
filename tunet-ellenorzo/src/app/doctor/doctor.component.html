@@ -1,21 +1,19 @@
 <div>
-    <!--{{doc.value.picture}}-->
     <div class="name">
-        {{doc.value.name}}
+        {{doc.name}}
     </div>
-    {{doc.value.speciality}}
-    <div *ngFor="let d of doc.value.area | keyvalue">
-            {{d.key}},
+    {{doc.speciality}}
+    <div *ngFor="let d of doc.cities">
+            {{d}},
     </div>
     <button (click)="openMoreData()">Több</button>
 
     <div *ngIf="opened">
-        Kor: {{doc.value.age}}<br>
-        Nem: {{doc.value.gender}}<br>
+        Nem: {{doc.gender}}<br>
         Elérhetőség: 
-        <div *ngFor="let d of doc.value.available">
+        <div *ngFor="let d of doc.available">
             {{d.day}}: {{d.city}} - {{d.address}}
         </div>
-        Tel.: {{doc.value.phone}}
+        Tel.: {{doc.phone}}
     </div>
 </div>

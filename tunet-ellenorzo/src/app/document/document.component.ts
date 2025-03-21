@@ -23,6 +23,7 @@ export class DocumentComponent {
   currentUser:any;
 
   @Input() docType="";
+  @Input() file="";
   
   constructor(private dataService:DataService, private authService: AuthService,private sanitizer: DomSanitizer){}
 
@@ -33,7 +34,7 @@ export class DocumentComponent {
   }
 
   getUrl(){
-    return `http://localhost:3000/uploads/${this.fileName}`;
+    return `http://localhost:3000/uploads/${this.file}`;
   }
 
   delete(){
@@ -48,17 +49,16 @@ export class DocumentComponent {
   }
 
   isImage(): boolean {
-    const imageExtensions = ['jpg', 'jpeg', 'png'];
-    const extension = this.fileName.split('.').pop()?.toLowerCase();
-    return extension ? imageExtensions.includes(extension) : false;
+    return this.docType?.startsWith('image/');
   }
-
+  
   isPdf(): boolean {
-    return this.fileName.split('.').pop()?.toLowerCase() === 'pdf';
+    return this.docType === 'application/pdf';
   }
 
   openPdf(): void {
-    let url = this.getUrl();
-    window.open(url, '_blank');
+    const url = this.getUrl();
+    window.open(url, '_blank', 'noopener,noreferrer');
   }
+  
 }

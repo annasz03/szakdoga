@@ -5,6 +5,9 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { addDoc, Firestore, getDocs, } from '@angular/fire/firestore';
+import { Observable } from 'rxjs/internal/Observable';
+import { collection, collectionData, query } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-register',
@@ -30,12 +33,32 @@ export class RegisterComponent {
     gender: ['male', Validators.required]
   });  
 
+  constructor(private firestore: Firestore){}
+
   onSubmit(event:Event): void {
     if(this.formatCheck()){
       const rawForm = this.form.getRawValue();
       this.authService.register(rawForm.email, rawForm.username,rawForm.password)
       .subscribe({
-        next: ()=> {
+        next: ()=> {          
+          const usersCollection = collection(this.firestore, 'users');
+
+          const newUser = {
+            email: rawForm.email,
+            username: rawForm.username,
+            birth: rawForm.birth,
+            gender: rawForm.gender,
+            documents: [],
+          };
+
+          // Dokumentum hozzáadása
+          addDoc(usersCollection, newUser).then((docRef) => {
+            console.log('Sikeres hozzáadás');
+          }).catch((error) => {
+            console.error('Nem sikerült', error);
+          });
+
+
         this.router.navigateByUrl('/home')},
       })
     }

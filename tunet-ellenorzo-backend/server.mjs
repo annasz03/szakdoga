@@ -2,10 +2,6 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import fakeData from './fakeData.mjs';
-import fakeDoctorData from './fakeDoctorData.mjs';
-import area from './doctorAreaData.mjs';
-import specialty from './doctorSpecData.mjs';
-//import fs from 'fs';
 import fs from 'fs/promises';
 import path from 'path';
 import multer from 'multer';
@@ -124,48 +120,6 @@ app.get('/diseases/:name', (req, res) => {
   res.json({ message: 'Result: ', result });
 });
 
-app.get('/doctors', (req, res) => {
-  const result = [];
-
-  for (const [key, value] of fakeDoctorData.entries()) {
-    result.push({ key, value });
-  }
-
-  res.json({ message: 'Result: ', result });
-});
-
-app.get('/doctors/:id', (req, res) => {
-  const doctorId = req.params.id;
-  const result = [];
-
-  for (const [key, value] of fakeDoctorData.entries()) {
-    if (key === doctorId) {
-      result.push({ key, value });
-    }
-  }
-
-  res.json({ message: 'Result: ', result });
-});
-
-app.get('/area', (req, res) => {
-  const result = [];
-
-  for (const [key, value] of area.entries()) {
-    result.push({ key, value });
-  }
-
-  res.json({ message: 'Result: ', result });
-});
-
-app.get('/spec', (req, res) => {
-  const result = [];
-
-  for (const [key, value] of specialty.entries()) {
-    result.push({ key, value });
-  }
-
-  res.json({ message: 'Result: ', result });
-});
 
 const uploadsDir = path.join(__dirname, 'uploads');
 

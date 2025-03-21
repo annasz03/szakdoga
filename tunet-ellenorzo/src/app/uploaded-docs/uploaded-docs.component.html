@@ -11,6 +11,6 @@
 
 <div class="doc-container">
     <div class="doc" *ngFor="let doc of filteredDocuments">
-        <app-document  [docType]="docType" [fileName]="doc.filename" [text]="doc.text"></app-document>
+        <app-document  [docType]="doc.type" [fileName]="doc.filename" [text]="doc.text" [file]="doc.file"></app-document>
     </div>      
 </div>

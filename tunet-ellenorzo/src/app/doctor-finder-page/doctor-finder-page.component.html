@@ -7,16 +7,16 @@
     </select>
     <!--specialitás-->
     <select [(ngModel)]="selectedSpec">
-        <option *ngFor="let s of spec" [value]="s.value"> {{ s.value }}</option>
-    </select>
+        <option *ngFor="let s of specList" [value]="s.value">{{ s.value }}</option>
+      </select>        
 
     <span class="buttons">
         <button class="button-small" (click)="search()">Keresés</button>
-    <!--<button class="button-small" (click)="removeFilters()">Szűrés törlése</button>-->
+        <button class="button-small" (click)="removeFilters()">Szűrés törlése</button>
     </span>
 
     <!--orvosok listazasa-->
-    <div *ngFor="let doc of doctorsList">
+    <div *ngFor="let doc of doctors">
         <div class="docCard">
             <app-doctor [doc]="doc"></app-doctor>
         </div>

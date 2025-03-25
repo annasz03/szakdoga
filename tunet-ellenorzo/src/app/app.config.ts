@@ -6,6 +6,8 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 import { provideHttpClient } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { getMessaging, provideMessaging } from '@angular/fire/messaging';
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyD5JSxkcZOBFie5bfWu1wM7vwMW-c9WzYU",
@@ -24,5 +26,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideAnimationsAsync(),
     provideFirestore(() => getFirestore()),
+    provideMessaging(() => getMessaging()),
   ]
 };

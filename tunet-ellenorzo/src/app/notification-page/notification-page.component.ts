@@ -4,6 +4,9 @@ import { NotificationComponent } from '../notification/notification.component';
 import { DataService } from '../data.service';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../auth.service';
+import { addDoc, Firestore, getDocs, } from '@angular/fire/firestore';
+import { collection, collectionData, query } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-notification-page',
@@ -32,6 +35,7 @@ export class NotificationPageComponent {
   imports: [CommonModule, FormsModule]
 })
 export class NotificationDialog {
+  name:string = "";
   frequency:string = "";
   frequencies: string[] = [
     'Naponta egyszer',
@@ -41,6 +45,7 @@ export class NotificationDialog {
     'Havonta egyszer'
   ];
 
+  hour:string = "";
   hours: string[] = [
     '00:00',
     '01:00',
@@ -68,13 +73,56 @@ export class NotificationDialog {
     '23:00',
   ]
 
-  constructor(public dialogRef: MatDialogRef<NotificationDialog>) {}
+  timeDiv:number=0;
+  timeArray: number[] = [];
+  currentUser:any;
+  times: string[] = [];
+
+  constructor(public dialogRef: MatDialogRef<NotificationDialog>, private authService: AuthService, private firestore: Firestore) {}
+
+  ngOnInit(){
+    this.authService.user$.subscribe(user => {
+      this.currentUser = user;
+    });
+  }
 
   onChange(){
-    
+    switch(this.frequency) {
+      case 'Naponta egyszer':
+        this.timeDiv=1
+        break;
+      case 'Naponta kétszer':
+        this.timeDiv=2
+        break;
+      case 'Naponta háromszor':
+        this.timeDiv=3
+        break;
+      default:
+        this.timeDiv=1
+        break;
+    }
+    this.timeArray = Array(this.timeDiv).fill(0).map((_, i) => i);
+    this.times = new Array(this.timeDiv).fill("");
   }
 
   closeDialog(): void {
     this.dialogRef.close();
+  }
+
+  addAlert(){
+    const alertCollection = collection(this.firestore, 'alerts');
+
+    const newDoc= {
+      uid: this.currentUser.uid,
+      frequency: this.frequency,
+      times: this.times,
+      name: this.name,
+    }
+
+    addDoc(alertCollection,newDoc).then((docref)=>{
+      console.log('Sikeres hozzáadás');
+        }).catch((error) => {
+          console.error('Nem sikerült', error);
+    })
   }
 }

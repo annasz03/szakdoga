@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { addDoc, Firestore, getDocs, } from '@angular/fire/firestore';
-import { Observable } from 'rxjs/internal/Observable';
 import { collection, collectionData, query } from '@angular/fire/firestore';
 
 @Component({

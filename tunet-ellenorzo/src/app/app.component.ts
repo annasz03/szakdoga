@@ -7,6 +7,7 @@ import { AuthPageComponent } from './auth-page/auth-page.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MessagingService } from './messaging.service';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +20,10 @@ export class AppComponent{
   title = 'tunet-ellenorzo';
   curr='';
 
-  constructor(private router: Router) {}
+  constructor(private messagingService: MessagingService, private router: Router) {
+    //this.messagingService.requestPermission();
+    //this.messagingService.receiveMessage();
+  }
 
   isAuthPage(curr: string): boolean {
     if(this.router.url === '/login' || this.router.url === '/register' || this.router.url === '/auth')

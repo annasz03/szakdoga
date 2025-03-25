@@ -1,4 +1,4 @@
-Gyógyszer neve: <input type="text">
+Gyógyszer neve: <input type="text" [(ngModel)]="name">
 
 Ismétlés: 
 <select [(ngModel)]="frequency" (change)="onChange()">
@@ -9,12 +9,12 @@ Ismétlés:
 </select>
 
 Értesítés ideje: 
-<div>
-    
+<div *ngFor="let index of timeArray; let i = index">
+    <select [(ngModel)]="times[i]">
+      <option *ngFor="let h of hours" [value]="h">
+        {{ h }}
+      </option>
+    </select>
 </div>
-<div>
 
-</div>
-<div>
-
-</div>
+<button (click)="addAlert()">Hozzáadás</button>

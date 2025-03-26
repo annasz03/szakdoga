@@ -8,6 +8,7 @@ import { AuthGuard } from './auth.guard';
 import { ResultPageComponent } from './result-page/result-page.component';
 import { ProfilePageComponent } from './profile-page/profile-page.component';
 import { DoctorFinderPageComponent } from './doctor-finder-page/doctor-finder-page.component';
+import { ForumPageComponent } from './forum-page/forum-page.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/auth', pathMatch: 'full' },
@@ -19,4 +20,5 @@ export const routes: Routes = [
     { path: 'symptom-checker-result', component: ResultPageComponent, canActivate: [AuthGuard] },
     { path: 'profile', component: ProfilePageComponent, canActivate: [AuthGuard] },
     { path: 'doctor-finder', component: DoctorFinderPageComponent, canActivate: [AuthGuard] },
+    { path: 'forum', component: ForumPageComponent, canActivate: [AuthGuard] },
 ];

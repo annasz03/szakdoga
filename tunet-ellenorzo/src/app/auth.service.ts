@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Observable, BehaviorSubject, from } from 'rxjs';
-import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, User, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { Observable, from } from 'rxjs';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, UserCredential } from 'firebase/auth';
 import { Auth, updateProfile, user } from '@angular/fire/auth';
 import { UserInterface } from './user.interface';
 
@@ -8,28 +8,23 @@ import { UserInterface } from './user.interface';
   providedIn: 'root',
 })
 export class AuthService {
-  firebaseAuth = inject(Auth)
-  user$ = user(this.firebaseAuth)
-  currentUserSig = signal<UserInterface | null |undefined>(undefined)
+  firebaseAuth = inject(Auth);
+  user$ = user(this.firebaseAuth);
+  currentUserSig = signal<UserInterface | null | undefined>(undefined);
 
-  register(email: string, username: string, password: string): Observable<void> {
-    return from(createUserWithEmailAndPassword(this.firebaseAuth, email, password)
-      .then((response) => {
-        return updateProfile(response.user, { displayName: username });
-      })
-      .catch((error) => {
-        throw error;
+  register(email: string, username: string, password: string): Observable<UserCredential> {
+    return from(
+      createUserWithEmailAndPassword(this.firebaseAuth, email, password).then((response) => {
+        return updateProfile(response.user, { displayName: username }).then(() => response);
       })
     );
   }
-  
-  login(email:string, password:string): Observable<void>{
-    const promise = signInWithEmailAndPassword(this.firebaseAuth,email, password).then(()=> {});
-    return from(promise);
+
+  login(email: string, password: string): Observable<void> {
+    return from(signInWithEmailAndPassword(this.firebaseAuth, email, password).then(() => {}));
   }
 
-  logout(): Observable<void>{
-    const promise = signOut(this.firebaseAuth);
-    return from(promise);
+  logout(): Observable<void> {
+    return from(signOut(this.firebaseAuth));
   }
 }

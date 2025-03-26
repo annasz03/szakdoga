@@ -41,6 +41,10 @@ export class NavbarComponent {
     this.router.navigateByUrl('/symptom-checker');
   }
 
+  navigateForum(){
+    this.router.navigateByUrl('/forum');
+  }
+
   navigateProfile(){
     this.router.navigateByUrl('/profile');
   }

@@ -64,6 +64,7 @@ export class ForumPageComponent {
         const docData = doc.data();
         if (docData) {
           postsArray.push({
+            id: doc.id,
             uid: docData["uid"],
             body: docData["body"],
             date: docData["date"],
@@ -85,7 +86,6 @@ export class ForumPageComponent {
 
   search(){
     const filtered: IPost[] = [];
-    console.log(this.searchText)
 
     if (this.searchTag !== "" && this.searchText !== "") {
         filtered.push(...this.posts.filter(post =>
@@ -93,7 +93,6 @@ export class ForumPageComponent {
         ));
     } 
     if (this.searchTag !== "" && this.searchText === undefined) {
-      console.log(this.posts)
         filtered.push(...this.posts.filter(post =>
           post.tag===this.searchTag
         ));

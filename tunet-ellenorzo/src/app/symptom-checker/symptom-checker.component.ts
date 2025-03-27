@@ -139,8 +139,6 @@ export class SymptomCheckerComponent {
       pain: pain === 'yes',
       painLocation:painLocation as string[] || [],
     };
-  console.log(this.symptomRes.symptoms.length)
-  console.log(this.symptomRes.symptoms)
     if(this.symptomRes.symptoms.length===1 && this.symptomRes.symptoms[0]===''){
       this.errorMessage="Kérem megfelelően töltse ki a kért adatokat!"
     }else {

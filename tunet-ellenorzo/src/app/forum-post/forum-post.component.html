@@ -1,4 +1,18 @@
-{{username}}<br>
-{{formattedDate}}<br>
-{{post.body}}<br>
-{{post.tag}}<br>
+<div class="post-container">
+    <div class="post-username">{{ username }}</div>
+    <div class="post-date">{{ formattedDate }}</div>
+    <div class="post-body">{{ post.body }}</div>
+    <div class="post-tag">{{ post.tag }}</div>
+
+    <p>
+    <!--commentek-->
+    <div *ngFor="let comment of comments">
+        <app-forum-comment [comment]="comment"></app-forum-comment>
+    </div>
+      
+    
+    <p>
+    <input type="text" [(ngModel)]="commentBody">
+    <button (click)="addComment()">Hozzászólás közlése</button>
+</div>
+  

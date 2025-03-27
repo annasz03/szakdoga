@@ -196,8 +196,6 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.get('/delete/:uid/:filename', async (req, res) => {
   const id = req.params.uid;
   const fileName = req.params.filename;
-  console.log(fileName)
-  console.log(id)
 
   const result = await deleteDocument(id, fileName);
 

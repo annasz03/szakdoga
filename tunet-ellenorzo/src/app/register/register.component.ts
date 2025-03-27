@@ -80,9 +80,7 @@ export class RegisterComponent {
   }
 
   isValidDate(date: string) {
-    console.log(date);
     const year = parseInt(date.substring(0, 4), 10);
-    console.log(year);
     return year > 1900 && year < 2025;
   }
 

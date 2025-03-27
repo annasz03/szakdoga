@@ -40,7 +40,6 @@ export class DocumentComponent {
   delete(){
     this.dataService.deleteDoc(this.currentUser.uid, this.fileName).subscribe({
       next: (response) => {
-        console.log(response);
       }
     })
     setTimeout(()=>{

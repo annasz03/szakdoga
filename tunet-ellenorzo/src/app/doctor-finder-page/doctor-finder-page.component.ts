@@ -69,7 +69,6 @@ export class DoctorFinderPageComponent {
 
   search() {
     let filteredDoctors: IDoctorResponse[] = this.doctors;
-    console.log(filteredDoctors)
 
     if ((this.nameValue === "" && this.selectedArea === undefined && this.selectedSpec === undefined) ||
       (this.nameValue === "" && this.selectedArea === "" && this.selectedSpec === "")) {
@@ -93,7 +92,6 @@ export class DoctorFinderPageComponent {
       }
     }
 
-    console.log(filteredDoctors)
     this.doctors = filteredDoctors;
   }
 

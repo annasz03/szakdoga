@@ -1,14 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
-import { AuthService } from './auth.service';
-import { Observable } from 'rxjs';
-import { signOut } from 'firebase/auth';
+import {SwPush} from "@angular/service-worker"
+import { getToken, getMessaging, Messaging } from '@angular/fire/messaging';
 import { AuthPageComponent } from './auth-page/auth-page.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MessagingService } from './messaging.service';
-import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +18,9 @@ export class AppComponent{
   title = 'tunet-ellenorzo';
   curr='';
 
-  constructor(private messagingService: MessagingService, private router: Router, private afMessaging: AngularFireMessaging) {
+  message:any;
+
+  constructor( private router: Router, private swPush:SwPush) {
   }
 
   isAuthPage(curr: string): boolean {
@@ -33,21 +32,30 @@ export class AppComponent{
   }
 
   ngOnInit(): void {
-    navigator.serviceWorker.register('firebase-messaging-sw.js')
-      .then((registration) => console.log('Service Worker Registered', registration))
-      .catch((error) => console.error('Service Worker Registration Failed', error));
-
-    this.requestPermission();
+    this.subscribeToPush();
+    this.requestPermission()
   }
 
-  requestPermission() {
-    this.afMessaging.requestToken.subscribe(
-      (token) => {
-        console.log('Permission granted! Token:', token);
-      },
-      (error) => {
-        console.error('Permission denied', error);
+  subscribeToPush(){
+    this.swPush.messages.subscribe((res:any) => {
+      console.log(res)
+    })
+  }
+
+  async requestPermission(){
+    const messaging = getMessaging()
+    try{
+      const permission = await Notification.requestPermission();
+      if(permission==='granted'){
+        console.log("Notification permission granted")
+        const token = await getToken(messaging, {vapidKey: "BHOITvdfR1Rxq2avMamPKhsTfuDhqSCFm7I-oOA8OmoSWN6onoOHJ9MVEFP5kYtW_DEi1dq1mumdCXW9kiV6aSI"})
+        console.log(token)
+      }else {
+        console.log("unable to get permission")
       }
-    );
+
+    }catch(err){
+      console.log(err)
+    }
   }
 }

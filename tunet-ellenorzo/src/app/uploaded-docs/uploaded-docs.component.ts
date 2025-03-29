@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { DocumentComponent } from '../document/document.component';
 import { DataService } from '../data.service';
 import { AuthService } from '../auth.service';
@@ -28,8 +28,9 @@ export class UploadedDocsComponent {
 
   focusedDocument: string | null = null;
   documents:any;
+  private authService= inject(AuthService)
 
-  constructor(private dataService: DataService, private authService: AuthService, private firestore: Firestore) {}
+  constructor(private dataService: DataService, private firestore: Firestore) {}
 
   ngOnInit() {
     this.authService.user$.subscribe(user => {

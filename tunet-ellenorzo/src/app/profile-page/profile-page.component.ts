@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject, Inject } from '@angular/core';
 import { SavedDiseasesComponent } from '../saved-diseases/saved-diseases.component';
 import { UploadedDocsComponent } from '../uploaded-docs/uploaded-docs.component';
 import { CommonModule } from '@angular/common';
@@ -22,7 +22,9 @@ export class ProfilePageComponent {
   currentUser:any;
   displayName: any;
 
-  constructor(private dataService:DataService, private authService: AuthService){}
+  private authService = inject(AuthService);
+
+  constructor(private dataService:DataService){}
 
   ngOnInit(){
     this.authService.user$.subscribe(user => {

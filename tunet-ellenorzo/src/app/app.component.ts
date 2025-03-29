@@ -33,29 +33,13 @@ export class AppComponent{
 
   ngOnInit(): void {
     this.subscribeToPush();
-    this.requestPermission()
   }
 
-  subscribeToPush(){
-    this.swPush.messages.subscribe((res:any) => {
-      console.log(res)
-    })
-  }
-
-  async requestPermission(){
-    const messaging = getMessaging()
-    try{
-      const permission = await Notification.requestPermission();
-      if(permission==='granted'){
-        console.log("Notification permission granted")
-        const token = await getToken(messaging, {vapidKey: "BHOITvdfR1Rxq2avMamPKhsTfuDhqSCFm7I-oOA8OmoSWN6onoOHJ9MVEFP5kYtW_DEi1dq1mumdCXW9kiV6aSI"})
-        console.log(token)
-      }else {
-        console.log("unable to get permission")
+  subscribeToPush(): void {
+    this.swPush.messages.subscribe(
+      (res: any) => {
+        console.log(res, " Message to show in the notificaiton ");
       }
-
-    }catch(err){
-      console.log(err)
-    }
+    );
   }
 }

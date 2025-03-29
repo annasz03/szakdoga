@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { DataService } from '../data.service';
 import { AuthService } from '../auth.service';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -25,7 +25,8 @@ export class DocumentComponent {
   @Input() docType="";
   @Input() file="";
   
-  constructor(private dataService:DataService, private authService: AuthService,private sanitizer: DomSanitizer){}
+  private authService = inject(AuthService);
+  constructor(private dataService:DataService, private sanitizer: DomSanitizer){}
 
   ngOnInit(){
     this.authService.user$.subscribe(user => {

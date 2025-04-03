@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { addDoc, Firestore, getDocs, } from '@angular/fire/firestore';
 import { collection, collectionData, query } from '@angular/fire/firestore';
+import { FcmService } from '../services/fcm.service';
 
 @Component({
   selector: 'app-notification-page',
@@ -78,7 +79,7 @@ export class NotificationDialog {
   currentUser:any;
   times: string[] = [];
 
-  constructor(public dialogRef: MatDialogRef<NotificationDialog>, private authService: AuthService, private firestore: Firestore) {}
+  constructor(public dialogRef: MatDialogRef<NotificationDialog>, private authService: AuthService, private firestore: Firestore, private fcmService: FcmService) {}
 
   ngOnInit(){
     this.authService.user$.subscribe(user => {
@@ -109,20 +110,38 @@ export class NotificationDialog {
     this.dialogRef.close();
   }
 
-  addAlert(){
+  addAlert() {
     const alertCollection = collection(this.firestore, 'alerts');
-
-    const newDoc= {
-      uid: this.currentUser.uid,
-      frequency: this.frequency,
-      times: this.times,
-      name: this.name,
+    if (this.times.some(time => !time)) {
+      alert('Kérjük, töltse ki az összes időpontot!');
+      return;
     }
 
-    addDoc(alertCollection,newDoc).then((docref)=>{
-      console.log('Sikeres hozzáadás');
-        }).catch((error) => {
-          console.error('Nem sikerült', error);
-    })
+    this.fcmService.requestPermission().then((token) => {
+      if (!token) {
+        console.error('Nem sikerült lekérni az FCM tokent.');
+        return;
+      }
+
+      const newDoc = {
+        uid: this.currentUser.uid,
+        frequency: this.frequency,
+        times: this.times,
+        name: this.name,
+        createdAt: new Date().toISOString(),
+        fcmToken: token,
+        isActive: true
+      };
+
+      addDoc(alertCollection, newDoc).then(() => {
+        console.log('Sikeresen hozzáadva az alerts kollekcióhoz.');
+        this.dialogRef.close();
+      }).catch((error) => {
+        console.error('Hiba történt az alerts mentése közben:', error);
+      });
+    }).catch((error) => {
+      console.error('FCM engedélykérés hiba:', error);
+    });
   }
+
 }

@@ -38,3 +38,4 @@ navigator.serviceWorker.getRegistration(
 
     }
 );
+

@@ -5,24 +5,61 @@ import { DataService } from '../data.service';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth.service';
-import { addDoc, Firestore, getDocs, } from '@angular/fire/firestore';
+import { addDoc, doc, Firestore, getDocs, updateDoc, } from '@angular/fire/firestore';
 import { collection, collectionData, query } from '@angular/fire/firestore';
 import { FcmService } from '../services/fcm.service';
+import { Alerts } from '../alerts';
+//import { AlertComponent } from '../alert/alert.component';
 
 @Component({
   selector: 'app-notification-page',
   standalone: true,
-  imports: [CommonModule, NotificationComponent],
+  imports: [CommonModule, NotificationComponent,/* AlertComponent*/],
   templateUrl: './notification-page.component.html',
   styleUrl: './notification-page.component.css'
 })
 export class NotificationPageComponent {
 
-  constructor(private dataService:DataService, private dialog: MatDialog){}
+  constructor(private dialog: MatDialog, private firestore: Firestore, private authService: AuthService) {
+    this.getAlerts();
+  }
+
+  ngOnInit() {
+    this.authService.user$.subscribe(user => {
+      this.currentUser = user;
+    });
+  }
+
+  alerts: Alerts[] = [];
+  currentUser: any;
 
   openDialog(): void {
-    this.dialog.open(NotificationDialog, {
-      data: {},
+    this.dialog.open(NotificationDialog, {});
+  }
+
+  getAlerts() {
+    const alertCollection = collection(this.firestore, 'alerts');
+    const alertsQuery = query(alertCollection);
+
+    getDocs(alertsQuery).then((querySnapshot) => {
+      const currentUserUid = this.currentUser?.uid;
+      this.alerts = querySnapshot.docs
+        .filter(doc => doc.data()['uid'] === currentUserUid)
+        .map(doc => {
+          const data = doc.data();
+          return {
+            uid: data['uid'],
+            id: doc.id,
+            createdAt: data['createdAt'],
+            fcmToken: data['fcmToken'],
+            frequency: data['frequency'],
+            isActive: data['isActive'],
+            name: data['name'],
+            times: data['times']
+          };
+        });
+    }).catch((error) => {
+      console.error(error);
     });
   }
 }
@@ -36,8 +73,8 @@ export class NotificationPageComponent {
   imports: [CommonModule, FormsModule]
 })
 export class NotificationDialog {
-  name:string = "";
-  frequency:string = "";
+  name: string = "";
+  frequency: string = "";
   frequencies: string[] = [
     'Naponta egyszer',
     'Naponta kétszer',
@@ -46,72 +83,71 @@ export class NotificationDialog {
     'Havonta egyszer'
   ];
 
-  hour:string = "";
+  hour: string = "";
   hours: string[] = [
-    '00:00',
-    '01:00',
-    '02:00',
-    '03:00',
-    '04:00',
-    '05:00',
-    '06:00',
-    '07:00',
-    '08:00',
-    '09:00',
-    '10:00',
-    '11:00',
-    '12:00',
-    '13:00',
-    '14:00',
-    '15:00',
-    '16:00',
-    '17:00',
-    '18:00',
-    '19:00',
-    '20:00',
-    '21:00',
-    '22:00',
-    '23:00',
-  ]
+    '00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00',
+    '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00',
+    '20:00', '21:00', '22:00', '23:00'
+  ];
 
-  timeDiv:number=0;
+  timeDiv: number = 0;
   timeArray: number[] = [];
-  currentUser:any;
+  currentUser: any;
+  id: string | null = null;
+  buttonTitle = "Hozzáadás";
   times: string[] = [];
 
-  constructor(public dialogRef: MatDialogRef<NotificationDialog>, private authService: AuthService, private firestore: Firestore, private fcmService: FcmService) {}
+  constructor(
+    public dialogRef: MatDialogRef<NotificationDialog>,
+    private authService: AuthService,
+    private firestore: Firestore,
+    private fcmService: FcmService,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) { }
 
-  ngOnInit(){
+  ngOnInit() {
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
     });
+
+    if (this.data) {
+      this.id = this.data.id || null;
+      this.name = this.data.name;
+      this.frequency = this.data.frequency;
+      this.times = this.data.times || [];
+      this.buttonTitle = "Módosítás";
+
+      // Frissítjük a timeDiv és timeArray értékeit a times alapján
+      this.timeDiv = this.times.length || 1; // A times hossza határozza meg, hány select mezőt jelenítünk meg
+      this.timeArray = Array(this.timeDiv).fill(0).map((_, i) => i); // timeDiv alapján hozunk létre annyi elemet
+    }
   }
 
-  onChange(){
-    switch(this.frequency) {
+  onChange() {
+    switch (this.frequency) {
       case 'Naponta egyszer':
-        this.timeDiv=1
+        this.timeDiv = 1;
         break;
       case 'Naponta kétszer':
-        this.timeDiv=2
+        this.timeDiv = 2;
         break;
       case 'Naponta háromszor':
-        this.timeDiv=3
+        this.timeDiv = 3;
         break;
       default:
-        this.timeDiv=1
+        this.timeDiv = 1;
         break;
     }
+
     this.timeArray = Array(this.timeDiv).fill(0).map((_, i) => i);
-    this.times = new Array(this.timeDiv).fill("");
+    this.times = new Array(this.timeDiv).fill(""); // Ha a selectek számát frissítjük, az üres stringekkel tölti fel
   }
 
   closeDialog(): void {
     this.dialogRef.close();
   }
 
-  addAlert() {
-    const alertCollection = collection(this.firestore, 'alerts');
+  saveAlert() {
     if (this.times.some(time => !time)) {
       alert('Kérjük, töltse ki az összes időpontot!');
       return;
@@ -119,7 +155,6 @@ export class NotificationDialog {
 
     this.fcmService.requestPermission().then((token) => {
       if (!token) {
-        console.error('Nem sikerült lekérni az FCM tokent.');
         return;
       }
 
@@ -133,15 +168,23 @@ export class NotificationDialog {
         isActive: true
       };
 
-      addDoc(alertCollection, newDoc).then(() => {
-        console.log('Sikeresen hozzáadva az alerts kollekcióhoz.');
-        this.dialogRef.close();
-      }).catch((error) => {
-        console.error('Hiba történt az alerts mentése közben:', error);
-      });
+      if (this.id) {
+        const alertRef = doc(this.firestore, 'alerts', this.id);
+        updateDoc(alertRef, newDoc).then(() => {
+          this.dialogRef.close(newDoc);
+        }).catch((error) => {
+          console.error(error);
+        });
+      } else {
+        const alertCollection = collection(this.firestore, 'alerts');
+        addDoc(alertCollection, newDoc).then(() => {
+          this.dialogRef.close(newDoc);
+        }).catch((error) => {
+          console.error(error);
+        });
+      }
     }).catch((error) => {
-      console.error('FCM engedélykérés hiba:', error);
+      console.error(error);
     });
   }
-
 }

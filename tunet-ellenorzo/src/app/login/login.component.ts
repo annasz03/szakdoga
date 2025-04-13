@@ -34,7 +34,7 @@ export class LoginComponent {
       next: ()=> {
       this.router.navigateByUrl('/home')},
       error: (err) => {
-        this.errorMessage = "Nem megfelelő e-mail cím vagy jelszó!";
+        this.errorMessage = "Nem megfelelő e-mail cím vagy jelszó, vagy pedig nem erősítette meg az emai. címét!";
       }
     })
   }

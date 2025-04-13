@@ -1,1 +1,5 @@
 <button (click)="openDialog()">+</button>
+
+<div *ngFor="let alert of alerts">
+    <app-notification [alert]="alert" ></app-notification>
+</div>

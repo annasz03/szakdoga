@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Firestore, doc, setDoc } from '@angular/fire/firestore';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-register',
@@ -22,6 +23,7 @@ export class RegisterComponent {
   fb = inject(FormBuilder);
   router = inject(Router);
   authService = inject(AuthService);
+  dialog = inject(MatDialog);
 
   constructor(private firestore: Firestore) {}
 
@@ -51,8 +53,7 @@ export class RegisterComponent {
             gender: rawForm.gender,
             documents: [],
           })
-
-          this.router.navigateByUrl('/home');
+          this.dialog.open(ValidateDialog);
         },
         error: (error) => {
           console.error("Hiba a regisztráció során:", error);
@@ -89,3 +90,12 @@ export class RegisterComponent {
     return passwordRegex.test(password);
   }
 }
+
+
+@Component({
+  selector: 'app-validate-dialog',
+  standalone: true,
+  imports: [MatDialogModule, CommonModule],
+  templateUrl: './validate-dialog.component.html',
+})
+export class ValidateDialog {}

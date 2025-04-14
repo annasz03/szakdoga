@@ -1,9 +1,9 @@
 <div class="off-screen-menu" id="offScreenMenu">
-    <a (click)="navigateSymptomChecker()">Tünet ellenőrző</a>
-    <a (click)="navigateProfile()">Profil</a>
-    <a (click)="navigateDoctorFinder()">Orvos kereső</a>
-    <a (click)="navigateForum()">Fórum</a>
-    <a (click)="navigateSignOut()">Kijelentkezés</a>
+    <a (click)="navigateSymptomChecker()">{{ 'title' | i18next }}</a>
+    <a (click)="navigateProfile()">{{ 'profile' | i18next }}</a>
+    <a (click)="navigateDoctorFinder()">{{ 'docfinder' | i18next }}</a>
+    <a (click)="navigateForum()">{{ 'forum' | i18next }}</a>
+    <a (click)="navigateSignOut()">{{ 'signout' | i18next }}</a>
 </div>
 <nav>
     <div class="navbar" id="navbar">
@@ -12,7 +12,7 @@
         <span></span>
     </div>
     <div class="title">
-        <a (click)="navigateHome()">Tünet ellenőrző</a>
+        <a (click)="navigateHome()">{{ 'title' | i18next }}</a>
     </div>
     <div class="profile" (click)="navigateProfile()">
         <img src="../../assets/avatar.png" class="avatar">

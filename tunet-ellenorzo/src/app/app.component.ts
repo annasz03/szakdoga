@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, Inject, inject, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import {SwPush} from "@angular/service-worker"
 import { getToken, getMessaging, Messaging } from '@angular/fire/messaging';
@@ -9,12 +9,12 @@ import { FormsModule } from '@angular/forms';
 import { initializeApp } from '@angular/fire/app';
 import { collection, doc, getDocs, getFirestore, query, updateDoc, where } from '@angular/fire/firestore';
 import { AuthService } from './auth.service';
-import { I18NextModule } from 'angular-i18next';
+import { I18NEXT_SERVICE, I18NextModule, ITranslationService } from 'angular-i18next';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, AuthPageComponent, NavbarComponent, CommonModule, FormsModule, I18NextModule],
+  imports: [RouterOutlet, AuthPageComponent, NavbarComponent, CommonModule, FormsModule, I18NextModule,],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -22,9 +22,11 @@ export class AppComponent{
   title = 'tunet-ellenorzo';
   curr='';
 
-  message:any;
+  language = 'hu';
+  languages: string[] = ['en', 'hu'];
 
-  constructor( private router: Router, private swPush:SwPush, private authService:AuthService) {
+
+  constructor( private router: Router, private swPush:SwPush, private authService:AuthService, @Inject(I18NEXT_SERVICE) private i18NextService: ITranslationService) {
   }
 
   isAuthPage(curr: string): boolean {
@@ -36,8 +38,30 @@ export class AppComponent{
   }
 
   ngOnInit(): void {
+    this.i18NextService.events.initialized.subscribe((e) => {
+      if (e) {
+        this.updateState(this.i18NextService.language);
+      }
+    });
+
     this.subscribeToPush();
     this.initializeFCM();
+  }
+
+  changeLanguage(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    const lang = target.value;
+  
+    if (lang !== this.i18NextService.language) {
+      this.i18NextService.changeLanguage(lang).then(() => {
+        this.updateState(lang);
+        document.location.reload();
+      });
+    }
+  }
+  
+  private updateState(lang: string) {
+    this.language = lang;
   }
 
   subscribeToPush(): void {

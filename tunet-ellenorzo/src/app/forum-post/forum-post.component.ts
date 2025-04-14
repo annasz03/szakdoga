@@ -5,12 +5,13 @@ import { format } from 'date-fns';
 import { ForumCommentComponent } from '../forum-comment/forum-comment.component';
 import { IComment } from '../icomment';
 import { FormsModule } from '@angular/forms';
+import { I18NEXT_SERVICE, I18NextModule, ITranslationService } from 'angular-i18next';
 
 
 @Component({
   selector: 'app-forum-post',
   standalone: true,
-  imports: [ForumCommentComponent, CommonModule, FormsModule],
+  imports: [ForumCommentComponent, CommonModule, FormsModule, I18NextModule],
   templateUrl: './forum-post.component.html',
   styleUrl: './forum-post.component.css',
   providers: [DatePipe]

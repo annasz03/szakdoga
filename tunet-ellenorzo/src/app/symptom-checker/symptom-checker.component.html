@@ -3,25 +3,25 @@
 <!-- Személyes adatok -->
 <div *ngIf="personalFromVisible">
   <div class="title">
-    Személyes adatok
+    {{ 'personaldata' | i18next }}
   </div>
   <form [formGroup]="personalInformation">
     <div class="inp">
-        <label for="age">Kor:</label><p>
+        <label for="age">{{ 'age' | i18next }}:</label><p>
         <input type="number" formControlName="age" required>
 
     </div>
 
     <div class="inp">
-        <label for="gender">Nem:</label><p>
+        <label for="gender">{{ 'gender' | i18next }}</label><p>
         <select id="gender" formControlName="gender" required>
-          <option value="male">Férfi</option>
-          <option value="female">Nő</option>
+          <option value="male">{{ 'male' | i18next }}</option>
+          <option value="female">{{ 'female' | i18next }}</option>
         </select>
     </div>  
 
     <div>
-      <button class="button-small" type="submit" (click)="formVisible()">Tovább</button>
+      <button class="button-small" type="submit" (click)="formVisible()">{{ 'next' | i18next }}</button>
     </div>
   </form>
 </div>
@@ -29,10 +29,10 @@
 <!-- Tünetek -->
 <div *ngIf="!personalFromVisible">
   <div class="title">
-    Tünetek
+    {{ 'syptoms' | i18next }}
   </div>
 <form [formGroup]="symptomsForm">
-  <label>Tünetek:</label>
+  <label>{{ 'syptoms' | i18next }}:</label>
   <div formArrayName="symptoms">
     <div *ngFor="let control of symptomArray.controls; let i = index">
       <input type="text" matInput [formControlName]="i" [matAutocomplete]="auto" (input)="filterSymptoms(i)">
@@ -48,16 +48,16 @@
   <button class="button-xsmall" type="button" (click)="addSymptom()">+</button>
 
   <div>
-    <label for="pain">Van fájdalom?</label><p>
+    <label for="pain">{{ 'pain' | i18next }}</label><p>
     <select formControlName="pain" (change)="onPainChange($event)" value="no">
-      <option value="yes">Igen</option>
-      <option value="no" selected>Nem</option>
+      <option value="yes">{{ 'yes' | i18next }}</option>
+      <option value="no" selected>{{ 'no' | i18next }}</option>
     </select>
   </div>
 
   <div>
     <div *ngIf="isPainful">
-      <label for="painLocation">Ha igen, hol?</label>
+      <label for="painLocation">{{ 'where' | i18next }}</label>
       <div formArrayName="painLocation">
         <div *ngFor="let control of painLocationArray.controls; let i = index">
           <select [formControlName]="i">

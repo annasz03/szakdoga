@@ -33,7 +33,6 @@ export class FcmService {
     
   }
 
-  // 1. Engedély kérése és token lekérése
   async requestPermission(): Promise<string | null> {
     try {
       const permission = await Notification.requestPermission();
@@ -62,7 +61,6 @@ export class FcmService {
     });
   }
 
-  // 4. Értesítés megjelenítése
   private showNotification(title: string, body: string, icon?: string): void {
     if (Notification.permission === 'granted') {
       new Notification(title, { body, icon: icon || '/assets/icons/icon-72x72.png' });

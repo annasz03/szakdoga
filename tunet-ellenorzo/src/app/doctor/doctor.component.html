@@ -6,11 +6,11 @@
     <div *ngFor="let d of doc.cities">
             {{d}},
     </div>
-    <button (click)="openMoreData()">Több</button>
+    <button (click)="openMoreData()">{{ 'more' | i18next }}</button>
 
     <div *ngIf="opened">
-        Nem: {{doc.gender}}<br>
-        Elérhetőség: 
+        {{ 'gender' | i18next }} {{doc.gender}}<br>
+        {{ 'availability' | i18next }} 
         <div *ngFor="let d of doc.available">
             {{d.day}}: {{d.city}} - {{d.address}}
         </div>

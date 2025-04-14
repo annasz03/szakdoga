@@ -2,18 +2,23 @@
   <h2 class="title">Bejelentkezés</h2>
   <form [formGroup]="form" (ngSubmit)="onSubmit($event)" class="registerForm">
     <mat-form-field class="inputF">
-      <p>E-mail cím: <input matInput formControlName="email" placeholder="Email" type="email" />
+      <p>E-mail cím:</p>
+      <input matInput formControlName="email" placeholder="Email" type="email" />
     </mat-form-field>
+    
     <mat-form-field class="inputF">
-      <p>Jelszó: <input matInput formControlName="password" type="password" placeholder="Password" />
+      <p>Jelszó:</p>
+      <input matInput formControlName="password" type="password" placeholder="Password" />
     </mat-form-field>
+
     <button class="button" type="submit">Bejelentkezés</button>
   </form>
 
   <div *ngIf="errorMessage">
-    {{errorMessage}}
+    {{ errorMessage }}
   </div>
-  
+
   Nincs Még fiókod? <a routerLink="/register">Regisztrálj!</a>
 </div>
+<button class="button" (click)="home()">Bejelentkezés</button>
 <router-outlet></router-outlet>

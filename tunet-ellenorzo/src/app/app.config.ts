@@ -8,9 +8,13 @@ import { getMessaging, provideMessaging } from '@angular/fire/messaging';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 //import { provideTranslateLoader } from './translate.provider';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { I18NextModule, I18NextTitle, ITranslationService, I18NEXT_SERVICE, defaultInterpolationFormat} from 'angular-i18next';
+import i18nextXHRBackend from 'i18next-xhr-backend';
+import i18nextLanguageDetector from 'i18next-browser-languagedetector';
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyD5JSxkcZOBFie5bfWu1wM7vwMW-c9WzYU",
@@ -25,17 +29,31 @@ const firebaseConfig = {
 
 export function appInit(i18next: ITranslationService) {
   return () =>
-    i18next.init({
-      supportedLngs: ['en', 'hu'],
-      fallbackLng: 'hu',
-      debug: true,
-      returnEmptyString: false,
-      ns: ['translation'],
-      interpolation: {
-        format: I18NextModule.interpolationFormat(defaultInterpolationFormat),
-      },
-    });
+    i18next
+      .use(i18nextXHRBackend)
+      .use(i18nextLanguageDetector)
+      .init({
+        supportedLngs: ['en', 'hu'],
+        fallbackLng: 'en',
+        debug: true,
+        returnEmptyString: false,
+        ns: ['translation'],
+        interpolation: {
+          format: I18NextModule.interpolationFormat(defaultInterpolationFormat),
+        },
+        backend: {
+          loadPath: 'assets/locales/{{lng}}.{{ns}}.json',
+        },
+        detection: {
+          order: ['querystring', 'cookie'],
+          lookupCookie: 'lang',
+          lookupQuerystring: 'lng',
+          caches: ['localStorage', 'cookie'],
+          cookieMinutes: 10080,
+        },
+      });
 }
+
 
 export function localeIdFactory(i18next: ITranslationService) {
   return i18next.language;
@@ -57,7 +75,7 @@ export const appConfig: ApplicationConfig = {
       registrationStrategy: 'registerWhenStable:30000',
     }),
 
-    importProvidersFrom(BrowserModule, I18NextModule.forRoot()),
+    importProvidersFrom(BrowserAnimationsModule, I18NextModule.forRoot()),
     {
       provide: APP_INITIALIZER,
       useFactory: appInit,

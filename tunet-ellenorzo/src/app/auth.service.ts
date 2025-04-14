@@ -31,19 +31,30 @@ export class AuthService {
   
 
   login(email: string, password: string): Observable<UserCredential> {
-    return from(
-      signInWithEmailAndPassword(this.firebaseAuth, email, password).then((response) => {
-        const user = response.user;
-  
-        if (!user.emailVerified) {
-          return signOut(this.firebaseAuth).then(() => {
-            throw new Error("Az e-mail cím nincs megerősítve.");
-          });
-        }
-        return response;
-      })
-    );
+    return from(this.loginInternal(email, password));
   }
+  
+  private async loginInternal(email: string, password: string): Promise<UserCredential> {
+    console.log("Bejelentkezés elindult");
+    const response = await signInWithEmailAndPassword(this.firebaseAuth, email, password);
+    console.log("Bejelentkezés válasz:", response);
+  
+    const user = response.user;
+    console.log("Felhasználó emailVerified:", user.emailVerified); // debug
+  
+    if (!user.emailVerified) {
+      console.log("Email nincs megerősítve, kijelentkezés");
+      await signOut(this.firebaseAuth);
+      throw new Error("Az e-mail cím nincs megerősítve.");
+    }
+  
+    return response;
+  }
+  
+  
+  
+  
+  
   
 
   logout(): Observable<void> {

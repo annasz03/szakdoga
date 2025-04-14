@@ -8,13 +8,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { Firestore, collection, getDocs } from '@angular/fire/firestore';
 import { Observable, from } from 'rxjs';
+import { I18NEXT_SERVICE, I18NextModule, ITranslationService } from 'angular-i18next';
 
 type selectType = { key: string; value: string };
 
 @Component({
   selector: 'app-doctor-finder-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, DoctorComponent, MatInputModule, MatFormFieldModule],
+  imports: [CommonModule, FormsModule, DoctorComponent, MatInputModule, MatFormFieldModule, I18NextModule],
   templateUrl: './doctor-finder-page.component.html',
   styleUrls: ['./doctor-finder-page.component.css']
 })

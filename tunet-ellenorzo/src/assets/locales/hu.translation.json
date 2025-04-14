@@ -1,0 +1,36 @@
+{
+    "message": "magyar üzenet",
+    "title": "Tünet ellenörző",
+    "signout": "Kijelentkezés",
+    "forum": "Fórum",
+    "docfinder": "Orvos kereső",
+    "profile": "Profil",
+
+    "welcome": "Üdvözlünk a Tünetellenőrző alkalmazásban!",
+    "welcometext": "Szerezz azonnali segítséget tüneteid azonosításában az alkalmazáson keresztül a nap 24 órájában.",
+    "welcomewarning": "*Vedd figyelembe, hogy az alkalmazás nem helyettesíti az orvosi diagnózist!",
+    "tosc": "Tovább a tünet ellenörzőre",
+
+    "postcomment": "Hozzászólás közlése",
+    "newpost": "Új bejegyzés létrehozása:",
+    "addtag": "Tag hozzáadása:",
+    "post": "Létrehozás",
+    "search": "Keresés",
+
+    "more": "Több",
+    "gender": "Nem:",
+    "availability": "Elérhetőség:",
+    "delfilter": "Szűrő törlése",
+
+    "personaldata": "Személyes adatok",
+    "age": "Kor",
+    "male": "Férfi",
+    "female": "nő",
+    "next": "Tovább",
+    "symptoms": "Tünetek",
+    "yes": "Igen",
+    "no": "Nem",
+    "pain": "Van fájdalom?",
+    "where": "Ha igen, hol?"
+
+}

@@ -3,11 +3,12 @@ import { deleteDoc, doc, Firestore } from '@angular/fire/firestore';
 import { Alerts } from '../alerts';
 import { MatDialog } from '@angular/material/dialog';
 import { NotificationDialog } from '../notification-page/notification-page.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-notification',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './notification.component.html',
   styleUrl: './notification.component.css'
 })

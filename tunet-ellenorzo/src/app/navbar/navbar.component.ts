@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { I18NEXT_SERVICE, I18NextModule, ITranslationService } from 'angular-i18next';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [],
+  imports: [I18NextModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
@@ -15,7 +16,7 @@ export class NavbarComponent {
   hamMenu:any;
   offScreen:any;
 
-  constructor(private router:Router){}
+  constructor(private router:Router,){}
 
   ngAfterViewInit() {
     const navbar: HTMLElement | null = document.getElementById('navbar');

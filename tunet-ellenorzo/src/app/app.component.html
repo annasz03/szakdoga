@@ -1,5 +1,17 @@
 <app-navbar *ngIf="isAuthPage(curr)"></app-navbar>
-{{ 'message' | i18next }}!
+<div>
+
+    <select [(ngModel)]="language" (change)="changeLanguage($event)">
+        <option *ngFor="let lang of languages" [value]="lang" [selected]="language === lang">
+          <a *ngIf="language !== lang" href="javascript:void(0)" class="link lang-item {{lang}}">
+            {{ lang | i18nextCap }}
+          </a>
+          <span *ngIf="language === lang" class="current lang-item {{lang}}">
+            {{ lang | i18nextCap }}
+          </span>
+        </option>
+      </select>
+</div>
 
 
 <router-outlet></router-outlet>

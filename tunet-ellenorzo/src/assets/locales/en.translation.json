@@ -1,0 +1,35 @@
+{
+    "message": "english message",
+    "title": "Symptom checker",
+    "signout": "Sign out",
+    "forum": "Forum",
+    "docfinder": "Doctor finder",
+    "profile": "Profile",
+
+    "welcome": "Welcome to the Symptom Checker app!",
+    "welcometext": "Get immediate assistance in identifying your symptoms through the app, available 24/7.",
+    "welcomewarning": "*Please note that the app does not substitute for a medical diagnosis!",
+    "tosc": "Go to the symptom checker",
+
+    "postcomment": "Post",
+    "newpost": "Create new post:",
+    "addtag": "Add tag:",
+    "post": "Post",
+    "search": "Search",
+
+    "more": "More",
+    "gender": "Gender:",
+    "availability": "Availability:",
+    "delfilter": "Delete filter",
+
+    "personaldata": "Personal data",
+    "age": "Age",
+    "male": "Male",
+    "female": "Female",
+    "next": "Next",
+    "symptoms": "Syptoms",
+    "yes": "Yes",
+    "no": "No",
+    "pain": "Do you experience pain?",
+    "where": "If yes, where?"
+}

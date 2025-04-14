@@ -1,22 +1,22 @@
 <div class="docFinder">
-    Új bejegyzés létrehozása:<br>
+    {{ 'newpost' | i18next }}<br>
     <textarea rows="4" cols="50" [(ngModel)]="body"></textarea>
 
     <p>
-    <label for="options">Tag hozzáadása:</label>
+    <label for="options">{{ 'addtag' | i18next }}</label>
     <select [(ngModel)]="tag">
         <option *ngFor="let i of illnesses" [value]="i">{{i}}</option>
     </select>
     <p>
-    <button (click)="addPost()">Létrehozás</button>
+    <button (click)="addPost()">{{ 'post' | i18next }}</button>
 
     <div class="search">
-        Keresés:
+        {{ 'search' | i18next }}
         <input type="text" [(ngModel)]="searchText">
         <select [(ngModel)]="searchTag">
             <option *ngFor="let i of illnesses" [value]="i">{{i}}</option>
         </select>
-        <button (click)="search()">Keresés</button>
+        <button (click)="search()">{{ 'search' | i18next }}</button>
 
     </div>
 

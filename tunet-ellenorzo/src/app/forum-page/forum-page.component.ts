@@ -6,11 +6,12 @@ import { AuthService } from '../auth.service';
 import { FormsModule } from '@angular/forms';
 import { ForumPostComponent } from '../forum-post/forum-post.component';
 import { IPost } from '../ipost';
+import { I18NEXT_SERVICE, I18NextModule, ITranslationService } from 'angular-i18next';
 
 @Component({
   selector: 'app-forum-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, ForumPostComponent],
+  imports: [CommonModule, FormsModule, ForumPostComponent, I18NextModule],
   templateUrl: './forum-page.component.html',
   styleUrl: './forum-page.component.css'
 })

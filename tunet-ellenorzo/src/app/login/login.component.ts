@@ -28,15 +28,22 @@ export class LoginComponent {
     });
 
   onSubmit(event:Event): void {
+    /*console.log("Login indult");
     const rawForm = this.form.getRawValue();
     this.authService.login(rawForm.email, rawForm.password)
     .subscribe({
-      next: ()=> {
-      this.router.navigateByUrl('/home')},
+      next: (cred)=> {
+        console.log("Email verifikált?", cred.user.emailVerified);
+        this.router.navigateByUrl('/home')},
       error: (err) => {
-        this.errorMessage = "Nem megfelelő e-mail cím vagy jelszó, vagy pedig nem erősítette meg az emai. címét!";
+        console.error('Login error:', err);
+        this.errorMessage = "Nem megfelelő e-mail cím vagy jelszó, vagy pedig nem erősítette meg az email címét!";
       }
-    })
+    })*/
+  }
+
+  home(){
+    this.router.navigateByUrl('/home')
   }
 
 }

@@ -1,5 +1,5 @@
 <div class="form">
-  <h2 class="title">Regisztráció</h2>
+  <h2 class="title">{{ 'regist' | translate }}</h2>
   <form [formGroup]="form" (ngSubmit)="onSubmit($event)" class="registerForm">
     <mat-form-field class="inputF">
       <p>E-mail cím: <input matInput formControlName="email" placeholder="Email" />

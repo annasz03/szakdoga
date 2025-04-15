@@ -60,6 +60,9 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "allowedHosts": ["https://tunetellenorzo.loca.lt"]
+          },
           "configurations": {
             "production": {
               "buildTarget": "tunet-ellenorzo:build:production"

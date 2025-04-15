@@ -27,23 +27,24 @@ export class LoginComponent {
       password: ['', Validators.required],
     });
 
-  onSubmit(event:Event): void {
-    /*console.log("Login indult");
-    const rawForm = this.form.getRawValue();
-    this.authService.login(rawForm.email, rawForm.password)
-    .subscribe({
-      next: (cred)=> {
-        console.log("Email verifikált?", cred.user.emailVerified);
+    onSubmit(event:Event): void {
+      const rawForm = this.form.getRawValue();
+      this.authService.login(rawForm.email, rawForm.password)
+      .subscribe({
+        next: ()=> {
         this.router.navigateByUrl('/home')},
-      error: (err) => {
-        console.error('Login error:', err);
-        this.errorMessage = "Nem megfelelő e-mail cím vagy jelszó, vagy pedig nem erősítette meg az email címét!";
-      }
-    })*/
-  }
+        error: (err) => {
+          console.log("hiba: "+ err)
+          this.errorMessage = err.message;
+        }
+      })
+    }
 
-  home(){
-    this.router.navigateByUrl('/home')
-  }
-
+    loginWithGoogle(): void {
+      this.authService.loginWithGoogle().subscribe({
+        next: () => this.router.navigateByUrl('/home'),
+        error: (err) => this.errorMessage = err.message
+      });
+    }
+    
 }

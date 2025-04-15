@@ -1,0 +1,2 @@
+msgid "regist"
+msgstr "Registration"

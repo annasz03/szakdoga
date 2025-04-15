@@ -5,13 +5,14 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { Firestore, doc, setDoc } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, doc, setDoc } from '@angular/fire/firestore';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, RouterModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, RouterModule, TranslateModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
@@ -35,7 +36,7 @@ export class RegisterComponent {
     gender: ['male', Validators.required]
   });
 
-  onSubmit(event: Event): void {
+  /*onSubmit(event: Event): void {
     if (this.formatCheck()) {
       const rawForm = this.form.getRawValue();
       
@@ -60,7 +61,36 @@ export class RegisterComponent {
         }
       });
     }
-  }
+  }*/
+
+    onSubmit(event:Event): void {
+      if(this.formatCheck()){
+        const rawForm = this.form.getRawValue();
+        this.authService.register(rawForm.email, rawForm.username,rawForm.password)
+        .subscribe({
+          next: ()=> {          
+            const usersCollection = collection(this.firestore, 'users');
+  
+            const newUser = {
+              email: rawForm.email,
+              username: rawForm.username,
+              birth: rawForm.birth,
+              gender: rawForm.gender,
+              documents: [],
+            };
+  
+            // Dokumentum hozzáadása
+            addDoc(usersCollection, newUser).then((docRef) => {
+              console.log('Sikeres hozzáadás');
+            }).catch((error) => {
+              console.error('Nem sikerült', error);
+            });
+  
+  
+          this.router.navigateByUrl('/home')},
+        })
+      }
+    }
 
   formatCheck(): boolean {
     const rawForm = this.form.getRawValue();

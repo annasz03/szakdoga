@@ -1,15 +1,17 @@
 import { Component, Inject, inject, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import {SwPush} from "@angular/service-worker"
-import { getToken, getMessaging, Messaging } from '@angular/fire/messaging';
+import { getToken, getMessaging, } from '@angular/fire/messaging';
 import { AuthPageComponent } from './auth-page/auth-page.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { initializeApp } from '@angular/fire/app';
 import { collection, doc, getDocs, getFirestore, query, updateDoc, where } from '@angular/fire/firestore';
 import { AuthService } from './auth.service';
 import { I18NEXT_SERVICE, I18NextModule, ITranslationService } from 'angular-i18next';
+import { TranslateService } from '@ngx-translate/core';
+import { Firestore } from '@angular/fire/firestore';
+import { Messaging } from '@angular/fire/messaging';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +28,9 @@ export class AppComponent{
   languages: string[] = ['en', 'hu'];
 
 
-  constructor( private router: Router, private swPush:SwPush, private authService:AuthService, @Inject(I18NEXT_SERVICE) private i18NextService: ITranslationService) {
+  constructor(private firestore: Firestore,
+    private messaging: Messaging, private translate: TranslateService, private router: Router, private swPush:SwPush, private authService:AuthService, @Inject(I18NEXT_SERVICE) private i18NextService: ITranslationService) {
+    translate.setDefaultLang('en');
   }
 
   isAuthPage(curr: string): boolean {
@@ -41,6 +45,11 @@ export class AppComponent{
     this.i18NextService.events.initialized.subscribe((e) => {
       if (e) {
         this.updateState(this.i18NextService.language);
+        this.translate.use(this.i18NextService.language);
+        /*
+        <h1>{{ 'welcome' | translate }}</h1>
+        <button>{{ 'tosc' | translate }}</button>
+         */
       }
     });
 
@@ -72,28 +81,13 @@ export class AppComponent{
   }
 
   initializeFCM(): void {
-    const firebaseConfig = {
-      apiKey: 'AIzaSyD5JSxkcZOBFie5bfWu1wM7vwMW-c9WzYU',
-      authDomain: 'tunet-ellenorzo-f8999.firebaseapp.com',
-      projectId: 'tunet-ellenorzo-f8999',
-      storageBucket: 'tunet-ellenorzo-f8999.firebasestorage.app',
-      messagingSenderId: '371815094536',
-      appId: '1:371815094536:web:c25c0e6a29b08715d234bd',
-      measurementId: 'G-XQ1DQ23QDG',
-      vapidKey: 'BHOITvdfR1Rxq2avMamPKhsTfuDhqSCFm7I-oOA8OmoSWN6onoOHJ9MVEFP5kYtW_DEi1dq1mumdCXW9kiV6aSI'
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const messaging = getMessaging(app);
-    const firestore = getFirestore(app);
-
     navigator.serviceWorker.getRegistration('./ngsw-worker.js').then((registration) => {
-      getToken(messaging, {
-        vapidKey: firebaseConfig.vapidKey,
+      getToken(this.messaging, {
+        vapidKey: 'BHOITvdfR1Rxq2avMamPKhsTfuDhqSCFm7I-oOA8OmoSWN6onoOHJ9MVEFP5kYtW_DEi1dq1mumdCXW9kiV6aSI',
         serviceWorkerRegistration: registration
       }).then((currentToken) => {
         if (currentToken) {
-          this.updateAlertTokens(currentToken, firestore);
+          this.updateAlertTokens(currentToken, this.firestore);
         }
       })
     })

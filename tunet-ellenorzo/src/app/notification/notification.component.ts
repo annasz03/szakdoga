@@ -21,7 +21,7 @@ export class NotificationComponent {
   editAlert(alert: Alerts) {
     const dialogRef = this.dialog.open(NotificationDialog, {
       width: '400px',
-      data: { ...alert }, // Teljes objektumot átadjuk
+      data: { ...alert },
     });
 
     dialogRef.afterClosed().subscribe((result) => {

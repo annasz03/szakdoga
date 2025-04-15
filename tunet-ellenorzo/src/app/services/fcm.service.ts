@@ -1,44 +1,26 @@
-import { Injectable, isDevMode } from '@angular/core';
-import { FirebaseApp, initializeApp } from 'firebase/app';
-import { Messaging, getMessaging, getToken, onMessage, deleteToken } from 'firebase/messaging';
-import { Firestore, collection, doc, setDoc } from '@angular/fire/firestore';
+import { Injectable, inject } from '@angular/core';
+import { getToken, onMessage } from 'firebase/messaging';
+import { Firestore } from '@angular/fire/firestore';
+import { Messaging } from '@angular/fire/messaging';
 import { AuthService } from '../auth.service';
-
-const firebaseConfig = {
-  apiKey: "AIzaSyD5JSxkcZOBFie5bfWu1wM7vwMW-c9WzYU",
-authDomain: "tunet-ellenorzo-f8999.firebaseapp.com",
-projectId: "tunet-ellenorzo-f8999",
-storageBucket: "tunet-ellenorzo-f8999.firebasestorage.app",
-messagingSenderId: "371815094536",
-appId: "1:371815094536:web:c25c0e6a29b08715d234bd",
-measurementId: "G-XQ1DQ23QDG",
-vapidKey: "BHOITvdfR1Rxq2avMamPKhsTfuDhqSCFm7I-oOA8OmoSWN6onoOHJ9MVEFP5kYtW_DEi1dq1mumdCXW9kiV6aSI"
-};
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class FcmService {
-  private messaging: Messaging;
-  private firebaseApp: FirebaseApp;
-  currentUser:any;
+  private messaging = inject(Messaging);
 
   constructor(
     private firestore: Firestore,
     private authService: AuthService
-  ) {
-    this.firebaseApp = initializeApp(firebaseConfig);
-    this.messaging = getMessaging(this.firebaseApp);
-    
-  }
+  ) {}
 
   async requestPermission(): Promise<string | null> {
     try {
       const permission = await Notification.requestPermission();
       if (permission === 'granted') {
         const token = await getToken(this.messaging, {
-          vapidKey: firebaseConfig.vapidKey
+          vapidKey: 'BHOITvdfR1Rxq2avMamPKhsTfuDhqSCFm7I-oOA8OmoSWN6onoOHJ9MVEFP5kYtW_DEi1dq1mumdCXW9kiV6aSI'
         });
         console.log('FCM token:', token);
         return token;

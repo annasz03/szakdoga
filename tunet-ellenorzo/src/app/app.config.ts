@@ -14,17 +14,17 @@ import { BrowserModule, Title } from '@angular/platform-browser';
 import { I18NextModule, I18NextTitle, ITranslationService, I18NEXT_SERVICE, defaultInterpolationFormat} from 'angular-i18next';
 import i18nextXHRBackend from 'i18next-xhr-backend';
 import i18nextLanguageDetector from 'i18next-browser-languagedetector';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 const firebaseConfig = {
   apiKey: "AIzaSyD5JSxkcZOBFie5bfWu1wM7vwMW-c9WzYU",
-  authDomain: "tunet-ellenorzo-f8999.firebaseapp.com",
+  authDomain: "https://tunet-ellenorzo-f8999.firebaseapp.com",
   projectId: "tunet-ellenorzo-f8999",
   storageBucket: "tunet-ellenorzo-f8999.firebasestorage.app",
   messagingSenderId: "371815094536",
   appId: "1:371815094536:web:c25c0e6a29b08715d234bd",
-  measurementId: "G-XQ1DQ23QDG",
-  vapidKey: "BHOITvdfR1Rxq2avMamPKhsTfuDhqSCFm7I-oOA8OmoSWN6onoOHJ9MVEFP5kYtW_DEi1dq1mumdCXW9kiV6aSI"
+  measurementId: "G-XQ1DQ23QDG"
 };
 
 export function appInit(i18next: ITranslationService) {
@@ -74,6 +74,7 @@ export const appConfig: ApplicationConfig = {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',
     }),
+    importProvidersFrom(TranslateModule.forRoot()),
 
     importProvidersFrom(BrowserAnimationsModule, I18NextModule.forRoot()),
     {

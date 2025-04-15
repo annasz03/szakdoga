@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Observable, from } from 'rxjs';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, UserCredential, sendEmailVerification}from 'firebase/auth';
-import { Auth, updateProfile, user } from '@angular/fire/auth';
+import { Observable, catchError, from, map, switchMap } from 'rxjs';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, UserCredential, sendEmailVerification}from '@angular/fire/auth';
+import { Auth, GoogleAuthProvider, signInWithPopup, updateProfile, user } from '@angular/fire/auth';
 import { UserInterface } from './user.interface';
 
 
@@ -31,33 +31,37 @@ export class AuthService {
   
 
   login(email: string, password: string): Observable<UserCredential> {
-    return from(this.loginInternal(email, password));
+    return from(
+      signInWithEmailAndPassword(this.firebaseAuth, email, password).then((response) => {
+        const user = response.user;
+  
+        if (!user.emailVerified) {
+          return signOut(this.firebaseAuth).then(() => {
+            throw new Error("Az e-mail cím nincs megerősítve.");
+          });
+        }
+        return response;
+      })
+    );
   }
-  
-  private async loginInternal(email: string, password: string): Promise<UserCredential> {
-    console.log("Bejelentkezés elindult");
-    const response = await signInWithEmailAndPassword(this.firebaseAuth, email, password);
-    console.log("Bejelentkezés válasz:", response);
-  
-    const user = response.user;
-    console.log("Felhasználó emailVerified:", user.emailVerified); // debug
-  
-    if (!user.emailVerified) {
-      console.log("Email nincs megerősítve, kijelentkezés");
-      await signOut(this.firebaseAuth);
-      throw new Error("Az e-mail cím nincs megerősítve.");
-    }
-  
-    return response;
-  }
-  
-  
-  
-  
-  
-  
 
-  logout(): Observable<void> {
-    return from(signOut(this.firebaseAuth));
-  }
+loginWithGoogle(): Observable<void> {
+  const provider = new GoogleAuthProvider();
+  return from(
+    signInWithPopup(this.firebaseAuth, provider)
+      .then((result) => {
+        console.log('Sikeres bejelentkezés:', result.user);
+      })
+  ).pipe(
+    catchError((error) => {
+      throw error;
+    })
+  );
+}
+  
+    logout(): Observable<void>{
+      const promise = signOut(this.firebaseAuth);
+      return from(promise);
+    }
+    
 }

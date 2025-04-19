@@ -2,18 +2,23 @@
     <div class="name">
         {{doc.name}}
     </div>
-    {{doc.speciality}}
+    {{doc.specialty}}
     <div *ngFor="let d of doc.cities">
             {{d}},
     </div>
+
+    {{doc.city}}
+
     <button (click)="openMoreData()">{{ 'more' | i18next }}</button>
 
     <div *ngIf="opened">
         {{ 'gender' | i18next }} {{doc.gender}}<br>
         {{ 'availability' | i18next }} 
+        <br>
         <div *ngFor="let d of doc.available">
             {{d.day}}: {{d.city}} - {{d.address}}
         </div>
+        Cím: {{doc.address}} <br>
         Tel.: {{doc.phone}}
     </div>
 </div>

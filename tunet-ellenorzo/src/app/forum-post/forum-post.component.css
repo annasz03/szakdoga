@@ -34,3 +34,13 @@
     font-size: 0.85em;
   }
   
+  .like-icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .like-icon:hover {
+    transform: scale(1.1);
+  }
+  

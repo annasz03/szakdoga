@@ -1,11 +1,12 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { addDoc, collection, Firestore, getDocs, Timestamp } from '@angular/fire/firestore';
+import { addDoc, collection, doc, Firestore, getDocs, Timestamp, updateDoc } from '@angular/fire/firestore';
 import { format } from 'date-fns';
 import { ForumCommentComponent } from '../forum-comment/forum-comment.component';
 import { IComment } from '../icomment';
 import { FormsModule } from '@angular/forms';
 import { I18NEXT_SERVICE, I18NextModule, ITranslationService } from 'angular-i18next';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -23,14 +24,19 @@ export class ForumPostComponent {
   username:string="";
   commentBody:string = "";
 
+  liked: boolean = false;
+  likeCount: number = 0;
+  commentCount=0;
+
   comments:IComment[]=[];
-  constructor(private datePipe: DatePipe, private firestore: Firestore) {}
+  constructor(private datePipe: DatePipe, private firestore: Firestore, private router: Router) {}
 
 
   ngOnInit(){
     this.date = this.post.date.toDate();
     this.formattedDate = this.datePipe.transform(this.date, 'yyyy-MM-dd HH:mm:ss');
-
+    this.likeCount = this.post.like || 0;
+    this.commentCount = this.post.comment || 0;
     //username
     const ref = collection(this.firestore, 'users');
     getDocs(ref)
@@ -81,5 +87,29 @@ export class ForumPostComponent {
         }).catch((error) => {
           console.error('Nem sikerült hozzáadni', error);
     })
+
+    const postRef = doc(this.firestore, 'forum_post', this.post.id);
+    updateDoc(postRef, {
+      comment: this.commentCount
+    })
+  }
+
+  like() {
+    if (this.liked) {
+      this.likeCount--;
+    } else {
+      this.likeCount++;
+    }
+  
+    this.liked = !this.liked;
+  
+    const postRef = doc(this.firestore, 'forum_post', this.post.id);
+    updateDoc(postRef, {
+      likes: this.likeCount
+    })
+  }
+
+  goToUserProfile() {
+    this.router.navigate(['/profile', this.post.uid]);
   }
 }

@@ -18,7 +18,7 @@ export const routes: Routes = [
     { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
     { path: 'symptom-checker', component: SymptomCheckerComponent, canActivate: [AuthGuard] },
     { path: 'symptom-checker-result', component: ResultPageComponent, canActivate: [AuthGuard] },
-    { path: 'profile', component: ProfilePageComponent, canActivate: [AuthGuard] },
+    { path: 'profile/:uid', component: ProfilePageComponent, canActivate: [AuthGuard] },
     { path: 'doctor-finder', component: DoctorFinderPageComponent, canActivate: [AuthGuard] },
     { path: 'forum', component: ForumPageComponent, canActivate: [AuthGuard] },
 ];

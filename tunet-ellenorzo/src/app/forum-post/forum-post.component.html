@@ -1,5 +1,6 @@
 <div class="post-container">
-    <div class="post-username">{{ username }}</div>
+    <div class="post-username"><a (click)="goToUserProfile()" class="post-username">{{ username }}</a>
+    </div>
     <div class="post-date">{{ formattedDate }}</div>
     <div class="post-body">{{ post.body }}</div>
     <div class="post-tag">{{ post.tag }}</div>
@@ -9,6 +10,18 @@
     <div *ngFor="let comment of comments">
         <app-forum-comment [comment]="comment"></app-forum-comment>
     </div>
+
+    <div>
+        <img 
+          src="{{ liked ? 'assets/heart-2.png' : 'assets/heart-1.png' }}" (click)="like()" class="like-icon"
+        />
+        <span>{{ likeCount }}</span>
+        <img 
+          src="assets/chat.png" class="like-icon"
+        />
+        <span>{{ commentCount }}</span>
+      </div>
+      
       
     
     <p>

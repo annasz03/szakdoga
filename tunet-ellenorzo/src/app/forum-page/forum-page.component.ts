@@ -49,7 +49,9 @@ export class ForumPageComponent {
           uid: this.currentUser.uid,
           body: this.body,
           date: this.date,
-          tag: this.tag
+          tag: this.tag,
+          like: 0,
+          comment:0
         }
 
         addDoc(postCollection,newDoc).then((docref)=>{

@@ -117,9 +117,9 @@ export class NotificationDialog {
       this.times = this.data.times || [];
       this.buttonTitle = "Módosítás";
 
-      // Frissítjük a timeDiv és timeArray értékeit a times alapján
-      this.timeDiv = this.times.length || 1; // A times hossza határozza meg, hány select mezőt jelenítünk meg
-      this.timeArray = Array(this.timeDiv).fill(0).map((_, i) => i); // timeDiv alapján hozunk létre annyi elemet
+      
+      this.timeDiv = this.times.length || 1;
+      this.timeArray = Array(this.timeDiv).fill(0).map((_, i) => i);
     }
   }
 
@@ -140,7 +140,7 @@ export class NotificationDialog {
     }
 
     this.timeArray = Array(this.timeDiv).fill(0).map((_, i) => i);
-    this.times = new Array(this.timeDiv).fill(""); // Ha a selectek számát frissítjük, az üres stringekkel tölti fel
+    this.times = new Array(this.timeDiv).fill("");
   }
 
   closeDialog(): void {

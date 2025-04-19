@@ -4,22 +4,35 @@
         <span class="displayName" *ngIf="displayName">
             {{currentUser.displayName}}
         </span>
+
+        <ng-container *ngIf="currentUser?.uid === profileUid">
+            <button (click)="profileDataModifying()">Profil módosítása</button>
+        </ng-container>
     </div>
 
     <div class="stripe"></div>
 
     <div class="content">
         <div class="left">
-            <div (click)="openSavedResults()" class="page">Elmentett eredmények</div>
+            <div (click)="openPosts()" class="page">Bejegyzések</div>
             <div class="stripe"></div>
-            <div (click)="openUploadedDocs()" class="page">Feltöltött dokumentumok</div>
-            <div class="stripe"></div>
-            <div (click)="openNotifications()">Értesítések</div>
-        </div>
+          
+            <ng-container *ngIf="currentUser?.uid === profileUid">
+              <div (click)="openSavedResults()" class="page">Elmentett eredmények</div>
+              <div class="stripe"></div>
+              <div (click)="openUploadedDocs()" class="page">Feltöltött dokumentumok</div>
+              <div class="stripe"></div>
+              <div (click)="openNotifications()" class="page">Értesítések</div>
+            </ng-container>
+          </div>
+          
 
         <div class="vertical-line"></div>
 
         <div class="right">
+            <div *ngIf="posts">
+                <app-user-posts></app-user-posts>
+            </div>
             <div *ngIf="savedRes">
                 <app-saved-diseases></app-saved-diseases>
             </div>
@@ -28,6 +41,9 @@
             </div>
             <div *ngIf="notifications">
                 <app-notification-page></app-notification-page>
+            </div>
+            <div *ngIf="settings">
+                <app-profile-settings></app-profile-settings>
             </div>
         </div>
     </div>

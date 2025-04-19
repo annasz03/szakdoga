@@ -81,13 +81,13 @@ export class RegisterComponent {
   
             // Dokumentum hozzáadása
             addDoc(usersCollection, newUser).then((docRef) => {
-              console.log('Sikeres hozzáadás');
+              console.log('Sikeres');
             }).catch((error) => {
               console.error('Nem sikerült', error);
             });
   
   
-          this.router.navigateByUrl('/home')},
+            this.dialog.open(ValidateDialog);},
         })
       }
     }

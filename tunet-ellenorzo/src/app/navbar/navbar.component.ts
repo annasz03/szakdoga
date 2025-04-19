@@ -15,8 +15,14 @@ export class NavbarComponent {
 
   hamMenu:any;
   offScreen:any;
+  currentUser:any;
 
-  constructor(private router:Router,){}
+  constructor(private router:Router,){
+    this.authService.user$.subscribe(user => {
+      this.currentUser = user;
+      
+    });
+  }
 
   ngAfterViewInit() {
     const navbar: HTMLElement | null = document.getElementById('navbar');
@@ -47,7 +53,7 @@ export class NavbarComponent {
   }
 
   navigateProfile(){
-    this.router.navigateByUrl('/profile');
+    this.router.navigate(['/profile', this.currentUser.uid]);
   }
   navigateSignOut(){
     this.authService.logout();

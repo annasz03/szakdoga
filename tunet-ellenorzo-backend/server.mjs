@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import fakeData from './fakeData.mjs';
-import fs from 'fs/promises';
+import * as fs from 'fs'
 import path from 'path';
 import multer from 'multer';
 
@@ -223,7 +223,8 @@ import { readFile } from 'fs/promises';
 
 async function initializeApp() {
   try {
-    const serviceAccount = await readFile(new URL('./tunet-ellenorzo-f8999-firebase-adminsdk-jdbfu-f0ceea275b.json', import.meta.url), 'utf-8');
+    const serviceAccount = await readFile('C:/prog/szakdoga/tunet-ellenorzo-backend/tunet-ellenorzo-f8999-firebase-adminsdk-jdbfu-6de2a6af13.json', 'utf-8');
+
     const parsedServiceAccount = JSON.parse(serviceAccount);
 
     admin.initializeApp({
@@ -245,6 +246,8 @@ cron.schedule('* * * * *', async () => {
   const currentHour = now.getHours().toString().padStart(2, '0');
   const currentMinute = now.getMinutes().toString().padStart(2, '0');
   const currentTime = `${currentHour}:${currentMinute}`;
+  const currentDay = now.getDate();
+  const currentWeekday = now.getDay();
 
   try {
     const snapshot = await db.collection('alerts')
@@ -255,11 +258,34 @@ cron.schedule('* * * * *', async () => {
 
     snapshot.forEach(doc => {
       const alert = doc.data();
-      console.log(`Aktuális idő: ${currentTime}, times: ${alert.times}`);
+      const freq = alert.frequency;
+      const times = alert.times || [];
 
-      if (alert.times.includes(currentTime)) {
-        console.log(`Küldés: ${alert.name} -> ${alert.fcmToken}`);
+      let shouldSend = false;
 
+      if (times.includes(currentTime)) {
+        switch (freq) {
+          case 'Naponta egyszer':
+            shouldSend = times.length === 1;
+            break;
+          case 'Naponta kétszer':
+            shouldSend = times.length === 2;
+            break;
+          case 'Naponta háromszor':
+            shouldSend = times.length === 3;
+            break;
+          case 'Hetente egyszer':
+            shouldSend = currentWeekday === 1;
+            break;
+          case 'Havonta egyszer':
+            shouldSend = currentDay === 1;
+            break;
+          default:
+            shouldSend = false;
+        }
+      }
+
+      if (shouldSend) {
         messages.push({
           token: alert.fcmToken,
           notification: {
@@ -281,7 +307,7 @@ cron.schedule('* * * * *', async () => {
           const response = await messaging.send(message);
           console.log(`Elküldve: ${response}`);
         } catch (error) {
-          console.error(error);
+          console.error('Hiba a küldéskor:', error);
         }
       }
     }
@@ -289,3 +315,10 @@ cron.schedule('* * * * *', async () => {
     console.error(error);
   }
 });
+
+
+
+
+//scraping
+
+

@@ -15,10 +15,58 @@
         <button class="button-small" (click)="removeFilters()">{{ 'delfilter' | i18next }}</button>
     </span>
 
-    <!--orvosok listazasa-->
-    <div *ngFor="let doc of doctors">
-        <div class="docCard">
-            <app-doctor [doc]="doc"></app-doctor>
+    <div *ngIf="role==='admin'">
+        <button (click)="reqDoc()">Orvosi fiók regisztrálási kérések</button>
+        <div *ngIf="reqOpen">
+            <div *ngFor="let doc of docs_temp">
+                <div class="docCard">
+                    <app-doctor [doc]="doc" [role]="role"></app-doctor>
+                </div>
+            </div>
         </div>
     </div>
+
+    
+
+    <button (click)="registerDocProfile()">Orvosi fiók regisztrálása</button>
+
+    <div *ngIf="openDocReg">
+        Név:
+        <input type="text" placeholder="Név" [(ngModel)]="newDocName">
+        <br>
+        Tel.: 
+        <input type="text" placeholder="Telefonszám" [(ngModel)]="newDocPhone">
+<br>
+        Város:
+        <select [(ngModel)]="newDocCity">
+            <option value="">Válassz várost</option>
+            <option *ngFor="let a of area" [value]="a.value">{{ a.value }}</option>
+        </select>
+<br>
+        Cím: 
+        <input type="text" placeholder="Cím" [(ngModel)]="newDocAddress">
+<br>
+        Szakirány:
+        <select [(ngModel)]="newDocSpecialty">
+            <option value="">Válassz szakterületet</option>
+            <option *ngFor="let s of specList" [value]="s.value">{{ s.value }}</option>
+        </select>
+<br>
+        Orvosi nyilvántartási szám:
+        <input type="text" placeholder="Nyilvántartási szám" [(ngModel)]="newDocNumber">
+        <br>
+        {{errorMsg}}
+          <button (click)="registerDocProfile()">Regisztráció</button>
+    </div>
+
+    <!--orvosok listazasa-->
+    <div *ngFor="let doc of paginatedDoctors">
+        <div class="docCard">
+          <app-doctor [doc]="doc"></app-doctor>
+        </div>
+    </div>
+
+      <mat-paginator [length]="doctors.length" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]" (page)="onPageChange($event)"></mat-paginator>
+
+      
 </div>

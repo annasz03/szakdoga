@@ -51,7 +51,9 @@ export class ForumPageComponent {
           date: this.date,
           tag: this.tag,
           like: 0,
-          comment:0
+          likedBy:[],
+          comment:0,
+          username: this.currentUser.displayName
         }
 
         addDoc(postCollection,newDoc).then((docref)=>{
@@ -74,6 +76,10 @@ export class ForumPageComponent {
             body: docData["body"],
             date: docData["date"],
             tag: docData["tag"],
+            like: docData["like"],
+            comment: docData["comment"],
+            username: docData["username"],
+            likedBy: docData["likedBy"]
           });
         }
       });

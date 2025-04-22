@@ -8,6 +8,14 @@
         <ng-container *ngIf="currentUser?.uid === profileUid">
             <button (click)="profileDataModifying()">Profil módosítása</button>
         </ng-container>
+
+        <ng-container *ngIf="currentUser?.uid === profileUid">
+            <button (click)="deleteProfileUser()">Fiók törlése</button>
+        </ng-container>
+
+        <ng-container *ngIf="role==='admin'">
+            <button (click)="deleteProfileAdmin()">Fiók törlése</button>
+        </ng-container>
     </div>
 
     <div class="stripe"></div>

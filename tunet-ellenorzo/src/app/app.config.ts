@@ -15,6 +15,7 @@ import { I18NextModule, I18NextTitle, ITranslationService, I18NEXT_SERVICE, defa
 import i18nextXHRBackend from 'i18next-xhr-backend';
 import i18nextLanguageDetector from 'i18next-browser-languagedetector';
 import { TranslateModule } from '@ngx-translate/core';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 
 const firebaseConfig = {
@@ -91,6 +92,6 @@ export const appConfig: ApplicationConfig = {
       provide: LOCALE_ID,
       deps: [I18NEXT_SERVICE],
       useFactory: localeIdFactory,
-    },
+    }, provideAnimationsAsync(),
   ],
 };

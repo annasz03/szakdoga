@@ -4,4 +4,5 @@ export interface IComment {
     postid:string;
     body: string;
     date: any;
+    username: string
 }

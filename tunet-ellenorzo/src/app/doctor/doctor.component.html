@@ -21,4 +21,10 @@
         Cím: {{doc.address}} <br>
         Tel.: {{doc.phone}}
     </div>
+
+    <div *ngIf="role==='admin'">
+        <button (click)="deleteRequest()">Kérelem törlése</button>
+        <button (click)="acceptRequest()">Kérelem elfogadása</button>
+    </div>
+
 </div>

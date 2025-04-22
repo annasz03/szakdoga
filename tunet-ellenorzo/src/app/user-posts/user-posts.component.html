@@ -1,1 +1,4 @@
-<p>user-posts works!</p>
+<div *ngFor="let post of posts">
+    <p>
+    <app-forum-post [post]="post"></app-forum-post>
+</div>

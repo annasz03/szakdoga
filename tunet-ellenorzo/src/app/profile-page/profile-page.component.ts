@@ -8,6 +8,8 @@ import { AuthService } from '../auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserPostsComponent } from '../user-posts/user-posts.component';
 import { ProfileSettingsComponent } from '../profile-settings/profile-settings.component';
+import { collection, deleteDoc, doc, Firestore, getDocs } from '@angular/fire/firestore';
+import { deleteUser, EmailAuthProvider, getAuth, reauthenticateWithCredential } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-profile-page',
@@ -27,20 +29,65 @@ export class ProfilePageComponent {
   currentUser:any;
   displayName: any;
   profileUid:any;
+  role:string = "";
+  userId:any;
 
   private authService = inject(AuthService);
 
-  constructor(private dataService:DataService, private route: ActivatedRoute){}
-
-  ngOnInit(){
-    this.route.paramMap.subscribe(params => {
-      this.profileUid = params.get('uid') || '';
-    });
+  constructor(private dataService:DataService, private route: ActivatedRoute, private firestore: Firestore){
 
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
       this.displayName=user?.displayName
     });
+
+    const ref3 = collection(this.firestore, 'users');
+          getDocs(ref3).then(snapshot => {
+            snapshot.forEach(doc => {
+              const docData = doc.data();
+              if (docData["username"] === this.currentUser.displayName) {
+                this.role = docData["role"];
+                this.userId=doc.id
+              }
+            });
+          });
+  }
+
+  ngOnInit(){
+    this.route.paramMap.subscribe(params => {
+      this.profileUid = params.get('uid') || '';
+    });
+  }
+
+  deleteProfileUser(){
+    //adatbazisbol adatok torlese
+    const userRef = doc(this.firestore, 'users', this.userId);
+    deleteDoc(userRef)   
+
+    //firebase authbol torles
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (user) {
+      const email = user.email!;
+      const password = prompt("Kérlek írd be újra a jelszavad a megerősítéshez: ");
+
+      if (password) {
+        const credential = EmailAuthProvider.credential(email, password);
+
+        reauthenticateWithCredential(user, credential)
+          .then(() => {
+            deleteUser(user)
+          })
+      }
+    }
+  } 
+
+  deleteProfileAdmin(){
+    //adatbazisbol adatok torlese
+    const userRef = doc(this.firestore, 'users', this.userId);
+    deleteDoc(userRef) 
+
   }
 
   openSavedResults(){

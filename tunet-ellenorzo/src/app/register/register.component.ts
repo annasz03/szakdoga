@@ -77,6 +77,7 @@ export class RegisterComponent {
               birth: rawForm.birth,
               gender: rawForm.gender,
               documents: [],
+              role:"user"
             };
   
             // Dokumentum hozzáadása

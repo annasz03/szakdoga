@@ -6,55 +6,64 @@ import { MatTableModule } from '@angular/material/table';
 @Component({
   selector: 'app-disease',
   standalone: true,
-  imports: [CommonModule,MatTableModule],
+  imports: [CommonModule, MatTableModule],
   templateUrl: './disease.component.html',
-  styleUrl: './disease.component.css'
+  styleUrls: ['./disease.component.css']
 })
 export class DiseaseComponent {
 
   @Input() diseaseName: any;
-  @Input() i:any;
-  //betegseg adatai
-  res:any = {};
-
-  dataSource: any = {};
+  @Input() i: any;
+  res: any = {};
+  dataSource: any[] = [];
   cols: string[] = ['label', 'data'];
-  opened=false;
+  opened = false;
 
-  constructor(private dataService: DataService){}
+  constructor(private dataService: DataService) {}
 
-  //jol kapja meg az adatot
-  ngOnInit(){
+  ngOnInit() {
     this.dataService.getDiseaseData(this.diseaseName).subscribe({
-      next:(response) => {
-        this.res=response.result[0]
-        this.dataSource=this.res.value
+      next: (response) => {
+        this.res = response;
+        this.formatDataSource();
       }
-    })
+    });
   }
 
   openDiseaseData() {
+    this.opened = !this.opened;
+  }
+
+  formatDataSource() {
+    const data = this.res;
+    this.dataSource = [];
+
+  
+    for (const key in data) {
+      if (data.hasOwnProperty(key)) {
+        this.dataSource.push({
+          key: key,
+          value: data[key]
+        });
+      }
+    }
     this.dataSourceFormatting();
-    this.opened=!this.opened;
   }
 
   dataSourceFormatting() {
-    const data = { ...this.dataSource };
+    this.dataSource.forEach(item => {
+      if (item.key === 'painful') {
+        item.value = item.value === false ? 'Nem' : 'Igen';
+      }
 
-    if (data.painful !== undefined) {
-      data.painful = data.painful === false ? 'Nem' : 'Igen';
-    }
+      if (item.key === 'painLocation' && item.value.length === 0) {
+        item.value = '-';
+      }
 
-    if (data.painLocation !== undefined && data.painLocation.length === 0) {
-      data.painLocation = '-';
-    }
-
-    if (data.age !== undefined) {
-      delete data.age;
-    }
-
-    this.dataSource = data;
-
+      if (item.key === 'age') {
+        item.value = ''
+      }
+    });
   }
 
   getName(key: string): string {
@@ -72,7 +81,6 @@ export class DiseaseComponent {
       painful: 'Fájdalmas: ',
       painLocation: 'Fájdalom helye: ',
     };
-    return labels[key];
+    return labels[key] || key;
   }
-
 }

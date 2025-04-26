@@ -12,6 +12,7 @@ import { I18NEXT_SERVICE, I18NextModule, ITranslationService } from 'angular-i18
 import { TranslateService } from '@ngx-translate/core';
 import { Firestore } from '@angular/fire/firestore';
 import { Messaging } from '@angular/fire/messaging';
+import { LangService } from './lang-service.service';
 
 @Component({
   selector: 'app-root',
@@ -28,9 +29,10 @@ export class AppComponent{
   languages: string[] = ['en', 'hu'];
 
 
-  constructor(private firestore: Firestore,
+  constructor(private langService: LangService,private firestore: Firestore,
     private messaging: Messaging, private translate: TranslateService, private router: Router, private swPush:SwPush, private authService:AuthService, @Inject(I18NEXT_SERVICE) private i18NextService: ITranslationService) {
     translate.setDefaultLang('en');
+    this.langService.setLanguage(this.language);
   }
 
   isAuthPage(curr: string): boolean {
@@ -67,10 +69,13 @@ export class AppComponent{
         document.location.reload();
       });
     }
+
+    this.langService.setLanguage(lang);
   }
   
   private updateState(lang: string) {
     this.language = lang;
+    this.langService.setLanguage(lang);
   }
 
   subscribeToPush(): void {

@@ -6,7 +6,7 @@ import { IDoctorResponse } from '../doctorres.interface';
 import { DoctorComponent } from '../doctor/doctor.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { Firestore, addDoc, collection, doc, getDocs } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, doc, getDocs, limit, orderBy, query, startAfter } from '@angular/fire/firestore';
 import { Observable, from } from 'rxjs';
 import { I18NEXT_SERVICE, I18NextModule, ITranslationService } from 'angular-i18next';
 import { AuthService } from '../auth.service';
@@ -52,6 +52,10 @@ export class DoctorFinderPageComponent {
   paginatedDoctors: IDoctorResponse[] = [];
   pageSize = 10;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  lastVisible: any = null;
+  firstVisible: any = null;
+
+
 
 
   private authService = inject(AuthService);
@@ -106,7 +110,7 @@ export class DoctorFinderPageComponent {
       });
 
     //doctorok
-    this.getAllDoctor();
+    this.getDoctorsPage(this.pageSize);
   }
 
   reqDoc() {
@@ -155,9 +159,7 @@ export class DoctorFinderPageComponent {
       
               addDoc(docTempCollection,newDoc).then((docref)=>{
                 console.log('Sikeres hozzáadás');
-                  }).catch((error) => {
-                    console.error('Nem sikerült hozzáadni', error);
-              })
+                  })
     }else{
       this.errorMsg="Nem valid orvosi nyilvántartási szám"
     }
@@ -169,40 +171,43 @@ export class DoctorFinderPageComponent {
   
 
   search() {
-    let filteredDoctors: IDoctorResponse[] = this.doctors;
-
-    if ((this.nameValue === "" && this.selectedArea === undefined && this.selectedSpec === undefined) ||
-      (this.nameValue === "" && this.selectedArea === "" && this.selectedSpec === "")) {
-        this.getAllDoctor();
-        filteredDoctors=this.doctors
-    } else {
-      if (this.nameValue !== "") {
-        filteredDoctors = filteredDoctors.filter((doctor) =>
-          doctor.name.toLowerCase().includes(this.nameValue.toLowerCase())
-        );
-      }
-      if (this.selectedSpec !== "" && this.selectedSpec !== undefined) {
-        filteredDoctors = filteredDoctors.filter((doctor) =>
-          doctor.speciality.includes(this.selectedSpec)
-        );
-      }
-      if (this.selectedArea !== "" && this.selectedArea !== undefined) {
-        filteredDoctors = filteredDoctors.filter((doctor) =>
-          doctor.cities.includes(this.selectedArea)
-        );
-      }
+    if ((this.nameValue === "" && !this.selectedArea && !this.selectedSpec)) {
+      this.updatePaginatedDoctors(); // eredeti oldalleké
+      return;
     }
-
-    this.doctors = filteredDoctors;
+  
+    let filteredDoctors: IDoctorResponse[] = this.doctors;
+  
+    if (this.nameValue !== "") {
+      filteredDoctors = filteredDoctors.filter((doctor) =>
+        doctor.name.toLowerCase().includes(this.nameValue.toLowerCase())
+      );
+    }
+    if (this.selectedSpec !== "" && this.selectedSpec !== undefined) {
+      filteredDoctors = filteredDoctors.filter((doctor) =>
+        doctor.speciality.includes(this.selectedSpec)
+      );
+    }
+    if (this.selectedArea !== "" && this.selectedArea !== undefined) {
+      filteredDoctors = filteredDoctors.filter((doctor) =>
+        doctor.cities.includes(this.selectedArea)
+      );
+    }
+  
+    this.paginatedDoctors = filteredDoctors.slice(0, this.pageSize); // csak 1 oldalt mutasson
   }
+  
 
-  getAllDoctor(){
+  getAllDoctor() {
     const ref = collection(this.firestore, 'doctors');
+    
     getDocs(ref).then(snapshot => {
+      this.doctors = [];
       snapshot.forEach(doc => {
         const docData = doc.data();
         if (docData) {
           this.doctors.push({
+            uid: doc.id,
             name: docData['name'],
             gender: docData['gender'],
             speciality: docData['specs'],
@@ -212,6 +217,8 @@ export class DoctorFinderPageComponent {
           });
         }
       });
+  
+      this.paginatedDoctors = this.doctors.slice(0, this.pageSize); // első oldal
       this.loading = false;
     }).catch(error => {
       console.error("Hiba: ", error);
@@ -219,10 +226,42 @@ export class DoctorFinderPageComponent {
     });
   }
 
-  removeFilters() {
-    this.doctors=[];
-    this.getAllDoctor();
+  loadNextPage() {
+    const ref = collection(this.firestore, 'doctors');
+    const q = query(ref, startAfter(this.lastVisible), limit(this.pageSize));
+    
+    getDocs(q).then(snapshot => {
+      if (!snapshot.empty) {
+        this.doctors = []; // új oldal!
+        snapshot.forEach(doc => {
+          const docData = doc.data();
+          if (docData) {
+            this.doctors.push({
+              uid: doc.id,
+              name: docData['name'],
+              gender: docData['gender'],
+              speciality: docData['specs'],
+              cities: docData['cities'],
+              phone: docData['phone'],
+              available: docData['available']
+            });
+          }
+        });
+        this.firstVisible = snapshot.docs[0];
+        this.lastVisible = snapshot.docs[snapshot.docs.length - 1];
+      }
+    });
   }
+  
+  
+
+  removeFilters() {
+    this.nameValue = '';
+    this.selectedArea = undefined;
+    this.selectedSpec = undefined;
+    this.updatePaginatedDoctors();
+  }
+  
 
   ngAfterViewInit() {
     this.updatePaginatedDoctors();
@@ -230,11 +269,54 @@ export class DoctorFinderPageComponent {
 
   onPageChange(event: PageEvent) {
     const startIndex = event.pageIndex * event.pageSize;
-    const endIndex = startIndex + event.pageSize;
+    let endIndex = startIndex + event.pageSize;
+    if (endIndex > this.doctors.length) {
+      endIndex = this.doctors.length;
+    }
     this.paginatedDoctors = this.doctors.slice(startIndex, endIndex);
   }
+  
+  
+  
 
   updatePaginatedDoctors() {
     this.paginatedDoctors = this.doctors.slice(0, this.pageSize);
+  }
+
+  getDoctorsPage(pageSize: number) {
+    let q;
+  
+    if (this.lastVisible) {
+      q = query(collection(this.firestore, 'doctors'), orderBy('name'), startAfter(this.lastVisible), limit(pageSize));
+    } else {
+      q = query(collection(this.firestore, 'doctors'), orderBy('name'), limit(pageSize));
+    }
+  
+    getDocs(q).then(snapshot => {
+      if (!snapshot.empty) {
+        this.lastVisible = snapshot.docs[snapshot.docs.length - 1];
+        snapshot.forEach(doc => {
+          const docData = doc.data();
+          if (docData) {
+            this.doctors.push({
+              uid: doc.id,
+              name: docData['name'],
+              gender: docData['gender'],
+              speciality: docData['specs'],
+              cities: docData['cities'],
+              phone: docData['phone'],
+              available: docData['available']
+            });
+          }
+        });
+        this.updatePaginatedDoctors();
+      } else {
+        console.log('Nincs több adat.');
+      }
+      this.loading = false;
+    }).catch(error => {
+      console.error("Hiba: ", error);
+      this.loading = false;
+    });
   }
 }

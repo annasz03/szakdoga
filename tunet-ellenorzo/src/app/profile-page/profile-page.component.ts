@@ -10,6 +10,7 @@ import { UserPostsComponent } from '../user-posts/user-posts.component';
 import { ProfileSettingsComponent } from '../profile-settings/profile-settings.component';
 import { collection, deleteDoc, doc, Firestore, getDocs } from '@angular/fire/firestore';
 import { deleteUser, EmailAuthProvider, getAuth, reauthenticateWithCredential } from '@angular/fire/auth';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-profile-page',
@@ -34,30 +35,62 @@ export class ProfilePageComponent {
 
   private authService = inject(AuthService);
 
-  constructor(private dataService:DataService, private route: ActivatedRoute, private firestore: Firestore){
-
+  constructor(private route: ActivatedRoute, private firestore: Firestore, private http: HttpClient) {
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
-      this.displayName=user?.displayName
+      this.loadCurrentUserData();
     });
-
-    const ref3 = collection(this.firestore, 'users');
-          getDocs(ref3).then(snapshot => {
-            snapshot.forEach(doc => {
-              const docData = doc.data();
-              if (docData["username"] === this.currentUser.displayName) {
-                this.role = docData["role"];
-                this.userId=doc.id
-              }
-            });
-          });
   }
+  
+  loadCurrentUserData() {
+    if (!this.currentUser) return;
+  
+    const usersRef = collection(this.firestore, 'users');
+    getDocs(usersRef).then(snapshot => {
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        if (data["username"] === this.currentUser.displayName) {
+          this.role = data["role"];
+          this.userId = docSnap.id;
+          console.log('Current userId:', this.userId);
+        }
+      });
+    }).catch(error => {
+      console.error('Error loading current user:', error);
+    });
+  }
+  
 
-  ngOnInit(){
+  ngOnInit() {
     this.route.paramMap.subscribe(params => {
       this.profileUid = params.get('uid') || '';
+      console.log("Profile UID from URL:", this.profileUid);
+      this.loadProfileUser();
     });
   }
+  
+  loadProfileUser() {
+    const usersRef = collection(this.firestore, 'users');
+    getDocs(usersRef).then(snapshot => {
+      let found = false;
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        console.log('Checking user:', data);
+  
+        if (data["uid"] === this.profileUid) {
+          this.displayName = data["username"];
+          found = true;
+          console.log('Found displayName:', this.displayName);
+        }
+      });
+      if (!found) {
+        console.log('User not found for profileUid:', this.profileUid);
+      }
+    }).catch(error => {
+      console.error('Error loading user:', error);
+    });
+  }
+  
 
   deleteProfileUser(){
     //adatbazisbol adatok torlese
@@ -84,9 +117,14 @@ export class ProfilePageComponent {
   } 
 
   deleteProfileAdmin(){
-    //adatbazisbol adatok torlese
+    //adatbazisbol adatok torlese + firebase auth
     const userRef = doc(this.firestore, 'users', this.userId);
-    deleteDoc(userRef) 
+    deleteDoc(userRef).then(() => {
+      this.http.post('http://localhost:3000/delete-user', { uid: this.userId })
+        .subscribe({
+          next: () => console.log('torolve'),
+        });
+    });
 
   }
 

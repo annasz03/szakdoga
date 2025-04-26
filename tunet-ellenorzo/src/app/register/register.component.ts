@@ -63,35 +63,42 @@ export class RegisterComponent {
     }
   }*/
 
-    onSubmit(event:Event): void {
-      if(this.formatCheck()){
+    onSubmit(event: Event): void {
+      if (this.formatCheck()) {
         const rawForm = this.form.getRawValue();
-        this.authService.register(rawForm.email, rawForm.username,rawForm.password)
-        .subscribe({
-          next: ()=> {          
-            const usersCollection = collection(this.firestore, 'users');
-  
-            const newUser = {
-              email: rawForm.email,
-              username: rawForm.username,
-              birth: rawForm.birth,
-              gender: rawForm.gender,
-              documents: [],
-              role:"user"
-            };
-  
-            // Dokumentum hozzáadása
-            addDoc(usersCollection, newUser).then((docRef) => {
-              console.log('Sikeres');
-            }).catch((error) => {
-              console.error('Nem sikerült', error);
-            });
-  
-  
-            this.dialog.open(ValidateDialog);},
-        })
+        this.authService.register(rawForm.email, rawForm.username, rawForm.password)
+          .subscribe({
+            next: (userCredential) => {
+              const user = userCredential.user;
+              const uid = user.uid;
+    
+              const usersCollection = collection(this.firestore, 'users');
+    
+              const newUser = {
+                uid: uid,
+                email: rawForm.email,
+                username: rawForm.username,
+                birth: rawForm.birth,
+                gender: rawForm.gender,
+                documents: [],
+                role: "user"
+              };
+    
+              addDoc(usersCollection, newUser).then((docRef) => {
+                console.log('Sikeresen mentve user a Firestore-ba.');
+              }).catch((error) => {
+                console.error('Nem sikerült menteni Firestore-ba', error);
+              });
+    
+              this.dialog.open(ValidateDialog);
+            },
+            error: (error) => {
+              console.error("Hiba a regisztráció során:", error);
+            }
+          });
       }
     }
+    
 
   formatCheck(): boolean {
     const rawForm = this.form.getRawValue();

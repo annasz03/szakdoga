@@ -11,6 +11,8 @@ import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule,FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { I18NEXT_SERVICE, I18NextModule, ITranslationService } from 'angular-i18next';
+import { collection, Firestore, getDocs } from '@angular/fire/firestore';
+import { LangService } from '../lang-service.service';
 
 
 
@@ -38,33 +40,10 @@ export class SymptomCheckerComponent {
     painLocation: [],
   };
 
-  symptoms = [
-    'orrfolyás',
-    'torokfájás',
-    'köhögés',
-    'hőemelkedés',
-    'tüsszögés',
-    'véres vizelet',
-    'gyakori vizelet',
-    'fájdalmas ürítés',
-  ];
+  symptoms: string[] = [];
 
-  painLocation = [
-    'fej',
-    'arc',
-    'nyak',
-    'gerinc',
-    'váll',
-    'felkar',
-    'alkar',
-    'kéz',
-    'ujj',
-    'mellkas',
-    'has',
-    'comb',
-    'láb',
-    'medence'
-  ];
+
+  painLocation: string[] = [];
 
   personalInformation = this.fb.group({
     age: [0, Validators.required],
@@ -77,11 +56,46 @@ export class SymptomCheckerComponent {
     painLocation: this.fb.array([], Validators.required),
   });
 
-  constructor(private dataService: DataService,private resultService: ResultService, private http: HttpClient, private router:Router){
+  constructor(private langService: LangService,private dataService: DataService,private resultService: ResultService, private http: HttpClient, private router:Router, private firestore: Firestore){
+    this.langService.currentLang$.subscribe((lang) => {
+      this.loadSymptoms(lang);
+      this.loadPainLocation(lang);
+    });
+
     this.addSymptom();
     this.addPain();
-    this.filteredSymptoms = this.symptoms.slice();
   }
+
+  loadSymptoms(lang: string) {
+    const langDocRef = collection(this.firestore, 'symptoms');
+    getDocs(langDocRef).then(snapshot => {
+      const list: string[] = [];
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (data[lang]) {
+          list.push(data[lang]); 
+        }
+      });
+      this.symptoms = list;
+      this.filteredSymptoms = [...this.symptoms];
+    });
+  }
+  
+
+  loadPainLocation(lang: string) {
+    const ref = collection(this.firestore, 'pain');
+    getDocs(ref).then(snapshot => {
+      const list: string[] = [];
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (data[lang]) {
+          list.push(data[lang]);
+        }
+      });
+      this.painLocation = list;
+    });
+  }
+  
 
   get symptomArray(): FormArray {
     return this.symptomsForm.get('symptoms') as FormArray;
@@ -144,6 +158,7 @@ export class SymptomCheckerComponent {
     }else {
       this.dataService.symptomCheckerReq(this.symptomRes).subscribe({
         next: (response) => {
+          console.log('Kapott válasz:', response);
           this.resultService.setResult(response);
           this.router.navigateByUrl('/symptom-checker-result');
         }, error: (err) => {
@@ -159,7 +174,9 @@ export class SymptomCheckerComponent {
       symptom.toLowerCase().includes(inputValue)
     );
   }
-  
-  
-  
+
+  goToEditDiseases(){
+    this.router.navigate(['/diseases-edit']);
+  }
+
 }

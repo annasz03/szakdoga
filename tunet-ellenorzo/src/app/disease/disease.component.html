@@ -1,26 +1,25 @@
 <div class="card" *ngIf="res">
-    {{i+1}} - {{ res.value?.name }}
+  {{ i + 1 }} - {{ res.name }}
   <button class="button-xsmall" (click)="openDiseaseData()">></button>
 
   <div *ngIf="opened">
-    <table mat-table [dataSource]="dataSource | keyvalue">
-        <ng-container matColumnDef="label">
-          <th mat-header-cell *matHeaderCellDef> </th>
-          <td mat-cell *matCellDef="let data">
-            <div *ngIf="data.key !== 'age'">
-                {{ getName(data.key) }} 
-            </div>
-        </td>
-            
-        </ng-container>
-  
-        <ng-container matColumnDef="data">
-          <th mat-header-cell *matHeaderCellDef> </th>
-          <td mat-cell *matCellDef="let data">{{ data.value }} </td>
-        </ng-container>
-  
-        <tr mat-header-row *matHeaderRowDef="cols"></tr>
-        <tr mat-row *matRowDef="let row; columns: cols;"></tr>
-    </table>
+      <table mat-table [dataSource]="dataSource">
+          <ng-container matColumnDef="label">
+              <th mat-header-cell *matHeaderCellDef> </th>
+              <td mat-cell *matCellDef="let data">
+                  <div *ngIf="data.key !== 'age'">
+                      {{ getName(data.key) }}
+                  </div>
+              </td>
+          </ng-container>
+
+          <ng-container matColumnDef="data">
+              <th mat-header-cell *matHeaderCellDef> </th>
+              <td mat-cell *matCellDef="let data">{{ data.value }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="cols"></tr>
+          <tr mat-row *matRowDef="let row; columns: cols;"></tr>
+      </table>
   </div>
 </div>

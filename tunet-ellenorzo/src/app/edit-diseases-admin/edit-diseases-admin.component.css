@@ -1,0 +1,102 @@
+.diseases {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 20px;
+  }
+  
+  .disease-form-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+  }
+  
+  .disease-form {
+    width: 48%; /* A formok 48%-os szélességet kapnak */
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  .disease-form h2 {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .disease-form label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+  }
+  
+  .disease-form input,
+  .disease-form select,
+  .disease-form button {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  
+  .disease-form button {
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .disease-form button:hover {
+    background-color: #45a049;
+  }
+  
+  .disease-form .form-array-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .disease-form .form-array-container button {
+    margin-top: 10px;
+  }
+  
+  .disease-form .form-array-container input {
+    width: 100%;
+  }
+  
+  .disease-form .symptoms-list {
+    margin-top: 15px;
+  }
+  
+  .disease-form .symptoms-list ul {
+    padding-left: 20px;
+    list-style-type: disc;
+  }
+  
+  .diseases-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .diseases-list div {
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  .diseases-list div h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .diseases-list div p {
+    margin: 5px 0;
+    font-size: 14px;
+  }
+  

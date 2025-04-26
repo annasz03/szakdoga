@@ -1,14 +1,8 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import fakeData from './fakeData.mjs';
-import * as fs from 'fs'
-import path from 'path';
-import multer from 'multer';
-
 
 const app = express();
-
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -17,25 +11,115 @@ app.listen(PORT, () => {
   console.log(`Szerver fut: ${PORT}`);
 });
 
-const __dirname = "./";
+async function initializeApp() {
+  try {
+    const serviceAccount = await readFile('C:/prog/szakdoga/tunet-ellenorzo-backend/tunet-ellenorzo-f8999-firebase-adminsdk-jdbfu-6de2a6af13.json', 'utf-8');
 
-// TODO: külön fájlba szervezni
+    const parsedServiceAccount = JSON.parse(serviceAccount);
 
-app.post('/result', (req, res) => {
-  const data = req.body;
-  let result = [];
+    admin.initializeApp({
+      credential: admin.credential.cert(parsedServiceAccount),
+    });
 
-  for (const [key, value] of fakeData.entries()) {
-    let currRes = processData(data, key, value);
-    if(currRes > 1){ // 1, hogyha csak a kor egyezik, akkor ne rakja bele
-      result.push({ key, value, currRes });
-    }
+  } catch (error) {
+    throw error;
   }
+}
 
-  result = orderResult(result);
+await initializeApp();
 
-  res.json({ message: 'Result:', result });
+const db = admin.firestore();
+
+async function loadSymptomTranslations() {
+  const snapshot = await db.collection('symptoms').get();
+  const translationMap = {};
+
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    if (data.hu) translationMap[data.hu] = doc.id;
+    if (data.en) translationMap[data.en] = doc.id;
+  });
+
+  return translationMap;
+}
+
+app.post('/result', async (req, res) => {
+  const data = req.body;
+  const language = data.language || 'hu';
+  const collectionName = language === 'en' ? 'disease_en' : 'diseases_hu';
+
+  try {
+    const translationMap = await loadSymptomTranslations();
+
+    const inputSymptoms = (data.symptoms || []).map(symptom => translationMap[symptom] || symptom);
+    const inputPainLocation = data.painLocation || [];
+
+    const snapshot = await db.collection(collectionName).get();
+    let result = [];
+
+    snapshot.forEach(doc => {
+      const key = doc.id;
+      const value = doc.data();
+
+      const currRes = processData({
+        ...data,
+        symptoms: inputSymptoms,
+        painLocation: inputPainLocation
+      }, key, value);
+
+      if (currRes > 1) {
+        result.push({ key, value, currRes });
+      }
+    });
+
+    result = orderResult(result);
+    res.json({ message: 'Result:', result });
+
+  } catch (error) {
+    res.status(500).json({ error: 'error while connecting to database' });
+  }
 });
+
+app.get('/diseases/:id', async (req, res) => {
+  const id = req.params.id;
+  const language = req.query.lang || 'hu';
+  const collectionName = language === 'en' ? 'disease_en' : 'diseases_hu';
+
+  try {
+    const doc = await db.collection(collectionName).doc(id).get();
+
+    if (!doc.exists) {
+      return res.status(404).json({ error: 'cannot find disease' });
+    }
+
+    res.json({ id: doc.id, ...doc.data() });
+
+  } catch (error) {
+    res.status(500).json({ error: 'error while req' });
+  }
+});
+
+app.get('/diseases/:id', async (req, res) => {
+  const id = req.params.id;
+  const language = req.query.lang || 'hu';
+  const collectionName = language === 'en' ? 'disease_en' : 'diseases_hu';
+
+  try {
+    const doc = await db.collection(collectionName).doc(id).get();
+
+    if (!doc.exists) {
+      return res.status(404).json({ error: 'cannot find disease' });
+    }
+
+    res.json({ id: doc.id, ...doc.data() });
+
+  } catch (error) {
+    res.status(500).json({ error: 'error while requesting disease' });
+  }
+});
+
+
+
 
 function orderResult(result) {
   return result.sort((a, b) => b.currRes - a.currRes);
@@ -44,18 +128,19 @@ function orderResult(result) {
 function processData(data, key, value) {
   let matching = 0;
 
-  if(!genderCheck(data.gender, value.gender)){
+  if (!genderCheck(data.gender, value.gender)) {
     return 0;
   } else {
     matching += ageCheck(data.age, value.age);
     matching += symptomsCheck(data.symptoms, value.symptoms);
-    if(data.pain == true){
+    if (data.pain === true && Array.isArray(data.painLocation) && Array.isArray(value.painLocation)) {
       matching += painCheck(data.painLocation, value.painLocation);
     }
   }
 
   return matching;
 }
+
 
 function ageCheck(inputAge, diseaseAge) {
   if(diseaseAge.age == -1 || (inputAge >= diseaseAge[0] && inputAge <= diseaseAge[1])) {
@@ -68,10 +153,10 @@ function genderCheck(inputGender, diseaseGender) {
   if(diseaseGender == 'Mindkettő') {
     return true;
   }
-  if(inputGender == 'male' && diseaseGender == 'Férfi') {
+  if(inputGender == 'male' && diseaseGender == 'Férfi' || diseaseGender == 'Male') {
     return true;
   }
-  if(inputGender == 'female' && diseaseGender == 'Nő') {
+  if(inputGender == 'female' && diseaseGender == 'Nő' || diseaseGender == 'Female') {
     return true;
   }
   return false;
@@ -94,7 +179,7 @@ function symptomsCheck(inputSymptoms, diseaseSymptoms) {
 function painCheck(inputPainLocation, diseasePainLocation) {
   let matchingSymptoms = 0;
 
-  if(diseasePainLocation.length !== 0) {
+  if (Array.isArray(inputPainLocation) && Array.isArray(diseasePainLocation) && diseasePainLocation.length !== 0) {
     for (let i = 0; i < inputPainLocation.length; i++) {
       for (let j = 0; j < diseasePainLocation.length; j++) {
         if (inputPainLocation[i] === diseasePainLocation[j]) {
@@ -107,112 +192,10 @@ function painCheck(inputPainLocation, diseasePainLocation) {
   return matchingSymptoms;
 }
 
-app.get('/diseases/:name', (req, res) => {
-  const diseaseName = req.params.name;
-  const result = [];
-
-  for (const [key, value] of fakeData.entries()) {
-    if (key === diseaseName) {
-      result.push({ key, value });
-    }
-  }
-
-  res.json({ message: 'Result: ', result });
-});
 
 
-const uploadsDir = path.join(__dirname, 'uploads');
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-const upload = multer({ storage: storage });
 
 
-const dataFilePath = path.resolve('./fakeDocumentsData.json');
-
-async function loadData() {
-  const fileContent = await fs.readFile(dataFilePath, 'utf-8');
-  return JSON.parse(fileContent);
-}
-
-async function saveData(data) {
-  await fs.writeFile(dataFilePath, JSON.stringify(data, null, 2), 'utf-8');
-}
-
-async function addToDocument(uid, filename, text) {
-  const data = await loadData();
-  const newId =data[data.length - 1].id + 1;
-  const newDocument = { id: newId, uid, filename, text };
-  data.push(newDocument);
-  await saveData(data);
-  return newDocument;
-}
-
-async function deleteDocument(uid, fileName) {
-  const data = await loadData();
-  const i = data.findIndex(item => item.uid === uid && item.filename === fileName);
-  data.splice(i, 1);
-
-  const filePath = path.join(__dirname, 'uploads', fileName);
-  //file torlese
-  await fs.unlink(filePath)
-
-
-  await saveData(data);
-  return data;
-}
-
-//egy adott felhasznalo osszes mentette dokumentuma
-app.get('/doc/:uid', async (req, res) => {
-  const id = req.params.uid;
-  const data = await loadData();
-
-  const result = data.filter(item => item.uid === id);
-  console.log(result);
-
-  res.json({ message: 'Result: ', result });
-});
-
-//egy adott felhasznalo egy mentette dokumentuma
-app.get('/doc/:uid/:filename', async (req, res) => {
-  const id = req.params.uid;
-  const fileName = req.params.filename;
-  const data = await loadData();
-
-  const result = data.filter(item => item.filename === fileName && item.uid === id);
-
-  res.json({ message: 'Result: ', result });
-});
-
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-
-app.get('/delete/:uid/:filename', async (req, res) => {
-  const id = req.params.uid;
-  const fileName = req.params.filename;
-
-  const result = await deleteDocument(id, fileName);
-
-  res.json({ message: 'Result: ', result });
-});
-
-
-//feltoltes
-app.post('/upload/:uid', upload.single('file'), async (req, res) => {
-  const uid = req.params.uid;
-  const text = req.body.text;
-  const filename = req.file.filename;
-  
-  const newDocument = await addToDocument(uid, filename, text);
-
-  res.json({ message: 'Result: ', document: newDocument });
-});
 
 
 
@@ -221,24 +204,6 @@ import admin from 'firebase-admin';
 import cron from 'node-cron';
 import { readFile } from 'fs/promises';
 
-async function initializeApp() {
-  try {
-    const serviceAccount = await readFile('C:/prog/szakdoga/tunet-ellenorzo-backend/tunet-ellenorzo-f8999-firebase-adminsdk-jdbfu-6de2a6af13.json', 'utf-8');
-
-    const parsedServiceAccount = JSON.parse(serviceAccount);
-
-    admin.initializeApp({
-      credential: admin.credential.cert(parsedServiceAccount),
-    });
-
-  } catch (error) {
-    throw error;
-  }
-}
-
-await initializeApp();
-
-const db = admin.firestore();
 const messaging = admin.messaging();
 
 cron.schedule('* * * * *', async () => {
@@ -305,9 +270,9 @@ cron.schedule('* * * * *', async () => {
       for (const message of messages) {
         try {
           const response = await messaging.send(message);
-          console.log(`Elküldve: ${response}`);
+          console.log(`sent: ${response}`);
         } catch (error) {
-          console.error('Hiba a küldéskor:', error);
+          console.error('error while sending out alert', error);
         }
       }
     }
@@ -316,9 +281,17 @@ cron.schedule('* * * * *', async () => {
   }
 });
 
+//user torlese admin alltal
+app.post('/delete-user', async (req, res) => {
+  const { uid } = req.body;
+  try {
+    await admin.auth().deleteUser(uid);
+    res.status(200).send({ message: 'user deleted' });
+  } catch (error) {
+    res.status(500).send({ error: 'error while deleing user', details: error });
+  }
+});
 
 
 
 //scraping
-
-

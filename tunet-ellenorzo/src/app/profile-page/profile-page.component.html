@@ -2,7 +2,7 @@
     <div class="profileData">
         <img src="../../assets/avatar.png" class="profilePic">
         <span class="displayName" *ngIf="displayName">
-            {{currentUser.displayName}}
+            {{displayName}}
         </span>
 
         <ng-container *ngIf="currentUser?.uid === profileUid">
@@ -10,7 +10,7 @@
         </ng-container>
 
         <ng-container *ngIf="currentUser?.uid === profileUid">
-            <button (click)="deleteProfileUser()">Fiók törlése</button>
+            <button (click)="deleteProfileUser()">Fiókom törlése</button>
         </ng-container>
 
         <ng-container *ngIf="role==='admin'">

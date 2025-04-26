@@ -3,11 +3,12 @@ import { Component, inject, Input } from '@angular/core';
 import { addDoc, collection, deleteDoc, doc, Firestore, getDocs, updateDoc } from '@angular/fire/firestore';
 import { I18NEXT_SERVICE, I18NextModule, ITranslationService } from 'angular-i18next';
 import { AuthService } from '../auth.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-doctor',
   standalone: true,
-  imports: [CommonModule, I18NextModule],
+  imports: [CommonModule, I18NextModule, FormsModule],
   templateUrl: './doctor.component.html',
   styleUrl: './doctor.component.css'
 })
@@ -16,6 +17,8 @@ export class DoctorComponent {
   @Input() role: any;
 
   opened = false;
+  selectedRating = 0;
+  comment = '';
   currentUser:any;
   private firestore = inject(Firestore);
   private authService = inject(AuthService);
@@ -72,5 +75,25 @@ export class DoctorComponent {
     updateDoc(userref, {
       role: "doctor"
     });
+  }
+
+  setRating(star: number) {
+    this.selectedRating = star;
+  }
+
+  async submitRating() {
+    const ratingsCollection = collection(this.firestore, 'ratings');
+
+    console.log(this.doc.uid)
+    console.log(this.doc)
+    await addDoc(ratingsCollection, {
+      doctorId: this.doc.uid,
+      rating: this.selectedRating,
+      comment: this.comment,
+      createdBy: this.currentUser?.uid || 'anonymous',
+      createdAt: new Date()
+    });
+    this.selectedRating = 0;
+    this.comment = '';
   }
 }

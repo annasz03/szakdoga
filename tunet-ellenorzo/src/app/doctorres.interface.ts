@@ -1,4 +1,5 @@
 export interface IDoctorResponse {
+  uid:string,
   name: string;
   gender: string;
   speciality: string[];

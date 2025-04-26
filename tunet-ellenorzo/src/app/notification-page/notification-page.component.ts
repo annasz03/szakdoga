@@ -58,9 +58,7 @@ export class NotificationPageComponent {
             times: data['times']
           };
         });
-    }).catch((error) => {
-      console.error(error);
-    });
+    })
   }
 }
 
@@ -172,19 +170,13 @@ export class NotificationDialog {
         const alertRef = doc(this.firestore, 'alerts', this.id);
         updateDoc(alertRef, newDoc).then(() => {
           this.dialogRef.close(newDoc);
-        }).catch((error) => {
-          console.error(error);
-        });
+        })
       } else {
         const alertCollection = collection(this.firestore, 'alerts');
         addDoc(alertCollection, newDoc).then(() => {
           this.dialogRef.close(newDoc);
-        }).catch((error) => {
-          console.error(error);
-        });
+        })
       }
-    }).catch((error) => {
-      console.error(error);
-    });
+    })
   }
 }

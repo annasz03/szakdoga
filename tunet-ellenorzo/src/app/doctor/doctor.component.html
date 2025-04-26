@@ -20,6 +20,20 @@
         </div>
         Cím: {{doc.address}} <br>
         Tel.: {{doc.phone}}
+
+            <div *ngIf="role !== 'admin'">
+                <h4>{{ 'rate_doctor' | i18next }}</h4>
+            
+                <div class="stars">
+                    <span *ngFor="let star of [1,2,3,4,5]" (click)="setRating(star)">
+                      <i>{{ star <= selectedRating ? '★' : '☆' }}</i>
+                    </span>
+                  </div>
+                  
+                <textarea [(ngModel)]="comment" placeholder="{{ 'write_comment' | i18next }}"></textarea>
+                <button (click)="submitRating()">{{ 'submit_rating' | i18next }}</button>
+            </div>
+  
     </div>
 
     <div *ngIf="role==='admin'">

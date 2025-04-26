@@ -1,0 +1,179 @@
+<div class="diseases">
+  <!-- Formok elrendezése -->
+  <div class="disease-form-container">
+    <!-- Magyar Form -->
+    <div class="disease-form">
+      <h2>Magyar</h2>
+      <form [formGroup]="diseaseFormHu" (ngSubmit)="submitDisease('hu')">
+        <label>ID: <input formControlName="id" /></label>
+
+        <label>Name: <input formControlName="name" /></label>
+        <label>Age Range:</label>
+        <div class="age-range">
+          <label for="ageMin">Min Age:</label>
+          <input type="number" id="ageMin" formControlName="ageMin" />
+      
+          <label for="ageMax">Max Age:</label>
+          <input type="number" id="ageMax" formControlName="ageMax" />
+        </div>
+        <label>Age Label: <input formControlName="ageLabel" /></label>
+
+        <label>Tünetek:</label>
+        <div formArrayName="symptoms">
+          <div *ngFor="let control of symptomsArrayHu.controls; let i = index">
+            <select [formControlName]="i">
+              <option *ngFor="let symptom of symptoms" [value]="symptom">{{ symptom }}</option>
+            </select>
+            <button type="button" (click)="removeControl(symptomsArrayHu, i)">❌</button>
+          </div>
+          <button type="button" (click)="addControl(symptomsArrayHu)">+ Add</button>
+        </div>
+
+
+        <label>Description: <input formControlName="description" /></label>
+
+        <label>Gender:
+          <select formControlName="gender">
+            <option value="Both">Both</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </label>
+
+        <label>Painful: <input type="checkbox" formControlName="painful" (change)="onPainfulChange($event, 'hu')" /></label>
+
+        Pain location:
+        <div *ngIf="diseaseFormHu.get('painful')?.value" formArrayName="painLocation">
+          <div *ngFor="let control of painLocationArrayHu.controls; let i = index">
+            <select [formControlName]="i">
+              <option *ngFor="let location of painLocation" [value]="location">{{ location }}</option>
+            </select>
+            <button type="button" (click)="removeControl(painLocationArrayHu, i)">❌</button>
+          </div>
+          <button type="button" (click)="addControl(painLocationArrayHu)">+ Add</button>
+        </div>
+
+        Prevention:
+        <div formArrayName="prevention">
+          <div *ngFor="let control of preventionArrayHu.controls; let i = index">
+            <input [formControlName]="i" />
+            <button type="button" (click)="removeControl(preventionArrayHu, i)">❌</button>
+          </div>
+          <button type="button" (click)="addControl(preventionArrayHu)">+ Add</button>
+        </div>
+
+        Risk factors:
+        <div formArrayName="riskFactors">
+          <div *ngFor="let control of riskFactorsArrayHu.controls; let i = index">
+            <input [formControlName]="i" />
+            <button type="button" (click)="removeControl(riskFactorsArrayHu, i)">❌</button>
+          </div>
+          <button type="button" (click)="addControl(riskFactorsArrayHu)">+ Add</button>
+        </div>
+
+        Treatment:
+        <div formArrayName="treatment">
+          <div *ngFor="let control of treatmentArrayHu.controls; let i = index">
+            <input [formControlName]="i" />
+            <button type="button" (click)="removeControl(treatmentArrayHu, i)">❌</button>
+          </div>
+          <button type="button" (click)="addControl(treatmentArrayHu)">+ Add</button>
+        </div>
+
+        <button type="submit">Save</button>
+      </form>
+    </div>
+
+    <!-- Angol Form -->
+    <div class="disease-form">
+      <h2>English</h2>
+      <form [formGroup]="diseaseFormEn" (ngSubmit)="submitDisease('en')">
+        <label>ID: <input formControlName="id" /></label>
+        <label>Name: <input formControlName="name" /></label>
+        <label>Age Range:</label>
+        <div class="age-range">
+          <label for="ageMin">Min Age:</label>
+          <input type="number" id="ageMin" formControlName="ageMin" />
+      
+          <label for="ageMax">Max Age:</label>
+          <input type="number" id="ageMax" formControlName="ageMax" />
+        </div>
+        <label>Age Label: <input formControlName="ageLabel" /></label>
+
+        <label>Tünetek:</label>
+        <div formArrayName="symptoms">
+          <div *ngFor="let control of symptomsArrayHu.controls; let i = index">
+            <select [formControlName]="i">
+              <option *ngFor="let symptom of symptoms" [value]="symptom">{{ symptom }}</option>
+            </select>
+            <button type="button" (click)="removeControl(symptomsArrayHu, i)">❌</button>
+          </div>
+          <button type="button" (click)="addControl(symptomsArrayHu)">+ Add</button>
+        </div>
+
+
+        <label>Description: <input formControlName="description" /></label>
+
+        <label>Gender:
+          <select formControlName="gender">
+            <option value="Both">Both</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </label>
+
+        <label>Painful: <input type="checkbox" formControlName="painful" (change)="onPainfulChange($event, 'en')" /></label>
+
+        Pain location:
+        <div *ngIf="diseaseFormEn.get('painful')?.value" formArrayName="painLocation">
+          <div *ngFor="let control of painLocationArrayEn.controls; let i = index">
+            <select [formControlName]="i">
+              <option *ngFor="let location of painLocation" [value]="location">{{ location }}</option>
+            </select>
+            <button type="button" (click)="removeControl(painLocationArrayEn, i)">❌</button>
+          </div>
+          <button type="button" (click)="addControl(painLocationArrayEn)">+ Add</button>
+        </div>
+
+        Prevention:
+        <div formArrayName="prevention">
+          <div *ngFor="let control of preventionArrayEn.controls; let i = index">
+            <input [formControlName]="i" />
+            <button type="button" (click)="removeControl(preventionArrayEn, i)">❌</button>
+          </div>
+          <button type="button" (click)="addControl(preventionArrayEn)">+ Add</button>
+        </div>
+
+
+        Risk factors:
+        <div formArrayName="riskFactors">
+          <div *ngFor="let control of riskFactorsArrayEn.controls; let i = index">
+            <input [formControlName]="i" />
+            <button type="button" (click)="removeControl(riskFactorsArrayEn, i)">❌</button>
+          </div>
+          <button type="button" (click)="addControl(riskFactorsArrayEn)">+ Add</button>
+        </div>
+
+        Treatment:
+        <div formArrayName="treatment">
+          <div *ngFor="let control of treatmentArrayEn.controls; let i = index">
+            <input [formControlName]="i" />
+            <button type="button" (click)="removeControl(treatmentArrayEn, i)">❌</button>
+          </div>
+          <button type="button" (click)="addControl(treatmentArrayEn)">+ Add</button>
+        </div>
+
+        <button type="submit">Save</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Betegségek listázása -->
+  <div *ngFor="let d of allDiseases">
+    <app-disease [diseaseName]="d.id"></app-disease>
+    <button (click)="deleteDisease(d.id)">Törlés mindkét nyelven</button>
+    <button (click)="editDisease(d.id)">Betegség szerkesztése</button>
+  </div>
+  
+
+</div>

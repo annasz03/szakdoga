@@ -1,24 +1,36 @@
 <div class="docFinder">
-    <!--név-->
-    <input matInput type="text" [(ngModel)]="nameValue">
-    <!--város-->
-    <select [(ngModel)]="selectedArea">
-        <option *ngFor="let a of area" [value]="a.value">{{ a.value }}</option>
-    </select>
-    <!--specialitás-->
-    <select [(ngModel)]="selectedSpec">
-        <option *ngFor="let s of specList" [value]="s.value">{{ s.value }}</option>
-      </select>        
+    <div class="search-filters">
+        <mat-form-field appearance="outline">
+            <mat-label>Név</mat-label>
+            <input matInput type="text" [(ngModel)]="nameValue">
+        </mat-form-field>
 
-    <span class="buttons">
-        <button class="button-small" (click)="search()">{{ 'search' | i18next }}</button>
-        <button class="button-small" (click)="removeFilters()">{{ 'delfilter' | i18next }}</button>
-    </span>
+        <mat-form-field appearance="outline">
+            <mat-label>Város</mat-label>
+            <select matNativeControl [(ngModel)]="selectedArea">
+                <option value="">Összes város</option>
+                <option *ngFor="let a of area" [value]="a.value">{{ a.value }}</option>
+            </select>
+        </mat-form-field>
 
-    <div *ngIf="role==='admin'">
-        <button (click)="reqDoc()">Orvosi fiók regisztrálási kérések</button>
-        <div *ngIf="reqOpen">
-            <div *ngFor="let doc of docs_temp">
+        <mat-form-field appearance="outline">
+            <mat-label>Szakterület</mat-label>
+            <select matNativeControl [(ngModel)]="selectedSpec">
+                <option value="">Összes szakterület</option>
+                <option *ngFor="let s of specList" [value]="s.value">{{ s.value }}</option>
+            </select>
+        </mat-form-field>
+
+        <span class="buttons">
+            <button (click)="search()">{{ 'search' | i18next }}</button>
+            <button (click)="removeFilters()">{{ 'delfilter' | i18next }}</button>
+        </span>
+    </div>
+
+    <div *ngIf="role==='admin'" class="admin-section">
+        <button color="accent" (click)="reqDoc()">Orvosi fiók regisztrálási kérések</button>
+        <div *ngIf="reqOpen" class="requests-container">
+            <div *ngFor="let doc of docs_temp" class="request-item">
                 <div class="docCard">
                     <app-doctor [doc]="doc" [role]="role"></app-doctor>
                 </div>
@@ -26,47 +38,70 @@
         </div>
     </div>
 
-    
+    <div class="registration-section">
+        <button (click)="openDocReg = !openDocReg">
+            {{ openDocReg ? 'Mégse' : 'Orvosi fiók regisztrálása' }}
+        </button>
 
-    <button (click)="registerDocProfile()">Orvosi fiók regisztrálása</button>
+        <div *ngIf="openDocReg" class="registration-form">
+            <mat-form-field appearance="outline">
+                <mat-label>Név</mat-label>
+                <input matInput type="text" [(ngModel)]="newDocName" required>
+            </mat-form-field>
 
-    <div *ngIf="openDocReg">
-        Név:
-        <input type="text" placeholder="Név" [(ngModel)]="newDocName">
-        <br>
-        Tel.: 
-        <input type="text" placeholder="Telefonszám" [(ngModel)]="newDocPhone">
-<br>
-        Város:
-        <select [(ngModel)]="newDocCity">
-            <option value="">Válassz várost</option>
-            <option *ngFor="let a of area" [value]="a.value">{{ a.value }}</option>
-        </select>
-<br>
-        Cím: 
-        <input type="text" placeholder="Cím" [(ngModel)]="newDocAddress">
-<br>
-        Szakirány:
-        <select [(ngModel)]="newDocSpecialty">
-            <option value="">Válassz szakterületet</option>
-            <option *ngFor="let s of specList" [value]="s.value">{{ s.value }}</option>
-        </select>
-<br>
-        Orvosi nyilvántartási szám:
-        <input type="text" placeholder="Nyilvántartási szám" [(ngModel)]="newDocNumber">
-        <br>
-        {{errorMsg}}
-          <button (click)="registerDocProfile()">Regisztráció</button>
-    </div>
+            <mat-form-field appearance="outline">
+                <mat-label>Telefonszám</mat-label>
+                <input matInput type="text" [(ngModel)]="newDocPhone" required>
+            </mat-form-field>
 
-    <!--orvosok listazasa-->
-    <div *ngFor="let doc of paginatedDoctors">
-        <div class="docCard">
-          <app-doctor [doc]="doc"></app-doctor>
+            <mat-form-field appearance="outline">
+                <mat-label>Város</mat-label>
+                <select matNativeControl [(ngModel)]="newDocCity" required>
+                    <option value="">Válassz várost</option>
+                    <option *ngFor="let a of area" [value]="a.value">{{ a.value }}</option>
+                </select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Cím</mat-label>
+                <input matInput type="text" [(ngModel)]="newDocAddress" required>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Szakterület</mat-label>
+                <select matNativeControl [(ngModel)]="newDocSpecialty" required>
+                    <option value="">Válassz szakterületet</option>
+                    <option *ngFor="let s of specList" [value]="s.value">{{ s.value }}</option>
+                </select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Orvosi nyilvántartási szám</mat-label>
+                <input matInput type="text" [(ngModel)]="newDocNumber" required>
+                <mat-hint>5-6 számjegy</mat-hint>
+            </mat-form-field>
+
+            <div *ngIf="errorMsg" class="error-message">{{errorMsg}}</div>
+
+            <button  (click)="registerDocProfile()" 
+                    [disabled]="!newDocName || !newDocPhone || !newDocCity || !newDocAddress || !newDocSpecialty || !newDocNumber">
+                Regisztráció
+            </button>
         </div>
     </div>
+    
+    <div *ngIf="!loading" class="doctors-list">
+        <div *ngIf="doctors.length === 0" class="no-results">
+            Nincs találat a keresési feltételeknek megfelelő orvos.
+        </div>
 
-      <mat-paginator [length]="doctors.length" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]" (page)="onPageChange($event)"></mat-paginator>
+        <div *ngFor="let doc of doctors" class="doctor-item">
+            <div class="docCard">
+                <app-doctor [doc]="doc"></app-doctor>
+            </div>
+        </div>
 
-      
+        <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50]" (page)="onPageChange($event)">
+        </mat-paginator>
+    </div>
 </div>

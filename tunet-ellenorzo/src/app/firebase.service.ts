@@ -1,5 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Firestore, collection, collectionData, getDocs } from '@angular/fire/firestore';
+import { Firestore,  } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -7,11 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class FirebaseService {
 
-  constructor(private firestore: Firestore) { }
+  constructor(private firestore: Firestore, private http:HttpClient) { }
 
-  async getAreas() {
-    const areasRef = collection(this.firestore, 'areas');
-    const snapshot = await getDocs(areasRef);
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  }
+  
 }

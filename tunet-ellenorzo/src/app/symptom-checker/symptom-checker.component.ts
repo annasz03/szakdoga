@@ -11,7 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule,FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { I18NEXT_SERVICE, I18NextModule, ITranslationService } from 'angular-i18next';
-import { collection, Firestore, getDocs } from '@angular/fire/firestore';
+import {  Firestore, getDocs } from '@angular/fire/firestore';
 import { LangService } from '../lang-service.service';
 
 
@@ -67,32 +67,21 @@ export class SymptomCheckerComponent {
   }
 
   loadSymptoms(lang: string) {
-    const langDocRef = collection(this.firestore, 'symptoms');
-    getDocs(langDocRef).then(snapshot => {
-      const list: string[] = [];
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        if (data[lang]) {
-          list.push(data[lang]); 
-        }
-      });
-      this.symptoms = list;
-      this.filteredSymptoms = [...this.symptoms];
+    this.http.post<string[]>('http://localhost:3000/api/get-all-symptoms', { lang })
+    .subscribe({
+      next: (symptomList) => {
+        this.symptoms = symptomList;
+      }
     });
   }
   
 
   loadPainLocation(lang: string) {
-    const ref = collection(this.firestore, 'pain');
-    getDocs(ref).then(snapshot => {
-      const list: string[] = [];
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        if (data[lang]) {
-          list.push(data[lang]);
-        }
-      });
-      this.painLocation = list;
+    this.http.post<string[]>('http://localhost:3000/api/get-all-pain', { lang })
+    .subscribe({
+      next: (painList) => {
+        this.painLocation = painList;
+      }
     });
   }
   

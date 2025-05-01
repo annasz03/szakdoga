@@ -4,7 +4,8 @@ import { DocumentComponent } from '../document/document.component';
 import { DataService } from '../data.service';
 import { AuthService } from '../auth.service';
 import { FormsModule } from '@angular/forms';
-import { addDoc, collection, Firestore, getDocs, query, where, } from '@angular/fire/firestore';
+import { addDoc,  Firestore, getDocs, query, where, } from '@angular/fire/firestore';
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -30,7 +31,7 @@ export class UploadedDocsComponent {
   documents:any;
   private authService= inject(AuthService)
 
-  constructor(private dataService: DataService, private firestore: Firestore) {}
+  constructor(private dataService: DataService, private firestore: Firestore, private http:HttpClient) {}
 
   ngOnInit() {
     this.authService.user$.subscribe(user => {
@@ -45,22 +46,15 @@ export class UploadedDocsComponent {
           this.getAllDocuments();
         }
       });
-    }, 100);
+    }, 3000);
   }
 
   getAllDocuments() {
-    const documentsCollection = collection(this.firestore, 'documents');
-    const q = query(documentsCollection, where('userId', '==', this.currentUser.uid));
-
-    getDocs(q).then((querySnapshot) => {
-      this.documents = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      console.log('Dokumentumok betöltve:', this.documents);
-    }).catch(error => {
-      console.error('Hiba: ', error);
-    });
+    this.http.post<{ user: any }>('http://localhost:3000/api/get-all-documents', {
+      uid:this.currentUser.uid
+    }).subscribe(response => {
+      this.documents=response
+  });
     
   }
 
@@ -92,34 +86,26 @@ export class UploadedDocsComponent {
   }
 
   uploadDoc() {
-    if (this.selectedFile && this.fileTypes.includes(this.selectedFile!.type)) {
+    if (this.selectedFile && this.fileTypes.includes(this.selectedFile.type)) {
       this.errorMessage = "";
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64Data = reader.result as string;
-        const documentsCollection = collection(this.firestore, 'documents');
-
-        const newDoc= {
-          file: base64Data,
-          type: this.selectedFile!.type,
-          comment: this.comment,
-          userId: this.currentUser.uid
+  
+      const formData = new FormData();
+      formData.append('file', this.selectedFile);
+      formData.append('comment', this.comment);
+      formData.append('userId', this.currentUser.uid);
+  
+      this.http.post('http://localhost:3000/api/upload-document', formData).subscribe({
+        next: (res) => {
+          console.log('Dokumentum sikeresen feltöltve');
+          this.getAllDocuments();
+        },
+        error: (err) => {
+          console.error('Hiba dokumentum feltöltésekor', err);
         }
-
-        addDoc(documentsCollection,newDoc).then((docref)=>{
-          console.log('Sikeres hozzáadás');
-            }).catch((error) => {
-              console.error('Nem sikerült', error);
-        })
-      };
-      reader.readAsDataURL(this.selectedFile!);
-      } else {
-        this.errorMessage = "Nem megfelelő file formátum";
-      }
-    setTimeout(() => {
-      this.getAllDocuments();
-    }, 100);
+      });
+    } else {
+      this.errorMessage = "Nem megfelelő file formátum";
+    }
   }
 
   pdf() {

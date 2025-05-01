@@ -11,11 +11,12 @@ import { ProfileSettingsComponent } from '../profile-settings/profile-settings.c
 import { collection, deleteDoc, doc, Firestore, getDocs } from '@angular/fire/firestore';
 import { deleteUser, EmailAuthProvider, getAuth, reauthenticateWithCredential } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
+import { SharedDocumentsComponent } from '../shared-documents/shared-documents.component';
 
 @Component({
   selector: 'app-profile-page',
   standalone: true,
-  imports: [CommonModule, SavedDiseasesComponent, UploadedDocsComponent, NotificationPageComponent, UserPostsComponent, ProfileSettingsComponent],
+  imports: [SharedDocumentsComponent,CommonModule, SavedDiseasesComponent, UploadedDocsComponent, NotificationPageComponent, UserPostsComponent, ProfileSettingsComponent],
   templateUrl: './profile-page.component.html',
   styleUrl: './profile-page.component.css'
 })
@@ -26,6 +27,7 @@ export class ProfilePageComponent {
   notifications=false;
   posts=true;
   settings=false;
+  shared=false;
 
   currentUser:any;
   displayName: any;
@@ -52,12 +54,9 @@ export class ProfilePageComponent {
         if (data["username"] === this.currentUser.displayName) {
           this.role = data["role"];
           this.userId = docSnap.id;
-          console.log('Current userId:', this.userId);
         }
       });
-    }).catch(error => {
-      console.error('Error loading current user:', error);
-    });
+    })
   }
   
 
@@ -75,20 +74,13 @@ export class ProfilePageComponent {
       let found = false;
       snapshot.forEach(docSnap => {
         const data = docSnap.data();
-        console.log('Checking user:', data);
   
         if (data["uid"] === this.profileUid) {
           this.displayName = data["username"];
           found = true;
-          console.log('Found displayName:', this.displayName);
         }
       });
-      if (!found) {
-        console.log('User not found for profileUid:', this.profileUid);
-      }
-    }).catch(error => {
-      console.error('Error loading user:', error);
-    });
+    })
   }
   
 
@@ -134,6 +126,7 @@ export class ProfilePageComponent {
     this.notifications=false;
     this.posts=false;
     this.settings=false;
+    this.shared=false;
   }
 
   openUploadedDocs(){
@@ -142,6 +135,7 @@ export class ProfilePageComponent {
     this.notifications=false;
     this.posts=false;
     this.settings=false;
+    this.shared=false;
   }
 
   openNotifications(){
@@ -150,6 +144,7 @@ export class ProfilePageComponent {
     this.notifications=true;
     this.posts=false;
     this.settings=false;
+    this.shared=false;
   }
   openPosts(){
     this.savedRes=false;
@@ -157,6 +152,7 @@ export class ProfilePageComponent {
     this.notifications=false;
     this.posts=true;
     this.settings=false;
+    this.shared=false;
   }
 
   profileDataModifying(){
@@ -165,6 +161,16 @@ export class ProfilePageComponent {
     this.notifications=false;
     this.posts=false;
     this.settings=true;
+    this.shared=false;
+  }
+
+  openSharedDocuments(){
+    this.savedRes=false;
+    this.uploaded=false;
+    this.notifications=false;
+    this.posts=false;
+    this.settings=false;
+    this.shared=true;
   }
 
 }

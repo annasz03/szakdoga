@@ -48,10 +48,6 @@ export class AppComponent{
       if (e) {
         this.updateState(this.i18NextService.language);
         this.translate.use(this.i18NextService.language);
-        /*
-        <h1>{{ 'welcome' | translate }}</h1>
-        <button>{{ 'tosc' | translate }}</button>
-         */
       }
     });
 

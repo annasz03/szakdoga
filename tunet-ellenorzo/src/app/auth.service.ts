@@ -13,23 +13,6 @@ export class AuthService {
   user$ = user(this.firebaseAuth);
   currentUserSig = signal<UserInterface | null | undefined>(undefined);
 
-  register(email: string, username: string, password: string): Observable<UserCredential> {
-    return from(
-      createUserWithEmailAndPassword(this.firebaseAuth, email, password)
-        .then((response) => {
-          const user = response.user;
-          return updateProfile(user, { displayName: username })
-            .then(() => {
-              return sendEmailVerification(user).then(() => {
-                console.log('E-mail elküldve!');
-                return response;
-              });
-            });
-        })
-    );
-  }
-  
-
   login(email: string, password: string): Observable<UserCredential> {
     return from(
       signInWithEmailAndPassword(this.firebaseAuth, email, password).then((response) => {
@@ -44,20 +27,6 @@ export class AuthService {
       })
     );
   }
-
-loginWithGoogle(): Observable<void> {
-  const provider = new GoogleAuthProvider();
-  return from(
-    signInWithPopup(this.firebaseAuth, provider)
-      .then((result) => {
-        console.log('Sikeres bejelentkezés:', result.user);
-      })
-  ).pipe(
-    catchError((error) => {
-      throw error;
-    })
-  );
-}
   
     logout(): Observable<void>{
       const promise = signOut(this.firebaseAuth);

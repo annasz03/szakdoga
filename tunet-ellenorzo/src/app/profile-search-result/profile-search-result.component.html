@@ -1,0 +1,5 @@
+<div>
+    <div *ngFor="let profile of profiles">
+        <a (click)="goToUserProfile(profile.uid)" class="post-username">{{ profile.username }}</a>
+    </div>
+</div>

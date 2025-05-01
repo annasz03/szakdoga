@@ -39,12 +39,5 @@ export class LoginComponent {
         }
       })
     }
-
-    loginWithGoogle(): void {
-      this.authService.loginWithGoogle().subscribe({
-        next: () => this.router.navigateByUrl('/home'),
-        error: (err) => this.errorMessage = err.message
-      });
-    }
     
 }

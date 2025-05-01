@@ -6,6 +6,7 @@ import { DiseaseComponent } from '../disease/disease.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { first } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-edit-diseases-admin',
@@ -33,14 +34,11 @@ export class EditDiseasesAdminComponent {
   riskFactorsName = 'riskFactors';
   treatmentName = 'treatment';
 
-  constructor(private firestore: Firestore, private langService: LangService, private fb: FormBuilder) {
+  constructor(private firestore: Firestore, private langService: LangService, private fb: FormBuilder, private http: HttpClient) {
     this.langService.currentLang$.subscribe((lang) => {
       this.loadDiseases(lang);
       this.loadSymptoms(lang);
       this.loadPainLocation(lang);
-      this.loadPrevention(lang);
-      this.loadRiskFactors(lang);
-      this.loadTreatment(lang);
     });
   }
 
@@ -87,74 +85,25 @@ export class EditDiseasesAdminComponent {
   }
 
   async loadSymptoms(lang: string) {
-    const langDocRef = collection(this.firestore, 'symptoms');
-    getDocs(langDocRef).then(snapshot => {
-      const list: string[] = [];
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        if (data[lang]) {
-          list.push(data[lang]);
-        }
-      });
-      this.symptoms = list;
+    this.http.post<string[]>('http://localhost:3000/api/get-all-symptoms', { lang })
+    .subscribe({
+      next: (painList) => {
+        this.painLocation = painList;
+      }
     });
   }
 
   async loadPainLocation(lang: string) {
-    const ref = collection(this.firestore, 'pain');
-    getDocs(ref).then(snapshot => {
-      const list: string[] = [];
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        if (data[lang]) {
-          list.push(data[lang]);
-        }
-      });
-      this.painLocation = list;
+    this.http.post<string[]>('http://localhost:3000/api/get-all-pain', { lang })
+    .subscribe({
+      next: (painList) => {
+        this.painLocation = painList;
+      }
     });
   }
 
-  async loadPrevention(lang: string) {
-    const ref = collection(this.firestore, 'prevention');
-    getDocs(ref).then(snapshot => {
-      const list: string[] = [];
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        if (data[lang]) {
-          list.push(data[lang]);
-        }
-      });
-      this.prevention = list;
-    });
-  }
 
-  async loadRiskFactors(lang: string) {
-    const ref = collection(this.firestore, 'riskFactors');
-    getDocs(ref).then(snapshot => {
-      const list: string[] = [];
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        if (data[lang]) {
-          list.push(data[lang]);
-        }
-      });
-      this.riskFactors = list;
-    });
-  }
-
-  async loadTreatment(lang: string) {
-    const ref = collection(this.firestore, 'treatment');
-    getDocs(ref).then(snapshot => {
-      const list: string[] = [];
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        if (data[lang]) {
-          list.push(data[lang]);
-        }
-      });
-      this.treatment = list;
-    });
-  }
+  
 
   submitDisease(lang: string): void {
     const form = lang === 'hu' ? this.diseaseFormHu : this.diseaseFormEn;
@@ -234,42 +183,9 @@ export class EditDiseasesAdminComponent {
   }
 
   async editDisease(diseaseId: string): Promise<void> {
-    const lang = await this.langService.currentLang$.pipe(first()).toPromise();
-    const ref = doc(this.firestore, `diseases_${lang}`, diseaseId);
-    const snapshot = await getDocs(collection(this.firestore, `diseases_${lang}`));
-    const diseaseDoc = snapshot.docs.find(d => d.id === diseaseId);
-  
-    if (diseaseDoc) {
-      const diseaseData = diseaseDoc.data();
-  
-      const form = lang === 'hu' ? this.diseaseFormHu : this.diseaseFormEn;
-      form.patchValue({
-        id: diseaseId,
-        name: diseaseData['name'] || '',
-        ageMin: diseaseData['ageMin'] || 0,
-        ageMax: diseaseData['ageMax'] || 99,
-        ageLabel: diseaseData['ageLabel'] || '',
-        gender: diseaseData['gender'] || 'Both',
-        description: diseaseData['description'] || '',
-        painful: diseaseData['painful'] || false
-      });
-  
-      this.setFormArray(form.get('symptoms') as FormArray, diseaseData['symptoms'] || []);
-      this.setFormArray(form.get('painLocation') as FormArray, diseaseData['painLocation'] || []);
-      this.setFormArray(form.get('prevention') as FormArray, diseaseData['prevention'] || []);
-      this.setFormArray(form.get('riskFactors') as FormArray, diseaseData['riskFactors'] || []);
-      this.setFormArray(form.get('treatment') as FormArray, diseaseData['treatment'] || []);
-    }
+    
   }
   
   
-  
-  
-  private setFormArray(array: FormArray, values: string[]): void {
-    array.clear();
-    values.forEach(value => {
-      array.push(this.fb.control(value));
-    });
-  }
   
 }

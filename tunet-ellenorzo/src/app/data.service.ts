@@ -10,6 +10,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class DataService {
 
   private refresh = new BehaviorSubject<boolean>(false);
+  private profileSearch = new BehaviorSubject<string>("");
 
     apiUrl = 'http://localhost:3000/';
 
@@ -35,6 +36,13 @@ export class DataService {
     }
     set setRefresh(ref: boolean) {
       this.refresh.next(ref);
+    }
+
+    get getProfileSearch() {
+      return this.profileSearch.asObservable();
+    }
+    set setProfileSearch(ref: string) {
+      this.profileSearch.next(ref);
     }
 
 }

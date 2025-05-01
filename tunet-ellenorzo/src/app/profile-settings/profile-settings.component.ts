@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Iuser } from '../iuser';
-import { collection, deleteDoc, doc, Firestore, getDocs, updateDoc } from '@angular/fire/firestore';
+import {  deleteDoc, doc, Firestore, getDocs, updateDoc } from '@angular/fire/firestore';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { updateProfile, updateEmail } from 'firebase/auth';
 import { EmailAuthProvider, getAuth, reauthenticateWithCredential, updatePassword } from '@angular/fire/auth';
 import { addDoc } from 'firebase/firestore';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-profile-settings',
@@ -40,52 +41,53 @@ export class ProfileSettingsComponent {
   phone: string = '';
   specialty: string = '';
 
-  constructor(private firestore: Firestore){}
+  constructor(private firestore: Firestore, private http:HttpClient){}
 
   ngOnInit() {
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
       this.displayName = user?.displayName;
   
-  
-      const ref = collection(this.firestore, 'users');
-      getDocs(ref).then(snapshot => {
-        snapshot.forEach(doc => {
-          const docData = doc.data();
-          if (docData["username"] === this.currentUser.displayName) {
-            this.userId = doc.id;
-            this.displayNameField = docData["username"];
-            this.emailField = docData["email"];
-            this.birth = docData["birth"];
-            this.gender = docData["gender"];
-            this.role = docData["role"];
-          }
-        });
-      });
-    });
+      this.http.post<{ user: any }>('http://localhost:3000/api/get-user', {
+        uid: this.currentUser.uid
+      }).subscribe({
+        next: (response) => {
+          const userData = response.user;
+          this.userId = userData.id;
+          this.displayNameField = userData.username;
+          this.emailField = userData.email;
+          this.birth = userData.birth;
+          this.gender = userData.gender;
+          this.role = userData.role;
+
+          console.log(this.role)
+        }
+    })
+    ;
+    
+  })
   }
 
 
-saveProfileData() {
-  const ref = doc(this.firestore, 'users', this.userId);
-
-  updateDoc(ref, {
-    username: this.displayNameField,
-    email: this.emailField,
-    gender: this.gender,
-    birth: this.birth
-  })
-
-  updateProfile(this.currentUser, {
-    displayName: this.displayNameField
-  }).then(() => {
-    console.log('Display name frissítve');
-  })
-
-  updateEmail(this.currentUser, this.emailField).then(() => {
-    console.log('Email frissítve');
-  })
-}
+  saveProfileData() {
+    const updateData = {
+      uid: this.userId,
+      username: this.displayNameField,
+      email: this.emailField,
+      gender: this.gender,
+      birth: this.birth
+    };
+  
+    this.http.post('http://localhost:3000/api/users/update-user', updateData)
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+        },
+        error: (error) => {
+          console.error(error);
+        }
+      });
+  }
 
 
 saveNewPassword() {
@@ -117,48 +119,38 @@ isStrongPassword(password: string): boolean {
 
 
 saveDoctorData() {
-  const ref2 = collection(this.firestore, 'doctors');
-  getDocs(ref2).then(snapshot => {
-    snapshot.forEach(docc => {
-      const docData = docc.data();
-      if (docData["uid"] === this.currentUser.uid) {
-        const docRef = doc(this.firestore, 'doctors', docc.id);
-        
-        updateDoc(docRef, {
-          name: this.name,
-          city: this.city,
-          address: this.address,
-          phone: this.phone,
-          specialty: this.specialty
-        })
-      }
-    });
+  this.http.post('http://localhost:3000/api/users/save-doctor-data', {
+    uid: this.currentUser.uid
+  }).subscribe({
+    next: (response) => {
+      console.log(response);
+    }
+  });
+
+
+  this.http.post('http://localhost:3000/api/users/update-doctor-profile', {
+    uid: this.currentUser.uid,
+    name: this.name,
+    city: this.city,
+    address: this.address,
+    phone: this.phone,
+    specialty: this.specialty
+  }).subscribe({
+    next: (response) => {
+      console.log('doc updated', response);
+    }
   })
 }
 
 
-  deleteDoctorProfile(){
-    const ref = doc(this.firestore, 'users', this.userId);
-    updateDoc(ref, {
-      role:"user"
-    })
+deleteDoctorProfile() {
+  this.http.post('http://localhost:3000/api/users/delete-doctor-profile', {
+    uid: this.currentUser.uid
+  }).subscribe({
+    next: (response) => {
+      console.log(response);
+    }
+  });
+}
 
-    const ref2 = collection(this.firestore, 'doctors');
-    getDocs(ref2).then(snapshot => {
-      snapshot.forEach(docc => {
-        const docData = docc.data();
-        if(docData["uid"]===this.currentUser.uid){
-          const docRef = doc(this.firestore, 'doctors', docc.id);
-          deleteDoc(docRef).then(() => {
-            console.log('Orvosprofil törölve');
-          })
-        }
-      });
-    })
-
-    const userref = doc(this.firestore, 'users', this.userId);
-        updateDoc(userref, {
-          role: "user"
-        });
-  }
 }

@@ -1,0 +1,11 @@
+<div *ngIf="isImage()">
+    <img [src]="file" />
+  </div>
+  <div *ngIf="isPdf()">
+    <img src="../../assets/pdf.png" (click)="openPdf()" [height]="height" [width]="width">
+  </div>
+  
+<div>
+    {{text}}
+</div>
+  

@@ -8,6 +8,9 @@ import { MatInputModule } from '@angular/material/input';
 import { Firestore, addDoc, collection, doc, setDoc } from '@angular/fire/firestore';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
+import { HttpClient } from '@angular/common/http';
+
+const backendUrl = 'http://localhost:3000/api/register';
 
 @Component({
   selector: 'app-register',
@@ -26,7 +29,8 @@ export class RegisterComponent {
   authService = inject(AuthService);
   dialog = inject(MatDialog);
 
-  constructor(private firestore: Firestore) {}
+  constructor(private firestore: Firestore, private http: HttpClient) {}
+  
 
   form = this.fb.nonNullable.group({
     email: ['', Validators.required],
@@ -36,34 +40,26 @@ export class RegisterComponent {
     gender: ['male', Validators.required]
   });
 
-  /*onSubmit(event: Event): void {
-    if (this.formatCheck()) {
-      const rawForm = this.form.getRawValue();
-      
-      this.authService.register(rawForm.email, rawForm.username, rawForm.password).subscribe({
-        next: (userCredential) => {          
-          const user = userCredential.user;
-          const uid = user.uid;
-
-          const userRef = doc(this.firestore, 'users', uid);
-          setDoc(userRef, {
-            uid: uid,
-            email: rawForm.email,
-            username: rawForm.username,
-            birth: rawForm.birth,
-            gender: rawForm.gender,
-            documents: [],
-          })
-          this.dialog.open(ValidateDialog);
-        },
-        error: (error) => {
-          console.error("Hiba a regisztráció során:", error);
-        }
-      });
-    }
-  }*/
-
     onSubmit(event: Event): void {
+    //backenden
+    const rawForm = this.form.getRawValue();
+
+    this.http.post(backendUrl, {
+      email: rawForm.email,
+      password: rawForm.password,
+      username: rawForm.username,
+      birth: rawForm.birth,
+      gender: rawForm.gender
+    }).subscribe({
+      next: (response: any) => {
+        console.log('Sikeres regisztráció', response);
+        this.dialog.open(ValidateDialog);
+        this.router.navigate(['/login']);
+      }})
+
+
+
+      /*
       if (this.formatCheck()) {
         const rawForm = this.form.getRawValue();
         this.authService.register(rawForm.email, rawForm.username, rawForm.password)
@@ -96,7 +92,7 @@ export class RegisterComponent {
               console.error("Hiba a regisztráció során:", error);
             }
           });
-      }
+      }*/
     }
     
 

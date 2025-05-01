@@ -1,10 +1,10 @@
 export interface IDoctorResponse {
-  uid:string,
+  id:string,
+  uid?:string,
   name: string;
-  gender: string;
-  speciality: string[];
-  cities: string[];
+  speciality: string;
+  city: string;
   phone: string;
-  available: any[];
+  address: string;
 }
   

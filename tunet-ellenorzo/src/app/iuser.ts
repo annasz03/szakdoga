@@ -1,4 +1,5 @@
 export interface Iuser {
+  uid:string
     birth: string;
     documents: any[];
     email: string;

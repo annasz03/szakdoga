@@ -14,6 +14,10 @@
     <div class="title">
         <a (click)="navigateHome()">{{ 'title' | i18next }}</a>
     </div>
+    <!--profil kereses-->
+    <input matInput type="text" [(ngModel)]="name" placeholder="Profil keresése">
+    <button (click)="searchProfile()">Keresés</button>
+
     <div class="profile" (click)="navigateProfile()">
         <img src="../../assets/avatar.png" class="avatar">
     </div>

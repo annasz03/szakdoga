@@ -32,6 +32,10 @@
               <div class="stripe"></div>
               <div (click)="openNotifications()" class="page">Értesítések</div>
             </ng-container>
+            <ng-container *ngIf="currentUser?.uid !== profileUid">
+                <div (click)="openSharedDocuments()" class="page">Megosztott dokumentumok</div>
+                <div class="stripe"></div>
+              </ng-container>
           </div>
           
 
@@ -52,6 +56,9 @@
             </div>
             <div *ngIf="settings">
                 <app-profile-settings></app-profile-settings>
+            </div>
+            <div *ngIf="shared">
+                <app-shared-documents></app-shared-documents>
             </div>
         </div>
     </div>

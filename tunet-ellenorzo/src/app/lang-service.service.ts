@@ -11,7 +11,7 @@ export class LangService {
     this.currentLang.next(lang);
   }
 
-  getCurrentLanguage(): string {
+  getLanguage(): string {
     return this.currentLang.getValue();
   }
 }

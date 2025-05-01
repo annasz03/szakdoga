@@ -19,7 +19,12 @@
             {{d.day}}: {{d.city}} - {{d.address}}
         </div>
         Cím: {{doc.address}} <br>
-        Tel.: {{doc.phone}}
+        Tel.: {{doc.phone}}<br>
+
+        Vélemények:
+        <div *ngFor="let rating of ratings">
+            <app-ratings [rating]="rating"></app-ratings>
+        </div>
 
             <div *ngIf="role !== 'admin'">
                 <h4>{{ 'rate_doctor' | i18next }}</h4>

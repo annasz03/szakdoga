@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { collection, getDocs, Firestore } from '@angular/fire/firestore';
+import {  Firestore } from '@angular/fire/firestore';
 import { AuthService } from '../auth.service';
 import { IPost } from '../ipost';
 import { CommonModule } from '@angular/common';
 import { ForumPostComponent } from '../forum-post/forum-post.component';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-user-posts',
@@ -22,7 +23,8 @@ export class UserPostsComponent {
   constructor(
     private route: ActivatedRoute,
     private firestore: Firestore,
-    private authService: AuthService
+    private authService: AuthService,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
@@ -43,31 +45,9 @@ export class UserPostsComponent {
   }
 
   getPosts() {
-    const ref = collection(this.firestore, 'forum_post');
-    getDocs(ref).then(snapshot => {
-      const postsArray: IPost[] = [];
-      snapshot.forEach(doc => {
-        const docData = doc.data();
-        if (docData && docData["uid"] === this.currentUserId) {
-          postsArray.push({
-            id: doc.id,
-            uid: docData["uid"],
-            body: docData["body"],
-            date: docData["date"],
-            tag: docData["tag"],
-            like: docData["like"],
-            comment: docData["comment"],
-            username: docData["username"],
-            likedBy:docData["likedBy"]
-          });
-        }
-      });
-
-      this.posts = postsArray.sort((a, b) => b.date.seconds - a.date.seconds);
-      this.filteredPosts = [...this.posts];
-      console.log(this.filteredPosts)
-    }).catch(error => {
-      console.error("Hiba: ", error);
+    this.http.post('http://localhost:3000/get-all-posts', {uid:this.currentUserId})
+    .subscribe({
+          next: () => console.log('adatok'),
     });
   }
 }

@@ -1,0 +1,63 @@
+<form [formGroup]="diseaseForm" (ngSubmit)="save()">
+
+    <label>Név</label>
+    <input formControlName="name" />
+  
+    <label>Kor leírás</label>
+    <input formControlName="ageLabel" />
+  
+    <label>Kor minimum</label>
+    <input type="number" [formControl]="diseaseForm.get('age').get('0')" />
+  
+    <label>Kor maximum</label>
+    <input type="number" [formControl]="diseaseForm.get('age').get('1')" />
+  
+    <label>Nem</label>
+    <select formControlName="gender">
+      <option value="unknown">Mindkét nem</option>
+      <option value="male">Férfi</option>
+      <option value="female">Nő</option>
+    </select>
+  
+    <label>Leírás</label>
+    <textarea formControlName="description"></textarea>
+  
+    <label>Fájdalmas</label>
+    <input type="checkbox" formControlName="painful" />
+
+    <div *ngIf="diseaseForm.get('painful')?.value">
+        <label>Fájdalom helye</label>
+        <div formArrayName="painLocation">
+        <div *ngFor="let p of painLocation.controls; let i = index">
+            <input [formControlName]="i" />
+            <button type="button" (click)="removeFromArray(painLocation, i)">Törlés</button>
+        </div>
+        <button type="button" (click)="addToArray(painLocation)">+ Hozzáadás</button>
+        </div>
+    </div>
+
+  
+    <div>
+      <label>Tünetek</label>
+      <div formArrayName="symptoms">
+        <div *ngFor="let s of symptoms.controls; let i = index">
+          <input [formControlName]="i" />
+          <button type="button" (click)="removeFromArray(symptoms, i)">Törlés</button>
+        </div>
+        <button type="button" (click)="addToArray(symptoms)">+ Hozzáadás</button>
+      </div>
+    </div>
+    <div>
+      <label>Kapcsolódó betegségek</label>
+      <div formArrayName="associatedDiseases">
+        <div *ngFor="let d of associatedDiseases.controls; let i = index">
+          <input [formControlName]="i" />
+          <button type="button" (click)="removeFromArray(associatedDiseases, i)">Törlés</button>
+        </div>
+        <button type="button" (click)="addToArray(associatedDiseases)">+ Hozzáadás</button>
+      </div>
+    </div>
+  
+    <button type="submit">Mentés</button>
+  </form>
+  

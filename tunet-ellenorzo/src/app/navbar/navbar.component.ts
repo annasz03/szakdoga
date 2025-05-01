@@ -2,11 +2,14 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { I18NEXT_SERVICE, I18NextModule, ITranslationService } from 'angular-i18next';
+import { CommonModule } from '@angular/common';
+import { DataService } from '../data.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [I18NextModule],
+  imports: [I18NextModule, CommonModule, FormsModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
@@ -17,7 +20,9 @@ export class NavbarComponent {
   offScreen:any;
   currentUser:any;
 
-  constructor(private router:Router,){
+  name:string = "";
+
+  constructor(private router:Router,private dataService: DataService){
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
       
@@ -66,6 +71,14 @@ export class NavbarComponent {
 
   navigateHome(){
     this.router.navigateByUrl('/home');
+  }
+
+  searchProfile(){
+    //dataservice-be beallitani
+    this.dataService.setProfileSearch =  this.name;
+
+    //atiranyitas profile-search-result
+    this.router.navigateByUrl('/search-result');
   }
   
 }

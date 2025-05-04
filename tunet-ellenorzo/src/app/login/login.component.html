@@ -1,25 +1,22 @@
 <div class="form">
-  <h2 class="title">Bejelentkezés</h2>
+  <h2 class="title">{{ 'login' | translate }}</h2>
   <form [formGroup]="form" (ngSubmit)="onSubmit($event)" class="registerForm">
     <mat-form-field class="inputF">
-      <p>E-mail cím:</p>
+      <p>{{'email'|translate}}</p>
       <input matInput formControlName="email" placeholder="Email" type="email" />
     </mat-form-field>
     
     <mat-form-field class="inputF">
-      <p>Jelszó:</p>
+      <p>{{'password'|translate}}</p>
       <input matInput formControlName="password" type="password" placeholder="Password" />
     </mat-form-field>
 
-    <button class="button" type="submit">Bejelentkezés</button>
+    <button class="button" type="submit">{{'login'|translate}}</button>
   </form>
-<!--
-  <button class="button" (click)="loginWithGoogle()">Bejelentkezés Google fiókkal</button>
--->
   <div *ngIf="errorMessage">
     {{ errorMessage }}
   </div>
 
-  Nincs Még fiókod? <a routerLink="/register">Regisztrálj!</a>
+  {{'noacc'|translate}} <a routerLink="/register">{{'reg'|translate}}</a>
 </div>
 <router-outlet></router-outlet>

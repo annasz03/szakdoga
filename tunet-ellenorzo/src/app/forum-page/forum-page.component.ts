@@ -7,11 +7,13 @@ import { FormsModule } from '@angular/forms';
 import { ForumPostComponent } from '../forum-post/forum-post.component';
 import { IPost } from '../ipost';
 import { I18NEXT_SERVICE, I18NextModule, ITranslationService } from 'angular-i18next';
+import { HttpClient } from '@angular/common/http';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-forum-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, ForumPostComponent, I18NextModule],
+  imports: [CommonModule, FormsModule, ForumPostComponent, I18NextModule,MatPaginator],
   templateUrl: './forum-page.component.html',
   styleUrl: './forum-page.component.css'
 })
@@ -28,71 +30,93 @@ export class ForumPageComponent {
   posts:IPost[]=[];
   filteredPosts:IPost[]=[];
 
+  totalItems = 0;
+  pageSize = 5;
+  lastVisible: any = null;
+  loading = true;
+
+
   private authService = inject(AuthService);
 
-  constructor(private dataService: DataService, private firestore: Firestore) {}
+  constructor(private dataService: DataService, private firestore: Firestore, private http:HttpClient) {}
   
   ngOnInit(){
     this.authService.user$.subscribe(user => {
-      this.currentUser = user;
+      if (user) {
+        this.currentUser = user;
+      }
     });
 
-    this.getPosts();
+    this.loadTotalCount();
+    this.loadPosts();
   }
 
-  addPost(){
-        const postCollection = collection(this.firestore, 'forum_post');
-
-        this.date = Timestamp.now();
-
-        const newDoc= {
-          uid: this.currentUser.uid,
-          body: this.body,
-          date: this.date,
-          tag: this.tag,
-          like: 0,
-          likedBy:[],
-          comment:0,
-          username: this.currentUser.displayName
+  addPost() {
+    const postData = {
+      uid: this.currentUser.uid,
+      body: this.body,
+      tag: this.tag,
+      username: this.currentUser.displayName
+    };
+  
+    this.http.post('http://localhost:3000/add-post', postData)
+      .subscribe({
+        next: (response) => {
+          console.log('Sikeres hozzáadás', response);
         }
+      });
+  }
+  
 
-        addDoc(postCollection,newDoc).then((docref)=>{
-          console.log('Sikeres hozzáadás');
-            }).catch((error) => {
-              console.error('Nem sikerült hozzáadni', error);
-        })
+  loadPosts() {
+    const requestData = {
+      pageSize: this.pageSize,
+      lastVisiblePostId: this.lastVisible?.id
+    };
+  
+    this.http.post<{ posts: IPost[], lastVisible: string }>('http://localhost:3000/api/forum-load-posts', requestData)
+      .subscribe({
+        next: (response) => {
+          this.posts = [...this.posts, ...response.posts];
+          this.lastVisible = response.lastVisible ? { id: response.lastVisible } : null;
+          this.loading = false;
+        }
+      });
+  }
+  
+  
+  loadTotalCount() {
+    this.http.get<{ totalCount: number }>('http://localhost:3000/api/forum-total-count')
+      .subscribe({
+        next: (response) => {
+          this.totalItems = response.totalCount;
+        }
+      });
+  }
+  onPageChange(event: any) {
+    this.loadNextPage();
   }
 
-  getPosts(){
-    const ref = collection(this.firestore, 'forum_post');
-    getDocs(ref).then(snapshot => {
-      let postsArray: IPost[] = [];
-      snapshot.forEach(doc => {
-        const docData = doc.data();
-        if (docData) {
-          postsArray.push({
-            id: doc.id,
-            uid: docData["uid"],
-            body: docData["body"],
-            date: docData["date"],
-            tag: docData["tag"],
-            like: docData["like"],
-            comment: docData["comment"],
-            username: docData["username"],
-            likedBy: docData["likedBy"]
-          });
+  loadNextPage() {
+    this.http.post<{ posts: IPost[], lastVisible: string }>(
+      'http://localhost:3000/api/load-forum-posts-next',
+      {
+        lastVisiblePostId: this.lastVisible?.id,
+        pageSize: this.pageSize
+      }
+    ).subscribe({
+      next: response => {
+        if (response.posts.length > 0) {
+          this.posts = response.posts;
+  
+          this.lastVisible = response.lastVisible ? { id: response.lastVisible } : null;
         }
-      });
-  
-      this.posts = postsArray.sort((a, b) => {
-        return b.date.seconds - a.date.seconds;
-      });
-  
-      this.filteredPosts = [...this.posts];
-    }).catch(error => {
-      console.error("Hiba: ", error);
+      }
     });
   }
+  
+  
+  
   
 
   search(){

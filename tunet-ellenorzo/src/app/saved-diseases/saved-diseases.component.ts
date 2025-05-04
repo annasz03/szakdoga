@@ -5,6 +5,7 @@ import { MatTableModule } from '@angular/material/table';
 import { DiseaseComponent } from '../disease/disease.component';
 import { SavedDisComponent } from '../saved-dis/saved-dis.component';
 import { AuthService } from '../auth.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-saved-diseases',
@@ -18,7 +19,7 @@ export class SavedDiseasesComponent {
   errorMessage: string = "";
   currentUser:any;
 
-  constructor( private firestore: Firestore, private authService: AuthService) {
+  constructor( private authService: AuthService, private http:HttpClient) {
   }
 
   ngOnInit() {
@@ -28,44 +29,22 @@ export class SavedDiseasesComponent {
     });
   }
   
-
   fetchSavedDiseasesFromFirestore() {
-    const savedResultRef = collection(this.firestore, 'savedResults');
-    const q = query(savedResultRef, where('uid', '==', this.currentUser.uid));
-  
-    getDocs(q)
-      .then((querySnapshot) => {
-        if (querySnapshot.empty) {
-          this.errorMessage = "Nem lett még elmentve!";
-          this.savedDiseases = [];
-        } else {
-          const newSavedDiseases: string[][] = [];
-  
-          querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const resultMap = data['resultMap'];
-  
-            if (Array.isArray(resultMap)) {
-              newSavedDiseases.push(resultMap);
-            } else if (typeof resultMap === 'object' && resultMap !== null) {
-              Object.values(resultMap).forEach((item: any) => {
-                if (typeof item === 'string') {
-                  newSavedDiseases.push([item]);
-                } else if (Array.isArray(item)) {
-                  newSavedDiseases.push(item);
-                }
-              });
-            }
-          });
-  
-          this.savedDiseases = newSavedDiseases;
-        }
-      })
+    this.http.post<{ savedDiseases: string[][] }>('http://localhost:3000/api/get-user-saved-results', {
+      uid: this.currentUser.uid
+    }).subscribe({
+      next: (response) => {
+        this.savedDiseases = response.savedDiseases;
+      },
+      error: (error) => {
+        this.savedDiseases = [];
+      }
+    });
   }
   
   
 
   openSaved(saved: string[]) {
-    console.log("Megnyitott mentett betegség:", saved);
+    
   }
 }

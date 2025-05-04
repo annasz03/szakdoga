@@ -1,8 +1,8 @@
 <div *ngIf="isImage()">
-    <img [src]="file" />
+    <img [src]="file" loading="lazy"/>
   </div>
   <div *ngIf="isPdf()">
-    <img src="../../assets/pdf.png" (click)="openPdf()" [height]="height" [width]="width">
+    <img src="../../assets/pdf.webp" (click)="openPdf()" [height]="height" [width]="width" loading="lazy">
   </div>
   
   <div>

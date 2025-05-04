@@ -1,2 +1,39 @@
 msgid "regist"
 msgstr "Regisztráció"
+
+msgid "login"
+msgstr "Bejelentkezés"
+
+msgid "email"
+msgstr "E-mail cím:"
+
+msgid "password"
+msgstr "Jelszó:"
+
+msgid "noacc"
+msgstr "Nincsen még fiókod?"
+
+msgid "reg"
+msgstr "Regisztrálj!"
+
+
+msgid "username"
+msgstr "Felhasználónév:"
+
+msgid "birth"
+msgstr "Születési dátum:"
+
+msgid "gender"
+msgstr "Nem:"
+
+msgid "male"
+msgstr "Férfi"
+
+msgid "female"
+msgstr "Nő"
+
+msgid "yessacc"
+msgstr "Van már fiókod?"
+
+msgid "loggin"
+msgstr "Jelentkezz be!"

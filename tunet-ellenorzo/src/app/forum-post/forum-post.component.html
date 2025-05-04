@@ -13,14 +13,15 @@
 
   <div class="interaction-bar">
     <img 
-      [src]="liked ? 'assets/heart-2.png' : 'assets/heart-1.png'" 
+      [src]="liked ? 'assets/heart-2.webp' : 'assets/heart-1.webp'" 
       (click)="like()" 
       class="like-icon"
       style="cursor: pointer;"
+      loading="lazy"
     />
     <span>{{ likeCount }}</span>
 
-    <img src="assets/chat.png" class="like-icon" />
+    <img src="assets/chat.webp" class="like-icon" loading="lazy"/>
     <span>{{ commentCount }}</span>
   </div>
 

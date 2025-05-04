@@ -2,7 +2,7 @@ import { ApplicationConfig, isDevMode, importProvidersFrom, provideZoneChangeDet
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideServiceWorker } from '@angular/service-worker';
-import { provideHttpClient } from '@angular/common/http';
+import { HttpClient, HttpClientModule, provideHttpClient } from '@angular/common/http';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getMessaging, provideMessaging } from '@angular/fire/messaging';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
@@ -14,8 +14,9 @@ import { BrowserModule, Title } from '@angular/platform-browser';
 import { I18NextModule, I18NextTitle, ITranslationService, I18NEXT_SERVICE, defaultInterpolationFormat} from 'angular-i18next';
 import i18nextXHRBackend from 'i18next-xhr-backend';
 import i18nextLanguageDetector from 'i18next-browser-languagedetector';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { PoTranslateLoader } from './po-translate-loader';
 
 
 const firebaseConfig = {
@@ -27,6 +28,10 @@ const firebaseConfig = {
   appId: "1:371815094536:web:c25c0e6a29b08715d234bd",
   measurementId: "G-XQ1DQ23QDG"
 };
+
+export function createPoLoader(http: HttpClient): TranslateLoader {
+  return new PoTranslateLoader(http, '/assets/gettext/', '.po');
+}
 
 export function appInit(i18next: ITranslationService) {
   return () =>
@@ -60,6 +65,7 @@ export function localeIdFactory(i18next: ITranslationService) {
   return i18next.language;
 }
 
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
@@ -68,14 +74,24 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideAnimations(),
     provideAuth(() => getAuth()),
-    //provideTranslateLoader(),
+    
     provideFirestore(() => getFirestore()),
     provideMessaging(() => getMessaging()),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',
     }),
-    importProvidersFrom(TranslateModule.forRoot()),
+    importProvidersFrom(
+      HttpClientModule,
+      TranslateModule.forRoot({
+        loader: {
+          provide: TranslateLoader,
+          useFactory: createPoLoader,
+          deps: [HttpClient]
+        },
+        defaultLanguage: 'en'
+      })
+    ),
 
     importProvidersFrom(BrowserAnimationsModule, I18NextModule.forRoot()),
     {

@@ -2,6 +2,8 @@ import { Component, Input } from '@angular/core';
 import { DataService } from '../data.service';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
+import { HttpClient } from '@angular/common/http';
+import { LangService } from '../lang-service.service';
 
 @Component({
   selector: 'app-disease',
@@ -18,17 +20,23 @@ export class DiseaseComponent {
   dataSource: any[] = [];
   cols: string[] = ['label', 'data'];
   opened = false;
+  lang:string = ""
 
-  constructor(private dataService: DataService) {}
+  constructor(private http: HttpClient, private langService:LangService, private dataService:DataService) {
+    this.langService.currentLang$.subscribe((lang) => {
+      this.lang=lang
+    });
+  }
 
   ngOnInit() {
-    this.dataService.getDiseaseData(this.diseaseName).subscribe({
+    this.http.get(`http://localhost:3000/diseases/${this.lang}/${this.diseaseName}`).subscribe({
       next: (response) => {
         this.res = response;
         this.formatDataSource();
       }
-    });
+    })
   }
+  
 
   openDiseaseData() {
     this.opened = !this.opened;

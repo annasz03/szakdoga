@@ -8,11 +8,13 @@ import { updateProfile, updateEmail } from 'firebase/auth';
 import { EmailAuthProvider, getAuth, reauthenticateWithCredential, updatePassword } from '@angular/fire/auth';
 import { addDoc } from 'firebase/firestore';
 import { HttpClient } from '@angular/common/http';
+import { I18NextModule } from 'angular-i18next';
 
 @Component({
   selector: 'app-profile-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, I18NextModule
+  ],
   templateUrl: './profile-settings.component.html',
   styleUrl: './profile-settings.component.css'
 })

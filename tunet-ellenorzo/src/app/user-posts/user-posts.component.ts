@@ -30,7 +30,6 @@ export class UserPostsComponent {
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       const uidFromRoute = params.get('uid');
-      console.log(uidFromRoute)
       if (uidFromRoute) {
         this.currentUserId = uidFromRoute;
         this.getPosts();

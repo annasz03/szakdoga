@@ -33,6 +33,8 @@ export class AppComponent{
     private messaging: Messaging, private translate: TranslateService, private router: Router, private swPush:SwPush, private authService:AuthService, @Inject(I18NEXT_SERVICE) private i18NextService: ITranslationService) {
     translate.setDefaultLang('en');
     this.langService.setLanguage(this.language);
+    this.translate.setDefaultLang(this.language);
+    this.translate.use(this.language);
   }
 
   isAuthPage(curr: string): boolean {
@@ -67,6 +69,7 @@ export class AppComponent{
     }
 
     this.langService.setLanguage(lang);
+    this.translate.use(lang);
   }
   
   private updateState(lang: string) {

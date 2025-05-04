@@ -5,11 +5,13 @@ import { DataService } from '../data.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Route } from '@angular/router';
+import { DocumentComponent } from '../document/document.component';
 
 @Component({
   selector: 'app-shared-documents',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, DocumentComponent],
   templateUrl: './shared-documents.component.html',
   styleUrl: './shared-documents.component.css'
 })
@@ -28,27 +30,24 @@ export class SharedDocumentsComponent {
     documents: any;
     
     private authService = inject(AuthService);
-    constructor(private dialog: MatDialog,private dataService:DataService, private sanitizer: DomSanitizer, private http:HttpClient){}
+    constructor(private dialog: MatDialog,private dataService:DataService, private sanitizer: DomSanitizer, private http:HttpClient, private route:ActivatedRoute){}
   
-    ngOnInit(){
+    ngOnInit() {
       this.authService.user$.subscribe(user => {
         this.currentUser = user;
-      });
 
-      //document meg shared document lekerese
-
-      this.http.post<{ user: any }>('http://localhost:3000/api/get-all-documents', {
-        uid:this.currentUser.uid
-      }).subscribe(response => {
-        this.documents=response
-      });
-
-      this.http.post<{ user: any }>('http://localhost:3000/api/get-all-shared-documents', {
-        uid:this.currentUser.uid
-      }).subscribe(response => {
-        this.documents=response
+        const urlSegments = window.location.href.split('/');
+        const doctorId = urlSegments[urlSegments.length - 1];
+  
+        this.http.post('http://localhost:3000/api/get-all-shared-documents', {
+          doctor_id: this.currentUser.uid,
+          uid: doctorId
+        }).subscribe(response => {
+          this.documents = response;
+        });
       });
     }
+    
   
     getUrl(){
       return `http://localhost:3000/uploads/${this.file}`;

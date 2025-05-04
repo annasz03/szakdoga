@@ -1,24 +1,23 @@
 <div class="diseases">
-  <!-- Formok elrendezése -->
   <div class="disease-form-container">
     <!-- Magyar Form -->
     <div class="disease-form">
-      <h2>Magyar</h2>
+      <h2>{{ 'hungarian' | i18next }}</h2>
       <form [formGroup]="diseaseFormHu" (ngSubmit)="submitDisease('hu')">
-        <label>ID: <input formControlName="id" /></label>
+        <label>{{ 'id' | i18next }} <input formControlName="id" /></label>
 
-        <label>Name: <input formControlName="name" /></label>
-        <label>Age Range:</label>
+        <label>{{ 'name' | i18next }} <input formControlName="name" /></label>
+        <label>{{ 'ageRange' | i18next }}</label>
         <div class="age-range">
-          <label for="ageMin">Min Age:</label>
+          <label for="ageMin">{{ 'minAge' | i18next }}</label>
           <input type="number" id="ageMin" formControlName="ageMin" />
       
-          <label for="ageMax">Max Age:</label>
+          <label for="ageMax">{{ 'maxAge' | i18next }}</label>
           <input type="number" id="ageMax" formControlName="ageMax" />
         </div>
-        <label>Age Label: <input formControlName="ageLabel" /></label>
+        <label>{{ 'ageLabel' | i18next }} <input formControlName="ageLabel" /></label>
 
-        <label>Tünetek:</label>
+        <label>{{ 'symptoms' | i18next }}</label>
         <div formArrayName="symptoms">
           <div *ngFor="let control of symptomsArrayHu.controls; let i = index">
             <select [formControlName]="i">
@@ -26,23 +25,23 @@
             </select>
             <button type="button" (click)="removeControl(symptomsArrayHu, i)">❌</button>
           </div>
-          <button type="button" (click)="addControl(symptomsArrayHu)">+ Add</button>
+          <button type="button" (click)="addControl(symptomsArrayHu)">+ {{ 'add' | i18next }}</button>
         </div>
 
 
-        <label>Description: <input formControlName="description" /></label>
+        <label>{{ 'description' | i18next }} <input formControlName="description" /></label>
 
-        <label>Gender:
+        <label>{{ 'gender' | i18next }}
           <select formControlName="gender">
-            <option value="Both">Both</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
+            <option value="Both">{{ 'both' | i18next }}</option>
+            <option value="Male">{{ 'male' | i18next }}</option>
+            <option value="Female">{{ 'female' | i18next }}</option>
           </select>
         </label>
 
-        <label>Painful: <input type="checkbox" formControlName="painful" (change)="onPainfulChange($event, 'hu')" /></label>
+        <label>{{ 'painful' | i18next }} <input type="checkbox" formControlName="painful" (change)="onPainfulChange($event, 'hu')" /></label>
 
-        Pain location:
+        {{ 'painLocation' | i18next }}
         <div *ngIf="diseaseFormHu.get('painful')?.value" formArrayName="painLocation">
           <div *ngFor="let control of painLocationArrayHu.controls; let i = index">
             <select [formControlName]="i">
@@ -50,57 +49,57 @@
             </select>
             <button type="button" (click)="removeControl(painLocationArrayHu, i)">❌</button>
           </div>
-          <button type="button" (click)="addControl(painLocationArrayHu)">+ Add</button>
+          <button type="button" (click)="addControl(painLocationArrayHu)">+ {{ 'add' | i18next }}</button>
         </div>
 
-        Prevention:
+        {{ 'prevention' | i18next }}
         <div formArrayName="prevention">
           <div *ngFor="let control of preventionArrayHu.controls; let i = index">
             <input [formControlName]="i" />
             <button type="button" (click)="removeControl(preventionArrayHu, i)">❌</button>
           </div>
-          <button type="button" (click)="addControl(preventionArrayHu)">+ Add</button>
+          <button type="button" (click)="addControl(preventionArrayHu)">+ {{ 'add' | i18next }}</button>
         </div>
 
-        Risk factors:
+        {{ 'riskFactors' | i18next }}
         <div formArrayName="riskFactors">
           <div *ngFor="let control of riskFactorsArrayHu.controls; let i = index">
             <input [formControlName]="i" />
             <button type="button" (click)="removeControl(riskFactorsArrayHu, i)">❌</button>
           </div>
-          <button type="button" (click)="addControl(riskFactorsArrayHu)">+ Add</button>
+          <button type="button" (click)="addControl(riskFactorsArrayHu)">+ {{ 'add' | i18next }}</button>
         </div>
 
-        Treatment:
+        {{ 'treatment' | i18next }}
         <div formArrayName="treatment">
           <div *ngFor="let control of treatmentArrayHu.controls; let i = index">
             <input [formControlName]="i" />
             <button type="button" (click)="removeControl(treatmentArrayHu, i)">❌</button>
           </div>
-          <button type="button" (click)="addControl(treatmentArrayHu)">+ Add</button>
+          <button type="button" (click)="addControl(treatmentArrayHu)">+ {{ 'add' | i18next }}</button>
         </div>
 
-        <button type="submit">Save</button>
+        <button type="submit">{{ 'save' | i18next }}</button>
       </form>
     </div>
 
     <!-- Angol Form -->
     <div class="disease-form">
-      <h2>English</h2>
+      <h2>{{ 'english' | i18next }}</h2>
       <form [formGroup]="diseaseFormEn" (ngSubmit)="submitDisease('en')">
-        <label>ID: <input formControlName="id" /></label>
-        <label>Name: <input formControlName="name" /></label>
-        <label>Age Range:</label>
+        <label>{{ 'id' | i18next }} <input formControlName="id" /></label>
+        <label>{{ 'name' | i18next }} <input formControlName="name" /></label>
+        <label>{{ 'ageRange' | i18next }}</label>
         <div class="age-range">
-          <label for="ageMin">Min Age:</label>
+          <label for="ageMin">{{ 'minAge' | i18next }}</label>
           <input type="number" id="ageMin" formControlName="ageMin" />
       
-          <label for="ageMax">Max Age:</label>
+          <label for="ageMax">{{ 'maxAge' | i18next }}</label>
           <input type="number" id="ageMax" formControlName="ageMax" />
         </div>
-        <label>Age Label: <input formControlName="ageLabel" /></label>
+        <label>{{ 'ageLabel' | i18next }} <input formControlName="ageLabel" /></label>
 
-        <label>Tünetek:</label>
+        <label>{{ 'symptoms' | i18next }}</label>
         <div formArrayName="symptoms">
           <div *ngFor="let control of symptomsArrayHu.controls; let i = index">
             <select [formControlName]="i">
@@ -108,23 +107,23 @@
             </select>
             <button type="button" (click)="removeControl(symptomsArrayHu, i)">❌</button>
           </div>
-          <button type="button" (click)="addControl(symptomsArrayHu)">+ Add</button>
+          <button type="button" (click)="addControl(symptomsArrayHu)">+ {{ 'add' | i18next }}</button>
         </div>
 
 
-        <label>Description: <input formControlName="description" /></label>
+        <label>{{ 'description' | i18next }} <input formControlName="description" /></label>
 
-        <label>Gender:
+        <label>{{ 'gender' | i18next }}
           <select formControlName="gender">
-            <option value="Both">Both</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
+            <option value="Both">{{ 'both' | i18next }}</option>
+            <option value="Male">{{ 'male' | i18next }}</option>
+            <option value="Female">{{ 'female' | i18next }}</option>
           </select>
         </label>
 
-        <label>Painful: <input type="checkbox" formControlName="painful" (change)="onPainfulChange($event, 'en')" /></label>
+        <label>{{ 'painful' | i18next }} <input type="checkbox" formControlName="painful" (change)="onPainfulChange($event, 'en')" /></label>
 
-        Pain location:
+        {{ 'painLocation' | i18next }}
         <div *ngIf="diseaseFormEn.get('painful')?.value" formArrayName="painLocation">
           <div *ngFor="let control of painLocationArrayEn.controls; let i = index">
             <select [formControlName]="i">
@@ -132,48 +131,59 @@
             </select>
             <button type="button" (click)="removeControl(painLocationArrayEn, i)">❌</button>
           </div>
-          <button type="button" (click)="addControl(painLocationArrayEn)">+ Add</button>
+          <button type="button" (click)="addControl(painLocationArrayEn)">+ {{ 'add' | i18next }}</button>
         </div>
 
-        Prevention:
+        {{ 'prevention' | i18next }}
         <div formArrayName="prevention">
           <div *ngFor="let control of preventionArrayEn.controls; let i = index">
             <input [formControlName]="i" />
             <button type="button" (click)="removeControl(preventionArrayEn, i)">❌</button>
           </div>
-          <button type="button" (click)="addControl(preventionArrayEn)">+ Add</button>
+          <button type="button" (click)="addControl(preventionArrayEn)">+ {{ 'add' | i18next }}</button>
         </div>
 
 
-        Risk factors:
+        {{ 'riskFactors' | i18next }}
         <div formArrayName="riskFactors">
           <div *ngFor="let control of riskFactorsArrayEn.controls; let i = index">
             <input [formControlName]="i" />
             <button type="button" (click)="removeControl(riskFactorsArrayEn, i)">❌</button>
           </div>
-          <button type="button" (click)="addControl(riskFactorsArrayEn)">+ Add</button>
+          <button type="button" (click)="addControl(riskFactorsArrayEn)">+ {{ 'add' | i18next }}</button>
         </div>
 
-        Treatment:
+        {{ 'treatment' | i18next }}
         <div formArrayName="treatment">
           <div *ngFor="let control of treatmentArrayEn.controls; let i = index">
             <input [formControlName]="i" />
             <button type="button" (click)="removeControl(treatmentArrayEn, i)">❌</button>
           </div>
-          <button type="button" (click)="addControl(treatmentArrayEn)">+ Add</button>
+          <button type="button" (click)="addControl(treatmentArrayEn)">+ {{ 'add' | i18next }}</button>
         </div>
 
-        <button type="submit">Save</button>
+        <button type="submit">{{ 'save' | i18next }}</button>
       </form>
     </div>
   </div>
 
+  <app-edit-disease
+  *ngIf="selectedDiseaseId"
+  [diseaseId]="selectedDiseaseId"
+  (close)="selectedDiseaseId = null">
+  </app-edit-disease>
+
   <!-- Betegségek listázása -->
   <div *ngFor="let d of allDiseases">
     <app-disease [diseaseName]="d.id"></app-disease>
-    <button (click)="deleteDisease(d.id)">Törlés mindkét nyelven</button>
-    <button (click)="editDisease(d.id)">Betegség szerkesztése</button>
+    <button (click)="deleteDisease(d.id)">{{ 'delete' | i18next }}</button>
+    <button (click)="editDisease(d.id)">{{ 'edit' | i18next }}</button>
   </div>
-  
+  <mat-paginator [length]="totalDiseases" 
+               [pageSize]="pageSize"
+               [pageIndex]="currentPage"
+               [pageSizeOptions]="[5, 10, 20]"
+               (page)="onPageChange($event)">
+</mat-paginator>
 
 </div>

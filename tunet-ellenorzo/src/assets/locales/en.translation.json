@@ -31,5 +31,64 @@
     "yes": "Yes",
     "no": "No",
     "pain": "Do you experience pain?",
-    "where": "If yes, where?"
+    "where": "If yes, where?",
+
+    "searchProf": "Search",
+
+    "diseasecrud": "Disease management",
+
+    
+    "hungarian": "Hungarian",
+    "english": "English",
+    "delete": "Delete",
+    "edit": "Edit disease data",
+    "save": "Save",
+    "add": "Add",
+    "treatment":"Treatment:",
+    "riskFactors": "Risk factors:",
+    "prevention": "Prevention",
+    "painLocation": "Pain Location:",
+    "painful": "Painful?",
+    "both": "Both",
+    "description": "Description:",
+    "ageLabel": "Age label:",
+    "maxAge": "Max. age",
+    "minAge": "Min. age",
+    "ageRange": "Age: ",
+    "name": "Name:",
+    "id": "ID:",
+
+
+
+
+    "associatedDiseases":"Associated diseases:",
+    "causes": "Causes:",
+
+    "editProfile": "Edit profile",
+    "deleteMyProfile": "Delete my profile",
+    "deleteProfile": "Delete profile",
+    "posts": "Posts",
+    "saved": "Saved results",
+    "uploadedDocs": "Uploaded documents",
+    "alerts": "Alerts",
+    "shared": "Shared documents",
+
+
+    "upload": "Upload",
+    "pic": "PICTURE",
+    "freq": "Frequency",
+
+
+
+
+
+    "profiledata": "Profile",
+    "newPass": "New profile",
+    "docProfile": "Doctor profile",
+    "delDocProfile": "Delete doctor profile"
+
+
+
+
+
 }

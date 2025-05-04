@@ -1,9 +1,9 @@
 <div class="alert-container">
     <div class="alert-title">{{ alert.name }}</div>
-    <div class="alert-frequency">Gyakoriság: {{ alert.frequency }}</div>
+    <div class="alert-frequency">{{ 'freq' | i18next }} {{ alert.frequency }}</div>
     <div class="alert-times">
       <span *ngFor="let time of alert.times">{{ time }}</span>
     </div>
-    <button (click)="editAlert(alert)">Módosítás</button>
-    <button (click)="deleteAlert(alert.id)">Törlés</button>
+    <button (click)="editAlert(alert)">{{ 'edit' | i18next }}</button>
+    <button (click)="deleteAlert(alert.id)">{{ 'delete' | i18next }}</button>
 </div>

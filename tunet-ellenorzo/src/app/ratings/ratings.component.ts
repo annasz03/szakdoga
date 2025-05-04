@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
 import { collection, Firestore, getDocs } from '@angular/fire/firestore';
 
@@ -12,17 +13,17 @@ export class RatingsComponent {
   @Input() rating:any;
   username="";
   
-  constructor(private firestore: Firestore){}
+  constructor(private firestore: Firestore, private http:HttpClient){}
 
-  ngOnInit(){
-    getDocs(collection(this.firestore, 'users')).then(snapshot => {
-          snapshot.forEach(doc => {
-            const docData = doc.data();
-            if (doc.id === this.rating.createdBy) {
-              this.username = docData["username"];
-            }
-          });
-        });
+  ngOnInit() {
+    this.http.post<{ username: string }>('http://localhost:3000/api/get-username-by-id', {
+      uid: this.rating.createdBy
+    }).subscribe({
+      next: (res) => {
+        this.username = res.username;
+      },
+    });
   }
+  
 
 }

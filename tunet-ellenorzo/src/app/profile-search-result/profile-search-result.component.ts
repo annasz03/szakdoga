@@ -4,33 +4,61 @@ import { Iuser } from '../iuser';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-profile-search-result',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatPaginatorModule],
   templateUrl: './profile-search-result.component.html',
   styleUrl: './profile-search-result.component.css'
 })
 export class ProfileSearchResultComponent {
-  name:string = ""
+  name: string = "";
+  profiles: Iuser[] = [];
+  currentPage = 0;
+  pageSize = 10;
+  totalItems = 0;
+  loading = false;
 
-  profiles: Iuser[]=[]
-  constructor(private dataService: DataService, private http: HttpClient, private router: Router) {
+  constructor(
+    private dataService: DataService, 
+    private http: HttpClient, 
+    private router: Router
+  ) {
     this.dataService.getProfileSearch.subscribe(response => {
       this.name = response;
-      this.http.post<any>('http://localhost:3000/api/get-user-search', {
-        search: this.name
-      }).subscribe({
-        next: (response) => {
-          this.profiles = response.users;
-        }
-      });
-      
+      this.currentPage = 0;
+      this.searchUsers();
     });
   }
-  
-  goToUserProfile(uid:string) {
+
+  searchUsers() {
+    this.loading = true;
+    this.http.post<any>('http://localhost:3000/api/get-user-search', {
+      search: this.name,
+      page: this.currentPage + 1,
+      pageSize: this.pageSize
+    }).subscribe({
+      next: (response) => {
+        this.profiles = response.users;
+        this.totalItems = response.totalCount;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error(error);
+        this.loading = false;
+      }
+    });
+  }
+
+  onPageChange(event: PageEvent) {
+    this.currentPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.searchUsers();
+  }
+
+  goToUserProfile(uid: string) {
     this.router.navigate(['/profile', uid]);
   }
 }

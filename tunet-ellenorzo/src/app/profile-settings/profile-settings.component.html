@@ -1,32 +1,32 @@
 <div class="section">
-    <h3>Fiók adatok</h3>
+    <h3>{{ 'profiledata' | i18next }}</h3>
     <div class="form-group">
       <input type="text" placeholder="Display Name" [(ngModel)]="displayNameField">
       <input type="text" placeholder="Email" [(ngModel)]="emailField">
   
       <select [(ngModel)]="gender">
-        <option value="male">Férfi</option>
-        <option value="female">Nő</option>
+        <option value="male">{{ 'male' | i18next }}</option>
+        <option value="female">{{ 'female' | i18next }}</option>
       </select>
   
       <input type="date" [(ngModel)]="birth">
     </div>
-    <button (click)="saveProfileData()">Mentés</button>
+    <button (click)="saveProfileData()">{{ 'save' | i18next }}</button>
   </div>
   
 
   <div class="section">
-    <h3>Új jelszó</h3>
+    <h3>{{ 'newPass' | i18next }}</h3>
     <div class="form-group">
       <input type="text" placeholder="jelszo">
       <input type="text" placeholder="jelszo ujra">
     </div> 
     {{passError}}
-    <button (click)="saveNewPassword()">Mentés</button>
+    <button (click)="saveNewPassword()">{{ 'save' | i18next }}</button>
   </div>
 
   <div class="section" *ngIf="role==='doctor'">
-    <h3>Orvosi fiók adatok</h3>
+    <h3>{{ 'docProfile' | i18next }}</h3>
     <div class="form-group">
         <input type="text" placeholder="Név" [(ngModel)]="name" name="name">
         <input type="text" placeholder="Város" [(ngModel)]="city" name="city">
@@ -35,7 +35,7 @@
         <input type="text" placeholder="Szakirány" [(ngModel)]="specialty" name="specialty">
     </div>
     <div class="button-group">
-      <button (click)="saveDoctorData()">Mentés</button>
-      <button (click)="deleteDoctorProfile()">Orvosi profil törlése</button>
+      <button (click)="saveDoctorData()">{{ 'save' | i18next }}</button>
+      <button (click)="deleteDoctorProfile()">{{ 'delDocProfile' | i18next }}</button>
     </div>
   </div>

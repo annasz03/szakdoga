@@ -6,6 +6,7 @@ import { AuthService } from '../auth.service';
 import { FormsModule } from '@angular/forms';
 import { Ratings } from '../ratings';
 import { RatingsComponent } from '../ratings/ratings.component';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-doctor',
@@ -23,23 +24,18 @@ export class DoctorComponent {
   selectedRating = 0;
   comment = '';
   currentUser:any;
-  private firestore = inject(Firestore);
   private authService = inject(AuthService);
 
-  constructor(){
+  constructor(private http:HttpClient){
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
     });
 
-    const ref = collection(this.firestore, 'ratings');
-          getDocs(ref).then(snapshot => {
-            snapshot.forEach(doc => {
-              const docData = doc.data();
-              if (docData["doctorId"] === this.doc.id) {
-                this.ratings.push(docData as Ratings)
-              }
-            });
-          });
+    this.http.get<Ratings[]>(`http://localhost:3000/api/ratings/${this.doc.id}`)
+    .subscribe(data => {
+      this.ratings = data;
+    });
+
   }
 
   openMoreData() {
@@ -47,45 +43,20 @@ export class DoctorComponent {
   }
 
   deleteRequest() {
-    const docRef = doc(this.firestore, 'doctors_temp', this.doc.id);
-    deleteDoc(docRef)
+    this.http.delete(`http://localhost:3000/doctors_temp/${this.doc.id}`)
+      .subscribe(() => {
+      });
+
   }
 
   acceptRequest() {
-    const docRef = doc(this.firestore, 'doctors_temp', this.doc.id);
-    const doctorsCollection = collection(this.firestore, 'doctors');
-  
-    addDoc(doctorsCollection, {
-      uid: this.doc.uid,
-      name: this.doc.name,
-      phone: this.doc.phone,
-      city: this.doc.city,
-      address: this.doc.address,
-      specialty: this.doc.specialty,
-      profileUrl: this.doc.profileUrl || '',
-      specs: [this.doc.specialty],
-      cities: [this.doc.city],
-      gender: 'unknown',
-      available: true
-    }).then(() => {
-      return deleteDoc(docRef);
+    this.http.post('http://localhost:3000/api/doctors_temp/accept', {
+      doc: this.doc,
+      currentUsername: this.currentUser.displayName
+    }).subscribe(() => {
+      console.log('accepted');
     });
-  
-    const ref = collection(this.firestore, 'users');
-    getDocs(ref).then(snapshot => {
-      let userId = "";
-      snapshot.forEach(docc => {
-        const docData = docc.data();
-        if (docData["username"] === this.currentUser.displayName) {
-          userId = docc.id;
-  
-          const userref = doc(this.firestore, 'users', userId);
-          updateDoc(userref, {
-            role: "doctor"
-          });
-        }
-      });
-    });
+    
   }
   
 
@@ -94,16 +65,15 @@ export class DoctorComponent {
   }
 
   async submitRating() {
-    const ratingsCollection = collection(this.firestore, 'ratings');
-    console.log(this.doc)
-    await addDoc(ratingsCollection, {
+    this.http.post('http://localhost:3000/api/submit-rating', {
       doctorId: this.doc.id,
       rating: this.selectedRating,
       comment: this.comment,
-      createdBy: this.currentUser?.uid || 'anonymous',
-      createdAt: new Date()
+      createdBy: this.currentUser?.uid || 'anonymous'
+    }).subscribe(() => {
+      this.selectedRating = 0;
+      this.comment = '';
     });
-    this.selectedRating = 0;
-    this.comment = '';
+    
   }
 }

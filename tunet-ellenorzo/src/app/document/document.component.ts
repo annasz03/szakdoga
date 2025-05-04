@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import { Component, Inject, inject, Input } from '@angular/core';
 import { DataService } from '../data.service';
 import { AuthService } from '../auth.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { NotificationDialog } from '../notification-page/notification-page.component';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { addDoc, collection, Firestore, getCountFromServer, getDocs, limit, orderBy, query, startAfter, where } from '@angular/fire/firestore';
 import { HttpClient } from '@angular/common/http';
 import { IDoctorResponse } from '../doctorres.interface';
@@ -24,6 +24,7 @@ export class DocumentComponent {
 
   @Input() fileName="";
   @Input() text:string="";
+  @Input() id = "";
 
   height="100";
   width="100";
@@ -35,7 +36,7 @@ export class DocumentComponent {
   @Input() file="";
   
   private authService = inject(AuthService);
-  constructor(private dialog: MatDialog,private dataService:DataService, private sanitizer: DomSanitizer){}
+  constructor(private dialog: MatDialog,private dataService:DataService){}
 
   ngOnInit(){
     this.authService.user$.subscribe(user => {
@@ -50,6 +51,7 @@ export class DocumentComponent {
   delete(){
     this.dataService.deleteDoc(this.currentUser.uid, this.fileName).subscribe({
       next: (response) => {
+        console.log("deleted")
       }
     })
     setTimeout(()=>{
@@ -72,7 +74,7 @@ export class DocumentComponent {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(ShareDialog, {
-      data: { document_id: this.fileName }
+      data: { document_id: this.id }
     });
   
     dialogRef.afterClosed().subscribe(result => {
@@ -92,7 +94,6 @@ export class DocumentComponent {
 })
 export class ShareDialog {
   @Input() doctor_id: string ="";
-  @Input() document_id: string ="";
   doctors:IDoctorResponse[]=[]
   private authService = inject(AuthService);
   currentUser:any;
@@ -104,131 +105,106 @@ export class ShareDialog {
   lastVisible: any = null;
   nameValue:any;
 
-  constructor(private firestore: Firestore, public dialogRef: MatDialogRef<NotificationDialog>, private http:HttpClient, ){
+  constructor(
+    public dialogRef: MatDialogRef<NotificationDialog>,
+    private http: HttpClient,
+    @Inject(MAT_DIALOG_DATA) public data: { document_id: string }
+
+  ) {
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
     });
+
+    console.log(this.data.document_id);
   }
+  
 
   ngOnInit(){
-    this.http.get<{ user: any }>('http://localhost:3000/api/get-all-doctors').subscribe(response => {
-      if (Array.isArray(response)) {
-        this.doctors.push(...response);
-      }
-    });
-
     this.loadTotalCount();
     this.loadDoctors();
-
   }
 
-  sendToDoctor(id:string | undefined){
-    console.log(id)
-    const documentsCollection = collection(this.firestore, 'shared_documents');
-    
-            const newDoc= {
-              uid: this.currentUser.uid,
-              doctor_id:id,
-              document_id: this.document_id
-            }
-    
-            addDoc(documentsCollection,newDoc).then((docref)=>{
-              console.log('Sikeres hozzáadás');
-                }).catch((error) => {
-                  console.error('Nem sikerült', error);
-            })
-  }
-
-  loadTotalCount(){
-      const areasRef = collection(this.firestore, 'doctors');
-          getCountFromServer(areasRef).then(snapshot => {
-            this.totalItems = snapshot.data().count;
-            this.loading = false;
-          });
-    }
+  sendToDoctor(id: string | undefined): void {  
+    const newDoc = {
+      uid: this.currentUser?.uid,
+      doctor_id: id,
+      document_id: this.data.document_id
+    };
   
-    loadDoctors(){
-      const areasRef = collection(this.firestore, 'doctors');
-      const areasQuery = query(areasRef, orderBy('name'), limit(this.pageSize));
-  
-      getDocs(areasQuery).then(snapshot => {
-        this.doctors = [];
-        snapshot.forEach(doc => {
-          const docData = doc.data()
-          this.doctors.push({
-            id: doc.id,
-            name: docData["name"],
-            speciality: docData["specialty"],
-            city: docData["city"],
-            phone: docData["phone"],
-            address: docData["address"],
-            uid: docData["uid"]
-          });
-          
-        });
-        this.lastVisible = snapshot.docs[snapshot.docs.length - 1];
+    this.http.post('http://localhost:3000/api/send-to-doctor', newDoc)
+      .subscribe({
+        next: (response) => {
+          console.log(response);
+        }
       });
-    }
+  }
+  
+
+  loadTotalCount() {
+    this.http.get<{ totalCount: number }>('http://localhost:3000/api/load-total-count')
+      .subscribe({
+        next: (response) => {
+          this.totalItems = response.totalCount;
+          this.loading = false;
+        }
+      });
+  }
+  
+  
+  loadDoctors() {
+    const requestData = {
+      pageSize: this.pageSize,
+      lastVisibleDocId: this.lastVisible?.id
+    };
+  
+    this.http.post<{ doctors: any[], lastVisible: string }>('http://localhost:3000/api/load-doctors', requestData)
+      .subscribe({
+        next: (response) => {
+          this.doctors = [...this.doctors, ...response.doctors];
+          this.lastVisible = response.lastVisible ? { id: response.lastVisible } : null;
+        }
+      });
+  }
+  
   
     onPageChange(event: any) {
       const startIndex = event.pageIndex * event.pageSize;
       const endIndex = startIndex + event.pageSize;
-      this.loadNextPage(startIndex, endIndex);
+      this.loadNextPage();
     }
     
-    loadNextPage(startIndex: number, endIndex: number) {
-      if (!this.lastVisible) return;
-  
-      const docref = collection(this.firestore, 'doctors');
-      const docq = query(docref, orderBy('name'), startAfter(this.lastVisible), limit(this.pageSize));
-  
-      getDocs(docq).then(snapshot => {
-        if (!snapshot.empty) {
-          this.doctors = [];
-          snapshot.forEach(doc => {
-            this.doctors.push(doc.data() as IDoctorResponse);
-          });
-          this.lastVisible = snapshot.docs[snapshot.docs.length - 1];
+    loadNextPage() {    
+      this.http.post<{ doctors: IDoctorResponse[], lastVisible: string }>(
+        'http://localhost:3000/api/load-doctors-next',
+        {
+          lastVisibleDocId: this.lastVisible.id,
+          pageSize: this.pageSize
+        }
+      ).subscribe({
+        next: response => {
+          if (response.doctors.length > 0) {
+            this.doctors = response.doctors;
+            this.lastVisible = { id: response.lastVisible };
+          }
         }
       });
     }
+    
 
   closeDialog(): void {
     this.dialogRef.close();
   }
 
   search() {
-    this.loading = true;
-    let docRef = collection(this.firestore, 'doctors');
-  
-    let q;
-    if (this.nameValue && this.nameValue.trim()) {
-      const name = this.nameValue.trim();
-      q = query(
-        docRef,
-        orderBy('name'),
-        where('name', '>=', name),
-        where('name', '<=', name + '\uf8ff')
-      );
-    } else {
-      q = query(docRef, orderBy('name'), limit(this.pageSize));
-    }
-  
-    getDocs(q).then(snapshot => {
-      this.doctors = [];
-      snapshot.forEach(doc => {
-        const d = doc.data();
-        this.doctors.push({
-          id: doc.id,
-          name: d['name'],
-          speciality: d['specialty'],
-          city: d['city'],
-          phone: d['phone'],
-          address: d['address']
-        });
-      });
-      this.loading = false;
+    this.http.post<IDoctorResponse[]>('http://localhost:3000/api/get-searched-doctors', {
+      searchkey: this.nameValue
+    }).subscribe({
+      next: (response) => {
+        this.doctors = response;
+      }
     });
   }
+  
+   
   
 }

@@ -13,6 +13,7 @@ import { AuthService } from '../auth.service';
 import { Timestamp } from 'firebase/firestore';
 import { Idoctor } from '../idoctor';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { HttpClient } from '@angular/common/http';
 
 type selectType = { key: string; value: string };
 
@@ -58,97 +59,70 @@ export class DoctorFinderPageComponent {
 
   private authService = inject(AuthService);
 
-  constructor(private dataService: DataService, private firestore: Firestore) {
+  constructor(private dataService: DataService, private firestore: Firestore, private http:HttpClient) {}
+
+  async ngOnInit() {
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
     });
-  }
-
-  async ngOnInit() {
-    this.loading = true;
-
-    getDocs(collection(this.firestore, 'areas')).then(snapshot => {
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        if (data) {
-          this.area.push({ key: doc.id, value: data['name'] });
-        }
-      });
+    this.http.get('http://localhost:3000/api/init-data', {
+      params: { username: this.currentUser.displayName }
+    }).subscribe((data: any) => {
+      this.area = data.area;
+      this.specList = data.specList;
+      this.role = data.role;
+    
+      this.loadTotalCount();
+      this.loadDoctors();
     });
-
-    getDocs(collection(this.firestore, 'doctor_spec')).then(snapshot => {
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        if (data) {
-          this.specList.push({ key: doc.id, value: data['name'] });
-        }
-      });
-    });
-
-    getDocs(collection(this.firestore, 'users')).then(snapshot => {
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        if (data["username"] === this.currentUser.displayName) {
-          this.role = data["role"];
-        }
-      });
-    });
-
-
-    this.loadTotalCount();
-    this.loadDoctors();
+    
     
   }
 
-  loadTotalCount(){
-    const areasRef = collection(this.firestore, 'doctors');
-        getCountFromServer(areasRef).then(snapshot => {
-          this.totalItems = snapshot.data().count;
+  loadTotalCount() {
+    this.http.get<{ totalCount: number }>('http://localhost:3000/api/load-total-count')
+      .subscribe({
+        next: (response) => {
+          this.totalItems = response.totalCount;
           this.loading = false;
-        });
+        }
+      });
   }
 
-  loadDoctors(){
-    const areasRef = collection(this.firestore, 'doctors');
-    const areasQuery = query(areasRef, orderBy('name'), limit(this.pageSize));
-
-    getDocs(areasQuery).then(snapshot => {
-      this.doctors = [];
-      snapshot.forEach(doc => {
-        const docData = doc.data()
-        this.doctors.push({
-          id: doc.id,
-          name: docData["name"],
-          speciality: docData["specialty"],
-          city: docData["city"],
-          phone: docData["phone"],
-          address: docData["address"]
-        });
-        
+  loadDoctors() {
+    const requestData = {
+      pageSize: this.pageSize,
+      lastVisibleDocId: this.lastVisible?.id
+    };
+  
+    this.http.post<{ doctors: any[], lastVisible: string }>('http://localhost:3000/api/load-doctors', requestData)
+      .subscribe({
+        next: (response) => {
+          this.doctors = [...this.doctors, ...response.doctors];
+          this.lastVisible = response.lastVisible ? { id: response.lastVisible } : null;
+        }
       });
-      this.lastVisible = snapshot.docs[snapshot.docs.length - 1];
-    });
   }
 
   onPageChange(event: any) {
     const startIndex = event.pageIndex * event.pageSize;
     const endIndex = startIndex + event.pageSize;
-    this.loadNextPage(startIndex, endIndex);
+    this.loadNextPage();
   }
   
-  loadNextPage(startIndex: number, endIndex: number) {
-    if (!this.lastVisible) return;
-
-    const docref = collection(this.firestore, 'doctors');
-    const docq = query(docref, orderBy('name'), startAfter(this.lastVisible), limit(this.pageSize));
-
-    getDocs(docq).then(snapshot => {
-      if (!snapshot.empty) {
-        this.doctors = [];
-        snapshot.forEach(doc => {
-          this.doctors.push(doc.data() as IDoctorResponse);
-        });
-        this.lastVisible = snapshot.docs[snapshot.docs.length - 1];
+  loadNextPage() {    
+    this.http.post<{ doctors: IDoctorResponse[], lastVisible: string }>(
+      'http://localhost:3000/api/load-doctors-next',
+      {
+        lastVisibleDocId: this.lastVisible.id,
+        pageSize: this.pageSize
+      }
+    ).subscribe({
+      next: response => {
+        if (response.doctors.length > 0) {
+          this.doctors = response.doctors;
+          this.lastVisible = { id: response.lastVisible };
+        }
       }
     });
   }
@@ -156,38 +130,17 @@ export class DoctorFinderPageComponent {
   
 
   search() {
-    this.loading = true;
-  
-    let docRef = collection(this.firestore, 'doctors');
-    let q = query(docRef);
-  
-    if (this.nameValue.trim()) {
-      q = query(q, where('name', '>=', this.nameValue), where('name', '<=', this.nameValue + '\uf8ff'));
-    }
-  
-    if (this.selectedSpec) {
-      q = query(q, where('specialty', '==', this.selectedSpec));
-    }
-  
-    if (this.selectedArea) {
-      q = query(q, where('city', '==', this.selectedArea));
-    }
-  
-    getDocs(q).then(snapshot => {
-      this.doctors = [];
-      snapshot.forEach(doc => {
-        const d = doc.data();
-        this.doctors.push({
-          id: doc.id,
-          name: d['name'],
-          speciality: d['specialty'],
-          city: d['city'],
-          phone: d['phone'],
-          address: d['address']
-        });
-      });
+    this.http.get('http://localhost:3000/api/search-doctors', {
+      params: {
+        name: this.nameValue,
+        specialty: this.selectedSpec,
+        city: this.selectedArea
+      }
+    }).subscribe((doctors: any) => {
+      this.doctors = doctors;
       this.loading = false;
     });
+    
   }
   
 
@@ -200,27 +153,11 @@ export class DoctorFinderPageComponent {
   
 
   reqDoc() {
-    this.reqOpen = !this.reqOpen;
-    const ref = collection(this.firestore, 'doctors_temp');
-
-    getDocs(ref).then(snapshot => {
-      this.docs_temp = [];
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        this.docs_temp.push({
-          id: doc.id,
-          uid: data['uid'],
-          name: data['name'],
-          phone: data['phone'],
-          city: data['city'],
-          address: data['address'],
-          specialty: data['specialty'],
-          createdAt: data['createdAt'],
-          profileUrl: data['profileUrl'] || '',
-          number: data['number']
-        });
-      });
+    this.http.get<any[]>('http://localhost:3000/doctors-temp').subscribe(docs => {
+      this.docs_temp = docs;
+      this.reqOpen = !this.reqOpen;
     });
+    
   }
 
   registerDocProfile() {
@@ -243,14 +180,13 @@ export class DoctorFinderPageComponent {
 
 
   
-    const tempCollection = collection(this.firestore, 'doctors_temp');
-    addDoc(tempCollection, newDoc).then(() => {
-      this.errorMsg = '';
-      this.openDocReg = false;
-    }).catch(err => {
-      this.errorMsg = "Hiba történt a regisztrációnál.";
-      console.error(err);
+    this.http.post('http://localhost:3000/api/doctors-temp', newDoc).subscribe({
+      next: () => {
+        this.errorMsg = '';
+        this.openDocReg = false;
+      }
     });
+    
   }
   
 

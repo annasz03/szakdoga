@@ -9,6 +9,7 @@ import { collection, doc, getFirestore, setDoc, getDocs } from '@angular/fire/fi
 import { AuthService } from '../auth.service';
 import { jsPDF } from 'jspdf';
 import { LangService } from '../lang-service.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-result-page',
@@ -22,7 +23,7 @@ export class ResultPageComponent {
   currentUser: any;
   currentLang: string=""
 
-  constructor(private resultService: ResultService,private authService: AuthService, private langService: LangService) {}
+  constructor(private resultService: ResultService,private authService: AuthService, private langService: LangService, private http:HttpClient) {}
 
   ngOnInit() {
     const resultData = this.resultService.getResult();
@@ -43,82 +44,65 @@ export class ResultPageComponent {
   }
 
   saveResult() {
-    let tempNames = [];
-    for (let index = 0; index < this.result.length; index++) {
-      tempNames.push(this.result[index].key);
-    }
-
-    const db = getFirestore();
-    const resultRef = collection(db, 'savedResults');
-
-    const newDocRef = doc(resultRef);
-    setDoc(newDocRef, {
-      resultMap: Object.fromEntries(tempNames.map((name, index) => [index + 1, name])),
-      timestamp: new Date(),
+    const body = {
+      result: this.result,
       uid: this.currentUser.uid
-    })
+    };
+    
+    this.http.post('http://localhost:3000/saved-results', body).subscribe({
+      next: () => console.log('success'),
+    });
   }
 
   async exportResult() {
-    //nem jol mukodik a tagolas es a öüó javitani kell
     const doc = new jsPDF();
     const title = "Eredmények és Betegségek Adatai";
-  
     doc.setFontSize(18);
     doc.text(title, 14, 20);
   
     let yPosition = 30;
   
-    const db = getFirestore();
-    const diseasesCollection = this.currentLang === 'hu' ? 'diseases_hu' : 'diseases_en';
-    const diseasesRef = collection(db, diseasesCollection);
-    const querySnapshot = await getDocs(diseasesRef);
+    const diseaseKeys = this.result.map((item: any) => item.key);
+    const queryParam = diseaseKeys.join(',');
   
-    querySnapshot.forEach((docSnapshot: any) => {
-      const disease = docSnapshot.data();
-      const diseaseName = docSnapshot.id;
+    const lang = this.currentLang === 'en' ? 'en' : 'hu';
   
-      console.log("disease name:", diseaseName);
+    const response = await fetch(`http://localhost:3000/export-results?lang=${lang}&keys=${queryParam}`);
+    const data = await response.json();
   
-      if (this.result.some((resultItem: any) => resultItem.key === diseaseName)) {
-        const rowText = `Betegség: ${diseaseName}`;
-        doc.setFontSize(12);
-        doc.text(rowText, 14, yPosition);
-        yPosition += 10;
+    for (const disease of data) {
+      doc.setFontSize(12);
+      doc.text(`Betegség: ${disease.id}`, 14, yPosition);
+      yPosition += 10;
   
-        if (disease.symptoms && disease.symptoms.length > 0) {
-          const symptoms = `Tünetek: ${disease.symptoms.join(", ")}`;
-          doc.text(symptoms, 14, yPosition);
-          yPosition += 10;
-        }
-  
-        if (disease.pain) {
-          const pain = `Fájdalom: ${disease.pain}`;
-          doc.text(pain, 14, yPosition);
-          yPosition += 10;
-        }
-  
-        if (disease.treatment) {
-          const treatment = `Kezelés: ${disease.treatment}`;
-          doc.text(treatment, 14, yPosition);
-          yPosition += 10;
-        }
-  
-        if (disease.prevention) {
-          const prevention = `Megelőzés: ${disease.prevention.join(", ")}`;
-          doc.text(prevention, 14, yPosition);
-          yPosition += 10;
-        }
-  
-        if (disease.riskFactors) {
-          const riskFactors = `Kockázati tényezők: ${disease.riskFactors.join(", ")}`;
-          doc.text(riskFactors, 14, yPosition);
-          yPosition += 10;
-        }
-  
+      if (disease.symptoms?.length) {
+        doc.text(`Tünetek: ${disease.symptoms.join(", ")}`, 14, yPosition);
         yPosition += 10;
       }
-    });
+  
+      if (disease.pain) {
+        doc.text(`Fájdalom: ${disease.pain}`, 14, yPosition);
+        yPosition += 10;
+      }
+  
+      if (disease.treatment) {
+        doc.text(`Kezelés: ${disease.treatment}`, 14, yPosition);
+        yPosition += 10;
+      }
+  
+      if (disease.prevention?.length) {
+        doc.text(`Megelőzés: ${disease.prevention.join(", ")}`, 14, yPosition);
+        yPosition += 10;
+      }
+  
+      if (disease.riskFactors?.length) {
+        doc.text(`Kockázati tényezők: ${disease.riskFactors.join(", ")}`, 14, yPosition);
+        yPosition += 10;
+      }
+  
+      yPosition += 10;
+    }
+  
     doc.save('eredmenyek_betegsegek.pdf');
   }
   

@@ -24,5 +24,7 @@
         <p>
         <app-forum-post [post]="post"></app-forum-post>
     </div>
+    <mat-paginator [length]="totalItems" [pageSize]="pageSize" (page)="onPageChange($event)"></mat-paginator>
+
 
 </div>

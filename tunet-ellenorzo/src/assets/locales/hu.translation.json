@@ -27,10 +27,69 @@
     "male": "Férfi",
     "female": "nő",
     "next": "Tovább",
-    "symptoms": "Tünetek",
+    "symptoms": "Tünetek:",
     "yes": "Igen",
     "no": "Nem",
     "pain": "Van fájdalom?",
-    "where": "Ha igen, hol?"
+    "where": "Ha igen, hol?",
 
+
+    "searchProf": "Keresés",
+
+    "diseasecrud": "Betegségek kezelése",
+
+    "hungarian": "Magyar",
+    "english": "Angol",
+    "delete": "Törlés",
+    "edit": "Betegség adatok változtatása",
+    "save": "Mentés",
+    "add": "Hozzáadás",
+    "treatment":"Kezelés:",
+    "riskFactors": "Rizikó faktorok:",
+    "prevention": "Megelőzés",
+    "painLocation": "Fájdalom helye:",
+    "painful": "Fájdalmas?",
+    "both": "Mindkettő",
+    "description": "Leírás:",
+    "ageLabel": "Kor cimke:",
+    "maxAge": "Max. kor",
+    "minAge": "Min. kor",
+    "ageRange": "Kor: ",
+    "name": "Név:",
+    "id": "ID:",
+
+    "associatedDiseases":"Kapcsolódó betegségek:",
+    "causes": "Kiváltó okok:",
+
+
+
+
+
+
+
+
+    "editProfile": "Profil adatok változtatása",
+    "deleteMyProfile": "Fiókom törlése",
+    "deleteProfile": "Fiók törlése",
+    "posts": "Bejegyzések",
+    "saved": "Elmentett eredmények",
+    "uploadedDocs": "Feltöltött dokumentumok",
+    "alerts": "Értesítések",
+    "shared": "Megosztott dokumentumok",
+    "upload": "Feltöltés",
+    "pic": "KÉP",
+
+
+
+
+    
+    "freq": "Gyakoriság",
+    
+    "profiledata": "Profil adatok",
+    "newPass": "Új jelszó",
+    "docProfile": "Orvosi profil adatok",
+    "delDocProfile": "Orvosi profil törlése"
+
+
+    
 }

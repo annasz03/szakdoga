@@ -61,6 +61,51 @@ router.post('/get-user-search', async (req, res) => {
     res.status(200).send({ users });
 });
 
+router.post('/get-username-by-id', async (req, res) => {
+    const { uid } = req.body;
+
+    const docRef = db.collection('users').doc(uid);
+    const doc = await docRef.get();
+
+    const userData = doc.data();
+    const username = userData?.username || null;
+
+    res.status(200).json({ username });
+});
+
+
+//get saved results
+router.post('/get-user-saved-results', async (req, res) => {
+  const { uid } = req.body;
+    const snapshot = await db.collection('savedResults').where('uid', '==', uid).get();
+
+    if (snapshot.empty) {
+      return res.status(200).json({ savedDiseases: [] });
+    }
+
+    const savedDiseases = [];
+
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      const resultMap = data.resultMap;
+
+      if (Array.isArray(resultMap)) {
+        savedDiseases.push(resultMap);
+      } else if (typeof resultMap === 'object' && resultMap !== null) {
+        Object.values(resultMap).forEach((item) => {
+          if (typeof item === 'string') {
+            savedDiseases.push([item]);
+          } else if (Array.isArray(item)) {
+            savedDiseases.push(item);
+          }
+        });
+      }
+    });
+
+    res.status(200).json({ savedDiseases });
+});
+
+
 
 //add user
 router.post('/register', async (req, res) => {
@@ -132,19 +177,17 @@ router.post('/update-user', async (req, res) => {
 
 
 
-//delete user
+// delete user
 router.post('/delete-user', async (req, res) => {
   const { uid } = req.body;
-  try {
     await admin.auth().deleteUser(uid);
+
     const userRef = db.collection('users').doc(uid);
-    await userRef.deleteUser(uid)
+    await userRef.delete();
+
     res.status(200).send({ message: 'User deleted' });
-  } catch (error) {
-    console.error('Error deleting user:', error);
-    res.status(500).send({ error: 'Error deleting user', details: error });
-  }
 });
+
 //delet doc
 router.post('/delete-doctor-profile', async (req, res) => {
   const { uid } = req.body;
@@ -167,5 +210,101 @@ router.post('/delete-doctor-profile', async (req, res) => {
   }
 );
 
+// get-user-data-by-username
+router.post('/api/get-user-data-by-username', async (req, res) => {
+  const { displayName } = req.body;
+
+    const snapshot = await db.collection('users').where('username', '==', displayName).get();
+    const doc = snapshot.docs[0];
+    const userData = doc.data();
+
+    res.status(200).send({ userId: doc.id, role: userData.role, username: userData.username});
+});
+
+router.post('/get-profile', async (req, res) => {
+  const { uid } = req.body;
+  const snapshot = await db.collection('users').where('uid', '==', uid).get();
+
+  const userDoc = snapshot.docs[0];
+  const userData = userDoc.data();
+
+  res.status(200).send({
+    displayName: userData.username,
+  });
+});
+
+router.post('/get-username-by-uid', async (req, res) => {
+  const { uid } = req.body;
+
+    const snapshot = await db.collection('users').where('uid', '==', uid).get();
+    const userDoc = snapshot.docs[0];
+    const username = userDoc.data().username;
+
+    res.status(200).send({ username });
+});
+
+router.post('/api/get-user-search', async (req, res) => {
+    const { search, page = 1, pageSize = 10 } = req.body;
+    const offset = (page - 1) * pageSize;
+
+    let query = db.collection('users')
+                  .where('username', '>=', search)
+                  .where('username', '<=', search + '\uf8ff')
+                  .limit(pageSize)
+                  .offset(offset);
+
+    const snapshot = await query.get();
+    const totalSnapshot = await db.collection('users').where('username', '>=', search).where('username', '<=', search + '\uf8ff').get();
+
+    const users = snapshot.docs.map(doc => ({
+      uid: doc.id,
+      ...doc.data()
+    }));
+
+    res.json({
+      users,
+      totalCount: totalSnapshot.data().count
+    });
+});
+
+router.post('/saved-results', async (req, res) => {
+    const { result, uid } = req.body;
+
+    const tempNames = result.map(item => item.key);
+    const resultMap = {};
+
+    tempNames.forEach((name, index) => {
+      resultMap[index + 1] = name;
+    });
+
+    const newDocRef = db.collection('savedResults').doc();
+    await newDocRef.set({
+      resultMap,
+      timestamp: new Date(),
+      uid
+    });
+
+    res.status(200).json({ message: 'saved' });
+});
+
+router.get('/export-results', async (req, res) => {
+    const { lang = 'hu', keys } = req.query;
+
+    const keyList = keys.split(',');
+    const collectionName = lang === 'en' ? 'diseases_en' : 'diseases_hu';
+    const results = [];
+
+    const promises = keyList.map(async (key) => {
+      const docRef = db.collection(collectionName).doc(key);
+      const snapshot = await docRef.get();
+
+      if (snapshot.exists) {
+        results.push({ id: key, ...snapshot.data() });
+      }
+    });
+
+    await Promise.all(promises);
+    res.status(200).json(results);
+});
 
 export default router;

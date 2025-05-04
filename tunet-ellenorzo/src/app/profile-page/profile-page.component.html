@@ -1,20 +1,20 @@
 <div class="profile">
     <div class="profileData">
-        <img src="../../assets/avatar.png" class="profilePic">
+        <img src="../../assets/avatar.webp" class="profilePic" loading="lazy">
         <span class="displayName" *ngIf="displayName">
             {{displayName}}
         </span>
 
         <ng-container *ngIf="currentUser?.uid === profileUid">
-            <button (click)="profileDataModifying()">Profil módosítása</button>
+            <button (click)="profileDataModifying()">{{ 'editProfile' | i18next }}</button>
         </ng-container>
 
         <ng-container *ngIf="currentUser?.uid === profileUid">
-            <button (click)="deleteProfileUser()">Fiókom törlése</button>
+            <button (click)="deleteProfileUser()">{{ 'deleteMyProfile' | i18next }}</button>
         </ng-container>
 
         <ng-container *ngIf="role==='admin'">
-            <button (click)="deleteProfileAdmin()">Fiók törlése</button>
+            <button (click)="deleteProfileAdmin()">{{ 'deleteProfile' | i18next }}</button>
         </ng-container>
     </div>
 
@@ -22,18 +22,18 @@
 
     <div class="content">
         <div class="left">
-            <div (click)="openPosts()" class="page">Bejegyzések</div>
+            <div (click)="openPosts()" class="page">{{ 'posts' | i18next }}</div>
             <div class="stripe"></div>
           
             <ng-container *ngIf="currentUser?.uid === profileUid">
-              <div (click)="openSavedResults()" class="page">Elmentett eredmények</div>
+              <div (click)="openSavedResults()" class="page">{{ 'saved' | i18next }}</div>
               <div class="stripe"></div>
-              <div (click)="openUploadedDocs()" class="page">Feltöltött dokumentumok</div>
+              <div (click)="openUploadedDocs()" class="page">{{ 'uploadedDocs' | i18next }}</div>
               <div class="stripe"></div>
-              <div (click)="openNotifications()" class="page">Értesítések</div>
+              <div (click)="openNotifications()" class="page">{{ 'alerts' | i18next }}</div>
             </ng-container>
             <ng-container *ngIf="currentUser?.uid !== profileUid">
-                <div (click)="openSharedDocuments()" class="page">Megosztott dokumentumok</div>
+                <div (click)="openSharedDocuments()" class="page">{{ 'shared' | i18next }}</div>
                 <div class="stripe"></div>
               </ng-container>
           </div>

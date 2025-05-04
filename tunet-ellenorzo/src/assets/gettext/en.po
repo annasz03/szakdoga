@@ -1,2 +1,38 @@
 msgid "regist"
 msgstr "Registration"
+
+msgid "login"
+msgstr "Log in"
+
+msgid "email"
+msgstr "E-mail address:"
+
+msgid "password"
+msgstr "Password:"
+
+msgid "noacc"
+msgstr "Don't have an account?"
+
+msgid "reg"
+msgstr "Register!"
+
+msgid "username"
+msgstr "Username:"
+
+msgid "birth"
+msgstr "Birth:"
+
+msgid "gender"
+msgstr "Gender:"
+
+msgid "male"
+msgstr "Male"
+
+msgid "female"
+msgstr "Female"
+
+msgid "yessacc"
+msgstr "Have an account?"
+
+msgid "loggin"
+msgstr "Log in!"

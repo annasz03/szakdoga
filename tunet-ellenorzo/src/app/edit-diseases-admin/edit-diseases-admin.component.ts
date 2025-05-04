@@ -5,20 +5,29 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DiseaseComponent } from '../disease/disease.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { first } from 'rxjs';
+import { first, firstValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { EditDiseaseComponent } from '../edit-disease/edit-disease.component';
+import { I18NextModule } from 'angular-i18next';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-edit-diseases-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, DiseaseComponent, ReactiveFormsModule],
+  imports: [CommonModule,I18NextModule, FormsModule, DiseaseComponent, ReactiveFormsModule, EditDiseaseComponent, MatPaginator],
   templateUrl: './edit-diseases-admin.component.html',
   styleUrls: ['./edit-diseases-admin.component.css']
 })
 export class EditDiseasesAdminComponent {
+  currentPage = 0;
+  pageSize = 5;
+  lastVisible: any = null;
+  totalDiseases = 0;
+  loading = true;
+  allDiseases: any[] = [];
 
-  allDiseases: { id: string }[] = [];
-
+  selectedDiseaseId: string | null = null;
   symptoms: string[] = [];
   painLocation: string[] = [];
   prevention: string[] = [];
@@ -33,16 +42,23 @@ export class EditDiseasesAdminComponent {
   preventionName = 'prevention';
   riskFactorsName = 'riskFactors';
   treatmentName = 'treatment';
+  lang:string="en"
 
-  constructor(private firestore: Firestore, private langService: LangService, private fb: FormBuilder, private http: HttpClient) {
+  constructor(private firestore: Firestore, private langService: LangService, private fb: FormBuilder, private http: HttpClient, private router: Router) {
     this.langService.currentLang$.subscribe((lang) => {
+      this.lang = lang;
+      this.resetPagination();
+      this.loadTotalCount(lang);
       this.loadDiseases(lang);
       this.loadSymptoms(lang);
       this.loadPainLocation(lang);
     });
+    
+    
   }
 
   ngOnInit(): void {
+    console.log('ngOnInit called');
     this.diseaseFormHu = this.initForm('hu');
     this.diseaseFormEn = this.initForm('en');
   }
@@ -77,18 +93,13 @@ export class EditDiseasesAdminComponent {
       }
     }
   }
-
-  async loadDiseases(lang: string): Promise<void> {
-    const ref = collection(this.firestore, 'diseases_' + lang);
-    const snapshot = await getDocs(ref);
-    this.allDiseases = snapshot.docs.map(doc => ({ id: doc.id }));
-  }
+  
 
   async loadSymptoms(lang: string) {
     this.http.post<string[]>('http://localhost:3000/api/get-all-symptoms', { lang })
     .subscribe({
-      next: (painList) => {
-        this.painLocation = painList;
+      next: (symptoms) => {
+        this.symptoms = symptoms;
       }
     });
   }
@@ -118,10 +129,14 @@ export class EditDiseasesAdminComponent {
   }
 
   saveDisease(diseaseData: any, lang: string, diseaseId: string): void {
-    const diseaseRef = doc(this.firestore, 'diseases_' + lang, diseaseId);
-
-    setDoc(diseaseRef, diseaseData)
+    this.http.post('http://localhost:3000/api/save-disease', {diseaseData,lang,diseaseId})
+      .subscribe({
+        next: (response) => {
+          console.log('saved:', response);
+        }
+      });
   }
+  
 
   get symptomsArrayHu(): FormArray {
     return this.diseaseFormHu.get(this.arrayName) as FormArray;
@@ -172,20 +187,72 @@ export class EditDiseasesAdminComponent {
   }
 
   deleteDisease(diseaseId: string): void {
-    const diseaseRefHu = doc(this.firestore, `diseases_hu`, diseaseId);
-    const diseaseRefEn = doc(this.firestore, `diseases_en`, diseaseId);
-
-    Promise.all([deleteDoc(diseaseRefHu), deleteDoc(diseaseRefEn)])
-      .then(() => {
-        this.loadDiseases('hu');
-        this.loadDiseases('en');
-      })
+    this.http.post('http://localhost:3000/delete-disease', { diseaseId })
+      .subscribe({
+        next: (response) => {
+          this.loadDiseases('hu');
+          this.loadDiseases('en');
+        }
+      });
   }
-
   async editDisease(diseaseId: string): Promise<void> {
-    
+    this.selectedDiseaseId = diseaseId;
   }
+
+  private resetPagination() {
+    this.currentPage = 0;
+    this.lastVisible = null;
+    this.allDiseases = [];
+  }
+
+  loadDiseases(lang: string) {
+    this.loading = true;
+    const requestData = {
+      pageSize: this.pageSize,
+      lastVisiblePostId: this.currentPage > 0 ? this.lastVisible?.id : null,
+      lang: lang
+    };
   
-  
+    this.http.post<{ diseases: any[], lastVisible: string, totalCount: number }>
+      ('http://localhost:3000/api/load-diseases', requestData)
+      .subscribe({
+        next: (response) => {
+          this.allDiseases = response.diseases;
+          this.lastVisible = response.lastVisible ? { id: response.lastVisible } : null;
+          this.totalDiseases = response.totalCount;
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error(err);
+          this.loading = false;
+        }
+      });
+  }
+
+  onPageChange(event: PageEvent) {
+    if (event.pageSize !== this.pageSize) {
+      this.pageSize = event.pageSize;
+      this.currentPage = 0;
+      this.lastVisible = null;
+    } else {
+      this.currentPage = event.pageIndex;
+    }
+    this.loadDiseases(this.lang);
+  }
+
+  loadNextPage() {
+    if (this.lastVisible) {
+      this.loadDiseases(this.lang);
+    }
+  }
+
+  loadTotalCount(lang: string) {
+    this.http.post<{ totalCount: number }>('http://localhost:3000/api/disease-total-count', { lang })
+      .subscribe({
+        next: (response) => {
+          this.totalDiseases = response.totalCount;
+        }
+      });
+  }
   
 }

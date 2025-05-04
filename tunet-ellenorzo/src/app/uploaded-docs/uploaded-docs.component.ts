@@ -6,12 +6,13 @@ import { AuthService } from '../auth.service';
 import { FormsModule } from '@angular/forms';
 import { addDoc,  Firestore, getDocs, query, where, } from '@angular/fire/firestore';
 import { HttpClient } from '@angular/common/http';
+import { I18NextModule } from 'angular-i18next';
 
 
 @Component({
   selector: 'app-uploaded-docs',
   standalone: true,
-  imports: [CommonModule, DocumentComponent, FormsModule],
+  imports: [CommonModule, DocumentComponent, FormsModule, I18NextModule],
   templateUrl: './uploaded-docs.component.html',
   styleUrl: './uploaded-docs.component.css'
 })

@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { I18NextModule } from 'angular-i18next';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-forum-post',
@@ -37,7 +38,7 @@ export class ForumPostComponent implements OnInit, OnChanges {
     private datePipe: DatePipe,
     private firestore: Firestore,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService, private http:HttpClient
   ) {
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
@@ -64,7 +65,7 @@ export class ForumPostComponent implements OnInit, OnChanges {
     this.likedBy = this.post.likedBy || [];
 
     this.checkIfLiked();
-    await this.loadComments();
+    this.loadComments();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -75,85 +76,72 @@ export class ForumPostComponent implements OnInit, OnChanges {
     }
   }
 
-  async loadComments() {
-    const ref = collection(this.firestore, 'forum_comment');
-    const snapshot = await getDocs(ref);
-
-    const comments: IComment[] = [];
-
-    snapshot.forEach(docSnap => {
-      const data = docSnap.data();
-
-      if (data['postid'] === this.post.id) {
-        comments.push({
-          id: docSnap.id,
-          uid: data['uid'],
-          postid: data['postid'],
-          body: data['body'],
-          date: data['date'],
-          username: data['username']
-        });
-      }
-    });
-
-    this.comments = comments;
+  loadComments() {
+    this.http.post<{ comments: IComment[] }>('http://localhost:3000/load-comments', { postid: this.post.id })
+      .subscribe({
+        next: (res) => {
+          this.comments = res.comments;
+        },
+        error: (err) => {
+          console.error('Hiba: ', err);
+        }
+      });
   }
+  
 
   goToUserProfile() {
     this.router.navigate(['/profile', this.post.uid]);
   }
 
-  addComment() {
-    const commentCollection = collection(this.firestore, 'forum_comment');
-    const newDoc = {
+  addComment() {  
+    if (!this.commentBody) {
+      alert('Kérjük, töltse ki a hozzászólást!');
+      return;
+    }
+    const commentData = {
       uid: this.currentUser?.uid || '',
       postid: this.post.id,
       body: this.commentBody,
-      date: Timestamp.now(),
       username: this.currentUser?.displayName
     };
-
-    addDoc(commentCollection, newDoc)
-      .then(() => {
-        console.log('Sikeres hozzáadás');
-        this.commentCount++;
-        this.updateCommentCount();
-        this.loadComments();
-        this.commentBody = '';
-      })
-      .catch(error => {
-        console.error('Nem sikerült hozzáadni', error);
+  
+    this.http.post('http://localhost:3000/add-comment', commentData)
+      .subscribe({
+        next: () => {
+          this.commentCount++;
+          this.updateCommentCount();
+          this.loadComments();
+          this.commentBody = '';
+        }
       });
   }
-
+  
   updateCommentCount() {
-    const postRef = doc(this.firestore, 'forum_post', this.post.id);
-    updateDoc(postRef, {
-      comment: this.commentCount
-    });
+    const postData = { postid: this.post.id };
+  
+    this.http.post('http://localhost:3000/update-comment-count', postData)
+      .subscribe({
+        next: () => {
+          console.log('updated');
+        }
+      });
   }
+  
 
   like() {
-    const userId = this.currentUser.uid;
-    const postRef = doc(this.firestore, 'forum_post', this.post.id);
-
-    if (this.liked) {
-      this.likeCount--;
-      this.likedBy = this.likedBy.filter(uid => uid !== userId);
-    } else {
-      this.likeCount++;
-      if (!this.likedBy.includes(userId)) {
-        this.likedBy.push(userId);
-      }
-    }
-
-    this.liked = !this.liked;
-
-    updateDoc(postRef, {
-      like: this.likeCount,
-      likedBy: this.likedBy
-    }).catch(error => {
-      console.error(error);
-    });
+    const likeData = {
+      userId: this.currentUser.uid,
+      postId: this.post.id,
+      liked: this.liked
+    };
+  
+    this.http.post('http://localhost:3000/like-post', likeData)
+      .subscribe({
+        next: () => {
+          this.liked = !this.liked;
+          this.likeCount += this.liked ? 1 : -1;
+        }
+      });
   }
+  
 }

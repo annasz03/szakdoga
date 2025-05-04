@@ -12,11 +12,12 @@ import { collection, deleteDoc, doc, Firestore, getDocs } from '@angular/fire/fi
 import { deleteUser, EmailAuthProvider, getAuth, reauthenticateWithCredential } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
 import { SharedDocumentsComponent } from '../shared-documents/shared-documents.component';
+import { I18NextModule } from 'angular-i18next';
 
 @Component({
   selector: 'app-profile-page',
   standalone: true,
-  imports: [SharedDocumentsComponent,CommonModule, SavedDiseasesComponent, UploadedDocsComponent, NotificationPageComponent, UserPostsComponent, ProfileSettingsComponent],
+  imports: [I18NextModule,SharedDocumentsComponent,CommonModule, SavedDiseasesComponent, UploadedDocsComponent, NotificationPageComponent, UserPostsComponent, ProfileSettingsComponent],
   templateUrl: './profile-page.component.html',
   styleUrl: './profile-page.component.css'
 })
@@ -45,79 +46,50 @@ export class ProfilePageComponent {
   }
   
   loadCurrentUserData() {
-    if (!this.currentUser) return;
-  
-    const usersRef = collection(this.firestore, 'users');
-    getDocs(usersRef).then(snapshot => {
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        if (data["username"] === this.currentUser.displayName) {
-          this.role = data["role"];
-          this.userId = docSnap.id;
-        }
-      });
-    })
+    this.http.post<{ userId: string, role: string }>('http://localhost:3000/api/get-user-data-by-username', { displayName: this.currentUser.displayName }).subscribe({
+      next: (res) => {
+        this.userId = res.userId;
+        this.role = res.role;
+      }
+    });
   }
   
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       this.profileUid = params.get('uid') || '';
-      console.log("Profile UID from URL:", this.profileUid);
       this.loadProfileUser();
     });
   }
   
   loadProfileUser() {
-    const usersRef = collection(this.firestore, 'users');
-    getDocs(usersRef).then(snapshot => {
-      let found = false;
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-  
-        if (data["uid"] === this.profileUid) {
-          this.displayName = data["username"];
-          found = true;
-        }
-      });
-    })
+    this.http.post<{ displayName: string }>('http://localhost:3000/get-profile', {
+      uid: this.profileUid
+    }).subscribe({
+      next: (res) => {
+        this.displayName = res.displayName;
+      }
+    });
   }
+  
   
 
   deleteProfileUser(){
-    //adatbazisbol adatok torlese
-    const userRef = doc(this.firestore, 'users', this.userId);
-    deleteDoc(userRef)   
-
-    //firebase authbol torles
-    const auth = getAuth();
-    const user = auth.currentUser;
-
-    if (user) {
-      const email = user.email!;
-      const password = prompt("Kérlek írd be újra a jelszavad a megerősítéshez: ");
-
-      if (password) {
-        const credential = EmailAuthProvider.credential(email, password);
-
-        reauthenticateWithCredential(user, credential)
-          .then(() => {
-            deleteUser(user)
-          })
-      }
-    }
+    this.http.post('http://localhost:3000/delete-user', { uid: this.userId })
+    .subscribe({
+      next: () => {
+        console.log('törölve');
+      },
+    });
   } 
 
   deleteProfileAdmin(){
-    //adatbazisbol adatok torlese + firebase auth
-    const userRef = doc(this.firestore, 'users', this.userId);
-    deleteDoc(userRef).then(() => {
-      this.http.post('http://localhost:3000/delete-user', { uid: this.userId })
-        .subscribe({
-          next: () => console.log('torolve'),
-        });
+    this.http.post('http://localhost:3000/delete-user', { uid: this.userId })
+    .subscribe({
+      next: () => {
+        console.log('törölve');
+      },
     });
-
   }
 
   openSavedResults(){

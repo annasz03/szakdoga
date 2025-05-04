@@ -9,6 +9,7 @@ import { Firestore, addDoc, collection, doc, setDoc } from '@angular/fire/firest
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
+import { LangService } from '../lang-service.service';
 
 const backendUrl = 'http://localhost:3000/api/register';
 
@@ -28,8 +29,13 @@ export class RegisterComponent {
   router = inject(Router);
   authService = inject(AuthService);
   dialog = inject(MatDialog);
+  lang:any;
 
-  constructor(private firestore: Firestore, private http: HttpClient) {}
+  constructor(private firestore: Firestore, private http: HttpClient, private langService:LangService) {
+    this.langService.currentLang$.subscribe((lang) => {
+      this.lang=lang
+    });
+  }
   
 
   form = this.fb.nonNullable.group({
@@ -56,63 +62,49 @@ export class RegisterComponent {
         this.dialog.open(ValidateDialog);
         this.router.navigate(['/login']);
       }})
-
-
-
-      /*
-      if (this.formatCheck()) {
-        const rawForm = this.form.getRawValue();
-        this.authService.register(rawForm.email, rawForm.username, rawForm.password)
-          .subscribe({
-            next: (userCredential) => {
-              const user = userCredential.user;
-              const uid = user.uid;
-    
-              const usersCollection = collection(this.firestore, 'users');
-    
-              const newUser = {
-                uid: uid,
-                email: rawForm.email,
-                username: rawForm.username,
-                birth: rawForm.birth,
-                gender: rawForm.gender,
-                documents: [],
-                role: "user"
-              };
-    
-              addDoc(usersCollection, newUser).then((docRef) => {
-                console.log('Sikeresen mentve user a Firestore-ba.');
-              }).catch((error) => {
-                console.error('Nem sikerült menteni Firestore-ba', error);
-              });
-    
-              this.dialog.open(ValidateDialog);
-            },
-            error: (error) => {
-              console.error("Hiba a regisztráció során:", error);
-            }
-          });
-      }*/
     }
     
 
-  formatCheck(): boolean {
-    const rawForm = this.form.getRawValue();
-    if (!rawForm.email.includes("@")) {
-      this.errorMessage = "Nem megfelelő az e-mail cím!";
-      return false;
-    } else if (!this.isValidPassword(rawForm.password)) {
-      this.errorMessage = "A jelszónak legalább 8 karakter hosszúnak kell lennie és tartalmaznia kell nagy betűt és speciális karaktert!";
-      return false;
-    } else if (rawForm.username.length === 0) {
-      this.errorMessage = "Nem adott meg felhasználónevet!";
-      return false;
-    } else if (!this.isValidDate(rawForm.birth)) {
-      this.errorMessage = "Érvénytelen születési év!";
-      return false;
+    formatCheck(): boolean {
+      const rawForm = this.form.getRawValue();
+      if (!rawForm.email.includes('@')) {
+        if (this.lang === 'en') {
+          this.errorMessage = 'Incorrect email format!';
+        } else {
+          this.errorMessage = 'Nem megfelelő az e-mail cím!';
+        }
+        return false;
+      }
+      if (!this.isValidPassword(rawForm.password)) {
+        if (this.lang === 'en') {
+          this.errorMessage =
+            'Password must be at least 8 characters long and contain an uppercase letter and a special character!';
+        } else {
+          this.errorMessage =
+            'A jelszónak legalább 8 karakter hosszúnak kell lennie és tartalmaznia kell nagy betűt és speciális karaktert!';
+        }
+        return false;
+      }
+      if (rawForm.username.trim().length === 0) {
+        if (this.lang === 'en') {
+          this.errorMessage = 'Username is required!';
+        } else {
+          this.errorMessage = 'Nem adott meg felhasználónevet!';
+        }
+        return false;
+      }
+      if (!this.isValidDate(rawForm.birth)) {
+        if (this.lang === 'en') {
+          this.errorMessage = 'Invalid birth date!';
+        } else {
+          this.errorMessage = 'Érvénytelen születési év!';
+        }
+        return false;
+      }
+      this.errorMessage = '';
+      return true;
     }
-    return true;
-  }
+    
 
   isValidDate(date: string) {
     const year = parseInt(date.substring(0, 4), 10);

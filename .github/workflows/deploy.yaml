@@ -1,4 +1,4 @@
-name: Deploy Angular App to Firebase
+name: Deploy Angular App to Firebase - ez
 
 on:
   push:

@@ -1,13 +1,13 @@
 <div class="form">
   <h2 class="title">{{ 'login' | translate }}</h2>
-  <form [formGroup]="form" (ngSubmit)="onSubmit($event)" class="registerForm">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="registerForm">
     <mat-form-field class="inputF">
       <p>{{'email'|translate}}</p>
       <input matInput formControlName="email" placeholder="Email" type="email" />
     </mat-form-field>
     
     <mat-form-field class="inputF">
-      <p>{{'password'|translate}}</p>
+      <p>{{'password'|translate }}</p>
       <input matInput formControlName="password" type="password" placeholder="Password" />
     </mat-form-field>
 

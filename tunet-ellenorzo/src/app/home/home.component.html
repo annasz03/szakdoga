@@ -1,7 +1,7 @@
 <div class="container">
     <div class="description">
         <h1>{{ 'welcome' | i18next }}</h1>
-        {{ 'welcometext' | i18next }}
+        <p>{{ 'welcometext' | i18next }}</p>
         <div>
             <small>{{ 'welcomewarning' | i18next }}</small>
         </div>
@@ -10,5 +10,4 @@
     <button class="button" (click)="navigateToSymptomChecker()">
         {{ 'tosc' | i18next }}
     </button>
-
 </div>

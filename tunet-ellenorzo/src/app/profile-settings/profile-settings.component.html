@@ -1,41 +1,113 @@
 <div class="section">
-    <h3>{{ 'profiledata' | i18next }}</h3>
-    <div class="form-group">
-      <input type="text" placeholder="Display Name" [(ngModel)]="displayNameField">
-      <input type="text" placeholder="Email" [(ngModel)]="emailField">
-  
-      <select [(ngModel)]="gender">
-        <option value="male">{{ 'male' | i18next }}</option>
-        <option value="female">{{ 'female' | i18next }}</option>
-      </select>
-  
-      <input type="date" [(ngModel)]="birth">
-    </div>
-    <button (click)="saveProfileData()">{{ 'save' | i18next }}</button>
-  </div>
-  
+  <h3>{{ 'profiledata' | i18next }}</h3>
+  <div class="form-group">
 
-  <div class="section">
-    <h3>{{ 'newPass' | i18next }}</h3>
-    <div class="form-group">
-      <input type="text" placeholder="jelszo">
-      <input type="text" placeholder="jelszo ujra">
-    </div> 
-    {{passError}}
-    <button (click)="saveNewPassword()">{{ 'save' | i18next }}</button>
+    <div>
+      <label>{{ 'profilepic' | i18next }}</label><br>
+      <input type="file" (change)="fileSelect($event)" />
+      <br>
+      <button (click)="uploadProfilePicture()">
+        {{ 'upload' | i18next }}
+      </button>
+      <br>
+    </div>
+    <div *ngIf="errorMessage">{{ errorMessage }}</div>
+    <mat-form-field>
+      <mat-label>{{ 'displayname' | i18next }}</mat-label>
+      <input matInput [(ngModel)]="displayNameField">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>{{ 'email' | i18next }}</mat-label>
+      <input matInput [(ngModel)]="emailField">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>{{ 'gender' | i18next }}</mat-label>
+      <mat-select [(ngModel)]="gender">
+        <mat-option value="male">{{ 'male' | i18next }}</mat-option>
+        <mat-option value="female">{{ 'female' | i18next }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>{{ 'birthDate' | i18next }}</mat-label>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="birth">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
   </div>
 
-  <div class="section" *ngIf="role==='doctor'">
-    <h3>{{ 'docProfile' | i18next }}</h3>
-    <div class="form-group">
-        <input type="text" placeholder="Név" [(ngModel)]="name" name="name">
-        <input type="text" placeholder="Város" [(ngModel)]="city" name="city">
-        <input type="text" placeholder="Cím" [(ngModel)]="address" name="address">
-        <input type="text" placeholder="Tel" [(ngModel)]="phone" name="phone">
-        <input type="text" placeholder="Szakirány" [(ngModel)]="specialty" name="specialty">
-    </div>
-    <div class="button-group">
-      <button (click)="saveDoctorData()">{{ 'save' | i18next }}</button>
-      <button (click)="deleteDoctorProfile()">{{ 'delDocProfile' | i18next }}</button>
-    </div>
+  <button (click)="saveProfileData()">
+    {{ 'save' | i18next }}
+  </button>
+</div>
+
+<div class="section">
+  <h3>{{ 'newPass' | i18next }}</h3>
+  <div class="form-group">
+    <mat-form-field>
+      <mat-label>{{ 'newPassword' | i18next }}</mat-label>
+      <input matInput type="password" [(ngModel)]="pass">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>{{ 'confirmPassword' | i18next }}</mat-label>
+      <input matInput type="password" [(ngModel)]="passAgain">
+    </mat-form-field>
   </div>
+
+  <div *ngIf="passError" style="color: red; margin-bottom: 8px;">
+    {{ passError }}
+  </div>
+
+  <button (click)="saveNewPassword()">
+    {{ 'save' | i18next }}
+  </button>
+
+  <p>
+    <button color="warn" (click)="deleteProfileUser()">
+      {{ 'deleteMyProfile' | i18next }}
+    </button>
+  </p>
+</div>
+
+<div class="section" *ngIf="role === 'doctor'">
+  <h3>{{ 'docProfile' | i18next }}</h3>
+  <div class="form-group">
+    <mat-form-field>
+      <mat-label>Név</mat-label>
+      <input matInput [(ngModel)]="name" name="name">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Város</mat-label>
+      <input matInput [(ngModel)]="city" name="city">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Cím</mat-label>
+      <input matInput [(ngModel)]="address" name="address">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Telefon</mat-label>
+      <input matInput [(ngModel)]="phone" name="phone">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Szakirány</mat-label>
+      <input matInput [(ngModel)]="specialty" name="specialty">
+    </mat-form-field>
+  </div>
+
+  <div class="button-group">
+    <button (click)="saveDoctorData()">
+      {{ 'save' | i18next }}
+    </button>
+
+    <button color="warn" (click)="deleteDoctorProfile()">
+      {{ 'delDocProfile' | i18next }}
+    </button>
+  </div>
+</div>

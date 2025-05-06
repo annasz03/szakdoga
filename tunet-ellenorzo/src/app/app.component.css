@@ -1,0 +1,13 @@
+.lang-button {
+    background: none;
+    border: none;
+    padding: 4px;
+    margin: 0 4px;
+    cursor: pointer;
+    outline: none;
+  }
+  
+  .lang-button img {
+    display: block;
+  }
+  

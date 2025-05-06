@@ -74,10 +74,8 @@ export class NavbarComponent {
   }
 
   searchProfile(){
-    //dataservice-be beallitani
     this.dataService.setProfileSearch =  this.name;
 
-    //atiranyitas profile-search-result
     this.router.navigateByUrl('/search-result');
   }
   

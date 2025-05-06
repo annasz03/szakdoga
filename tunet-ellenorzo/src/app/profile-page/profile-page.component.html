@@ -9,10 +9,6 @@
             <button (click)="profileDataModifying()">{{ 'editProfile' | i18next }}</button>
         </ng-container>
 
-        <ng-container *ngIf="currentUser?.uid === profileUid">
-            <button (click)="deleteProfileUser()">{{ 'deleteMyProfile' | i18next }}</button>
-        </ng-container>
-
         <ng-container *ngIf="role==='admin'">
             <button (click)="deleteProfileAdmin()">{{ 'deleteProfile' | i18next }}</button>
         </ng-container>

@@ -1,6 +1,6 @@
 {
     "message": "magyar üzenet",
-    "title": "Tünet ellenörzős",
+    "title": "Tünetellenörző",
     "signout": "Kijelentkezés",
     "forum": "Fórum",
     "docfinder": "Orvos kereső",
@@ -9,7 +9,7 @@
     "welcome": "Üdvözlünk a Tünetellenőrző alkalmazásban!",
     "welcometext": "Szerezz azonnali segítséget tüneteid azonosításában az alkalmazáson keresztül a nap 24 órájában.",
     "welcomewarning": "*Vedd figyelembe, hogy az alkalmazás nem helyettesíti az orvosi diagnózist!",
-    "tosc": "Tovább a tünet ellenörzőre",
+    "tosc": "Tovább a tünetellenörzőre",
 
     "postcomment": "Hozzászólás közlése",
     "newpost": "Új bejegyzés létrehozása:",
@@ -63,7 +63,9 @@
 
 
 
-
+    "email": "E-mail",
+    "displayname": "Felhasználónév",
+    "profilepic":"Profilkép",
 
 
 

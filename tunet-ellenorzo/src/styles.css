@@ -12,7 +12,8 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: 'font', san; 
-    background-color: #81d4fa !important;
+    background-color: #77c4ff;
+
 }
 
 .button {

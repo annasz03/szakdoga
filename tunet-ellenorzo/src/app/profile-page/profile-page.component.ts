@@ -71,17 +71,6 @@ export class ProfilePageComponent {
       }
     });
   }
-  
-  
-
-  deleteProfileUser(){
-    this.http.post('http://localhost:3000/delete-user', { uid: this.userId })
-    .subscribe({
-      next: () => {
-        console.log('törölve');
-      },
-    });
-  } 
 
   deleteProfileAdmin(){
     this.http.post('http://localhost:3000/delete-user', { uid: this.userId })

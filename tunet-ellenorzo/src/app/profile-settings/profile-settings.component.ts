@@ -9,12 +9,18 @@ import { EmailAuthProvider, getAuth, reauthenticateWithCredential, updatePasswor
 import { addDoc } from 'firebase/firestore';
 import { HttpClient } from '@angular/common/http';
 import { I18NextModule } from 'angular-i18next';
+import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
+import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, I18NextModule
-  ],
+  imports: [CommonModule, FormsModule, I18NextModule,  MatInputModule,MatSelectModule,MatButtonModule,MatFormFieldModule, MatDatepickerModule,MatNativeDateModule],
   templateUrl: './profile-settings.component.html',
   styleUrl: './profile-settings.component.css'
 })
@@ -23,6 +29,7 @@ export class ProfileSettingsComponent {
   currentUser:any;
   displayName: any;
   currUserData:Iuser| null=null;
+  selectedFile: File | null = null;
   role:any;
 
   displayNameField: string = '';
@@ -35,6 +42,8 @@ export class ProfileSettingsComponent {
   passAgain:any;
   passError:any;
 
+  fileTypes = ["image/jpeg", "image/png", "image/gif", "application/pdf"];
+  errorMessage = "";
   userId:any;
 
   name: string = '';
@@ -43,7 +52,7 @@ export class ProfileSettingsComponent {
   phone: string = '';
   specialty: string = '';
 
-  constructor(private firestore: Firestore, private http:HttpClient){}
+  constructor(private firestore: Firestore, private http:HttpClient, private router:Router){}
 
   ngOnInit() {
     this.authService.user$.subscribe(user => {
@@ -153,6 +162,47 @@ deleteDoctorProfile() {
       console.log(response);
     }
   });
+}
+
+deleteProfileUser() {
+  const confirmed = window.confirm('Biztosan törölni szeretnéd a profilodat? Ez a művelet nem visszavonható.');
+
+  if (confirmed) {
+    this.http.post('http://localhost:3000/delete-user', { uid: this.userId })
+      .subscribe({
+        next: () => {
+          console.log('Törölve');
+          alert('Profil sikeresen törölve.');
+          this.router.navigate(['/login']); // Navigálás a login oldalra
+        },
+        error: (err) => {
+          console.error('Hiba történt a törlés közben:', err);
+          alert('Hiba történt a profil törlése során.');
+        }
+      });
+  }
+}
+
+uploadProfilePicture() {
+  if (this.selectedFile && this.fileTypes.includes(this.selectedFile.type)) {
+    this.errorMessage = "";
+
+    const formData = new FormData();
+    formData.append('file', this.selectedFile);
+    formData.append('userId', this.currentUser.uid);
+
+    this.http.post('http://localhost:3000/api/upload-profilepic', formData).subscribe({
+      error: (err) => {
+        console.error('Hiba feltöltésekor', err);
+      }
+    });
+  } else {
+    this.errorMessage = "Nem megfelelő file formátum";
+  }
+}
+
+fileSelect(event: any) {
+  this.selectedFile = event.target.files[0];
 }
 
 }

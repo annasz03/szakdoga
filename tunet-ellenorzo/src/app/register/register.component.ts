@@ -10,13 +10,14 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { LangService } from '../lang-service.service';
+import { MatRadioModule } from '@angular/material/radio';
 
 const backendUrl = 'http://localhost:3000/api/register';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, RouterModule, TranslateModule],
+  imports: [CommonModule,MatRadioModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, RouterModule, TranslateModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
@@ -47,7 +48,6 @@ export class RegisterComponent {
   });
 
     onSubmit(event: Event): void {
-    //backenden
     const rawForm = this.form.getRawValue();
 
     this.http.post(backendUrl, {

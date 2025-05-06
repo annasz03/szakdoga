@@ -36,7 +36,9 @@
     "searchProf": "Search",
 
     "diseasecrud": "Disease management",
-
+    "email": "E-mail",
+    "displayname": "Username",
+    "profilepic":"Profile picture",
     
     "hungarian": "Hungarian",
     "english": "English",

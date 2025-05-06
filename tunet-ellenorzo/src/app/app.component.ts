@@ -13,11 +13,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { Firestore } from '@angular/fire/firestore';
 import { Messaging } from '@angular/fire/messaging';
 import { LangService } from './lang-service.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, AuthPageComponent, NavbarComponent, CommonModule, FormsModule, I18NextModule,],
+  imports: [RouterOutlet, AuthPageComponent, NavbarComponent, CommonModule, FormsModule, I18NextModule,MatFormFieldModule, MatSelectModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -52,15 +54,13 @@ export class AppComponent{
         this.translate.use(this.i18NextService.language);
       }
     });
+    console.log(this.language)
 
     this.subscribeToPush();
     this.initializeFCM();
   }
 
-  changeLanguage(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    const lang = target.value;
-  
+  changeLanguage(lang:string): void {  
     if (lang !== this.i18NextService.language) {
       this.i18NextService.changeLanguage(lang).then(() => {
         this.updateState(lang);

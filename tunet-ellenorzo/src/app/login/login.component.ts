@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
+import { LangService } from '../lang-service.service';
 
 @Component({
   selector: 'app-login',
@@ -28,15 +29,28 @@ export class LoginComponent {
       password: ['', Validators.required],
     });
 
-    onSubmit(event:Event): void {
+    currentLang:any;
+
+    constructor(private langService:LangService){}
+
+    ngOnInit(){
+      this.langService.currentLang$.subscribe((lang: string) => {
+        this.currentLang = lang;
+      });
+    }
+
+    onSubmit(): void {
       const rawForm = this.form.getRawValue();
       this.authService.login(rawForm.email, rawForm.password)
       .subscribe({
         next: ()=> {
         this.router.navigateByUrl('/home')},
         error: (err) => {
-          console.log("hiba: "+ err)
-          this.errorMessage = err.message;
+          if(this.currentLang==='hu'){
+            this.errorMessage = "Invalid e-mail cím vagy jelszó!";
+          }else{
+            this.errorMessage = "Invalid e-mail address or password!";
+          }
         }
       })
     }

@@ -14,16 +14,12 @@
       <p>{{ 'birth' | translate }}<input matInput formControlName="birth" type="date" />
     </mat-form-field>
 
-    <fieldset>
-      <legend>{{ 'gender' | translate }}</legend>
-      <label>
-        <input type="radio" formControlName="gender" value="male" /> {{ 'male' | translate }}
-      </label>
-      <label>
-        <input type="radio" formControlName="gender" value="female" /> {{ 'female' | translate }}
-      </label>
-    </fieldset>
-
+    <mat-radio-group formControlName="gender">
+      <mat-radio-button value="male">{{ 'male' | translate }}</mat-radio-button>
+      <mat-radio-button value="female">{{ 'female' | translate }}</mat-radio-button>
+    </mat-radio-group>
+    
+    <p></p>
     <button class="button" type="submit">{{ 'regist' | translate }}</button>
   </form>
 

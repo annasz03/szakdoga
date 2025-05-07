@@ -27,6 +27,9 @@ export class EditDiseasesAdminComponent {
   loading = true;
   allDiseases: any[] = [];
 
+  ageLabelHu="Minden korosztály";
+  ageLabelEn="All agegroups";
+
   selectedDiseaseId: string | null = null;
   symptoms: string[] = [];
   painLocation: string[] = [];

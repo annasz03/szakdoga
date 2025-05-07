@@ -12,7 +12,7 @@
   }
   
   .disease-form {
-    width: 48%; /* A formok 48%-os szélességet kapnak */
+    width: 48%;
     padding: 15px;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -45,13 +45,13 @@
   }
   
   .disease-form button {
-    background-color: #4CAF50;
+    background-color: #0288D1;
     color: white;
     cursor: pointer;
   }
   
   .disease-form button:hover {
-    background-color: #45a049;
+    background-color: #0288D1;
   }
   
   .disease-form .form-array-container {

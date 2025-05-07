@@ -13,13 +13,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { I18NEXT_SERVICE, I18NextModule, ITranslationService } from 'angular-i18next';
 import {  Firestore, getDocs } from '@angular/fire/firestore';
 import { LangService } from '../lang-service.service';
+import { MatIconButton } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 
 
 
 @Component({
   selector: 'app-symptom-checker',
   standalone: true,
-  imports: [I18NextModule,CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule,MatAutocompleteModule,MatInputModule,MatFormFieldModule, MatInputModule],
+  imports: [I18NextModule,CommonModule, FormsModule,MatInputModule,
+    MatSelectModule,
+    MatFormFieldModule, ReactiveFormsModule, HttpClientModule,MatAutocompleteModule,MatInputModule, MatIconModule,MatFormFieldModule, MatInputModule],
   templateUrl: './symptom-checker.component.html',
   styleUrls: ['./symptom-checker.component.css'],
 })
@@ -144,10 +149,11 @@ export class SymptomCheckerComponent {
     };
     if(this.symptomRes.symptoms.length===1 && this.symptomRes.symptoms[0]===''){
       this.errorMessage="Kérem megfelelően töltse ki a kért adatokat!"
-    }else {
+    }else if(age!<0 || age!>150){
+      this.errorMessage="Nem megfelelő az adott életkor!"
+    } else {
       this.dataService.symptomCheckerReq(this.symptomRes).subscribe({
         next: (response) => {
-          console.log('Kapott válasz:', response);
           this.resultService.setResult(response);
           this.router.navigateByUrl('/symptom-checker-result');
         }, error: (err) => {

@@ -1,30 +1,44 @@
 <div class="docFinder">
-    {{ 'newpost' | i18next }}<br>
-    <textarea rows="4" cols="50" [(ngModel)]="body"></textarea>
-
-    <p>
-    <label for="options">{{ 'addtag' | i18next }}</label>
-    <select [(ngModel)]="tag">
-        <option *ngFor="let i of illnesses" [value]="i">{{i}}</option>
-    </select>
-    <p>
-    <button (click)="addPost()">{{ 'post' | i18next }}</button>
-
+    <h2>{{ 'newpost' | i18next }}</h2>
+    
+    <mat-form-field>
+      <textarea matInput rows="4" [(ngModel)]="body" placeholder="{{ 'bodyPlaceholder' | i18next }}"></textarea>
+    </mat-form-field>
+  
+    <mat-form-field appearance="fill" class="full-width">
+      <label for="options">{{ 'addtag' | i18next }}</label>
+      <mat-select [(ngModel)]="tag">
+        <mat-option *ngFor="let i of illnesses" [value]="i">{{i}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+    <button class="option-buttons" (click)="addPost()">{{ 'post' | i18next }}</button>
+  
     <div class="search">
-        {{ 'search' | i18next }}
-        <input type="text" [(ngModel)]="searchText">
-        <select [(ngModel)]="searchTag">
-            <option *ngFor="let i of illnesses" [value]="i">{{i}}</option>
-        </select>
-        <button (click)="search()">{{ 'search' | i18next }}</button>
-
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>{{ 'search' | i18next }}</mat-label>
+        <input matInput type="text" [(ngModel)]="searchText" placeholder="{{ 'searchPlaceholder' | i18next }}">
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>{{ 'searchtag' | i18next }}</mat-label>
+        <mat-select [(ngModel)]="searchTag">
+          <mat-option *ngFor="let i of illnesses" [value]="i">{{i}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button class="option-buttons" (click)="search()">{{ 'search' | i18next }}</button>
     </div>
-
+  
     <div *ngFor="let post of posts">
-        <p>
+      <p>
         <app-forum-post [post]="post"></app-forum-post>
+      </p>
     </div>
-    <mat-paginator [length]="totalItems" [pageSize]="pageSize" (page)="onPageChange($event)"></mat-paginator>
-
-
-</div>
+  
+    <mat-paginator [length]="totalItems" 
+               [pageSize]="pageSize"
+               [pageSizeOptions]="[5, 10, 20]"
+               (page)="onPageChange($event)"
+               showFirstLastButtons>
+</mat-paginator>
+  </div>
+  

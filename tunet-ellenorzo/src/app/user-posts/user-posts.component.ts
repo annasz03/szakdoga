@@ -62,4 +62,10 @@ export class UserPostsComponent {
           },
     });
   }
+
+  handlePostDeleted(postid: string) {
+    this.getPosts(); 
+  }
+  
+  
 }

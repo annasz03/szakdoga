@@ -1,6 +1,7 @@
 <div class="alert-container">
     <div class="alert-title">{{ alert.name }}</div>
-    <div class="alert-frequency">{{ 'freq' | i18next }} {{ alert.frequency }}</div>
+    <div class="alert-frequency">{{ 'freq' | i18next }}: <p></p> {{ getTranslatedFrequency(alert.frequency) }}
+    </div>
     <div class="alert-times">
       <span *ngFor="let time of alert.times">{{ time }}</span>
     </div>

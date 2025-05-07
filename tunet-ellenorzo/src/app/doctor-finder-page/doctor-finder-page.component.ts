@@ -20,7 +20,7 @@ type selectType = { key: string; value: string };
 @Component({
   selector: 'app-doctor-finder-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, DoctorComponent, MatInputModule, MatFormFieldModule, I18NextModule, MatPaginatorModule, ],
+  imports: [CommonModule, FormsModule, DoctorComponent, MatInputModule, MatFormFieldModule, I18NextModule, MatPaginatorModule, I18NextModule ],
   templateUrl: './doctor-finder-page.component.html',
   styleUrls: ['./doctor-finder-page.component.css']
 })
@@ -64,16 +64,17 @@ export class DoctorFinderPageComponent {
   async ngOnInit() {
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
-    });
-    this.http.get('http://localhost:3000/api/init-data', {
-      params: { username: this.currentUser.displayName }
-    }).subscribe((data: any) => {
-      this.area = data.area;
-      this.specList = data.specList;
-      this.role = data.role;
-    
-      this.loadTotalCount();
-      this.loadDoctors();
+
+      this.http.get('http://localhost:3000/api/init-data', {
+        params: { username: this.currentUser.displayName }
+      }).subscribe((data: any) => {
+        this.area = data.area;
+        this.specList = data.specList;
+        this.role = data.role;
+      
+        this.loadTotalCount();
+        this.loadDoctors();
+      });
     });
     
     
@@ -98,6 +99,7 @@ export class DoctorFinderPageComponent {
     this.http.post<{ doctors: any[], lastVisible: string }>('http://localhost:3000/api/load-doctors', requestData)
       .subscribe({
         next: (response) => {
+          console.log(response)
           this.doctors = [...this.doctors, ...response.doctors];
           this.lastVisible = response.lastVisible ? { id: response.lastVisible } : null;
         }

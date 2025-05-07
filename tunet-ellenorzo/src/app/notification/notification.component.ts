@@ -1,10 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output, PipeTransform } from '@angular/core';
 import { deleteDoc, doc, Firestore } from '@angular/fire/firestore';
 import { Alerts } from '../alerts';
 import { MatDialog } from '@angular/material/dialog';
 import { NotificationDialog } from '../notification-page/notification-page.component';
 import { CommonModule } from '@angular/common';
-import { I18NextModule } from 'angular-i18next';
+import { I18NextModule, I18NextService } from 'angular-i18next';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -14,13 +14,19 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './notification.component.html',
   styleUrl: './notification.component.css'
 })
-export class NotificationComponent {
+export class NotificationComponent  {
   @Input()
   alert!: Alerts;
+  @Output() alertDeleted = new EventEmitter<void>();
 
-  constructor(private dialog: MatDialog, private firestore: Firestore, private http:HttpClient) {}
 
+  constructor(private dialog: MatDialog, private firestore: Firestore, private http:HttpClient, private i18next: I18NextService) {}
+
+  getTranslatedFrequency(frequency: string): string {
+    return this.i18next.t(`frequency.${frequency}`);
+  }
   editAlert(alert: Alerts) {
+    console.log(alert)
     const dialogRef = this.dialog.open(NotificationDialog, {
       width: '400px',
       data: { ...alert },
@@ -37,7 +43,7 @@ export class NotificationComponent {
     this.http.post('http://localhost:3000/api/delete-alert', { alertId })
       .subscribe({
         next: (res) => {
-          console.log('Értesítés sikeresen törölve:', res);
+          this.alertDeleted.emit()
         }
       });
   }

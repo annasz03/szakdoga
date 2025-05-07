@@ -2,7 +2,7 @@
     margin: 5%;
     padding: 5%;
     background-color: rgba(255, 255, 255, 0.803);
-    border-radius: 5%;
+    border-radius: 20px;
     font-weight: 500 !important;
 }
 
@@ -11,4 +11,79 @@
     background-color: rgb(255, 255, 255);
     border-radius: 5%;
     padding: 0.5rem;
+}
+
+.search-filters {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.search-filters mat-form-field {
+    flex: 1 1 200px;
+    min-width: 200px;
+    margin: 0;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 0.5rem;
+    align-self: flex-start;
+    margin-top: -0.4rem;
+}
+
+
+.form-buttons button {
+    height: 56px;
+    white-space: nowrap;
+    width:6rem;
+}
+
+.option-buttons{
+    height: 56px;
+    white-space: nowrap;
+    width:6rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    margin-left: 0 !important;
+}
+
+
+.registration-section {
+    margin-top: 2rem;
+}
+
+.registration-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: rgba(245, 245, 245, 0.95);
+    border-radius: 12px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+}
+
+.registration-form mat-form-field {
+    width: 100%;
+}
+
+.registration-form button {
+    grid-column: span 2;
+    width: fit-content;
+    justify-self: start;
+    padding: 0.5rem 1.5rem;
+    font-weight: bold;
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+
+.regdoc-button{
+    width: 200px !important;
 }

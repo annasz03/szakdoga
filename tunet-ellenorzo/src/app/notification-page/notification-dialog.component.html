@@ -6,11 +6,13 @@
 
   <mat-form-field class="full-width">
     <mat-label>{{ 'freq' | i18next }}: </mat-label>
-    <mat-select [(ngModel)]="frequency" (selectionChange)="onChange()">
-      <mat-option *ngFor="let frequency of frequencies" [value]="frequency">
-        {{ frequency }}
+    <p></p>
+    <mat-select [(ngModel)]="frequency"  (selectionChange)="onChange()">
+      <mat-option *ngFor="let f of frequencies" [value]="f.value">
+        {{ ('frequency.' + f.key) | i18next }}
       </mat-option>
     </mat-select>
+    
   </mat-form-field>
 
   <div *ngFor="let index of timeArray; let i = index" class="time-select">

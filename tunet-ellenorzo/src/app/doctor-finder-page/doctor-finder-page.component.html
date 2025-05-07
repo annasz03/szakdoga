@@ -1,34 +1,34 @@
 <div class="docFinder">
     <div class="search-filters">
         <mat-form-field appearance="outline">
-            <mat-label>Név</mat-label>
+            <mat-label>{{ 'name' | i18next }}</mat-label>
             <input matInput type="text" [(ngModel)]="nameValue">
         </mat-form-field>
-
+    
         <mat-form-field appearance="outline">
-            <mat-label>Város</mat-label>
+            <mat-label>{{ 'city' | i18next }}</mat-label>
             <select matNativeControl [(ngModel)]="selectedArea">
-                <option value="">Összes város</option>
+                <option value="">{{ 'city' | i18next }}</option>
                 <option *ngFor="let a of area" [value]="a.value">{{ a.value }}</option>
             </select>
         </mat-form-field>
-
+    
         <mat-form-field appearance="outline">
-            <mat-label>Szakterület</mat-label>
+            <mat-label>{{ 'specialty' | i18next }}</mat-label>
             <select matNativeControl [(ngModel)]="selectedSpec">
-                <option value="">Összes szakterület</option>
+                <option value="">{{ 'specialty' | i18next }}</option>
                 <option *ngFor="let s of specList" [value]="s.value">{{ s.value }}</option>
             </select>
         </mat-form-field>
-
-        <span class="buttons">
-            <button (click)="search()">{{ 'search' | i18next }}</button>
-            <button (click)="removeFilters()">{{ 'delfilter' | i18next }}</button>
-        </span>
+        <div class="form-buttons">
+            <button class="option-buttons" (click)="search()">{{ 'search' | i18next }}</button>
+            <button class="option-buttons" (click)="removeFilters()">{{ 'delfilter' | i18next }}</button>
+        </div>
     </div>
+    
 
     <div *ngIf="role==='admin'" class="admin-section">
-        <button color="accent" (click)="reqDoc()">Orvosi fiók regisztrálási kérések</button>
+        <button class="option-buttons" (click)="reqDoc()">{{ 'docreq' | i18next }}</button>
         <div *ngIf="reqOpen" class="requests-container">
             <div *ngFor="let doc of docs_temp" class="request-item">
                 <div class="docCard">
@@ -39,23 +39,24 @@
     </div>
 
     <div class="registration-section">
-        <button (click)="openDocReg = !openDocReg">
-            {{ openDocReg ? 'Mégse' : 'Orvosi fiók regisztrálása' }}
+        <button class="option-buttons regdoc-button" (click)="openDocReg = !openDocReg">
+            {{ openDocReg ? ('cancel' | i18next) : ('registerdoc' | i18next) }}
+
         </button>
 
         <div *ngIf="openDocReg" class="registration-form">
             <mat-form-field appearance="outline">
-                <mat-label>Név</mat-label>
+                <mat-label>{{ 'name' | i18next }}</mat-label>
                 <input matInput type="text" [(ngModel)]="newDocName" required>
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-                <mat-label>Telefonszám</mat-label>
+                <mat-label>{{ 'phone' | i18next }}</mat-label>
                 <input matInput type="text" [(ngModel)]="newDocPhone" required>
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-                <mat-label>Város</mat-label>
+                <mat-label>{{ 'city' | i18next }}</mat-label>
                 <select matNativeControl [(ngModel)]="newDocCity" required>
                     <option value="">Válassz várost</option>
                     <option *ngFor="let a of area" [value]="a.value">{{ a.value }}</option>
@@ -63,36 +64,36 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-                <mat-label>Cím</mat-label>
+                <mat-label>{{ 'address' | i18next }}</mat-label>
                 <input matInput type="text" [(ngModel)]="newDocAddress" required>
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-                <mat-label>Szakterület</mat-label>
+                <mat-label>{{ 'specialty' | i18next }}</mat-label>
                 <select matNativeControl [(ngModel)]="newDocSpecialty" required>
-                    <option value="">Válassz szakterületet</option>
+                    <option value="">{{ 'specialty' | i18next }}</option>
                     <option *ngFor="let s of specList" [value]="s.value">{{ s.value }}</option>
                 </select>
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-                <mat-label>Orvosi nyilvántartási szám</mat-label>
+                <mat-label>{{ 'nyilv' | i18next }}</mat-label>
                 <input matInput type="text" [(ngModel)]="newDocNumber" required>
-                <mat-hint>5-6 számjegy</mat-hint>
+                <mat-hint>5-6 {{ 'letters' | i18next }}</mat-hint>
             </mat-form-field>
 
             <div *ngIf="errorMsg" class="error-message">{{errorMsg}}</div>
 
             <button  (click)="registerDocProfile()" 
                     [disabled]="!newDocName || !newDocPhone || !newDocCity || !newDocAddress || !newDocSpecialty || !newDocNumber">
-                Regisztráció
+                    {{ 'regist' | i18next }}
             </button>
         </div>
     </div>
     
     <div *ngIf="!loading" class="doctors-list">
         <div *ngIf="doctors.length === 0" class="no-results">
-            Nincs találat a keresési feltételeknek megfelelő orvos.
+            {{ 'nodoc' | i18next }}
         </div>
 
         <div *ngFor="let doc of doctors" class="doctor-item">

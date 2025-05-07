@@ -2,7 +2,7 @@
     margin: 5%;
     padding: 5%;
     background-color: rgba(255, 255, 255, 0.803);
-    border-radius: 5%;
+    border-radius: 20px;
     font-weight: 500 !important;
 }
 
@@ -24,3 +24,102 @@ select{
     font-size: xx-large;
     margin-bottom: 1.5rem;
 }
+
+.disease-managemet-button{
+    width: 200px !important;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .inp {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  
+  .symptom-input, .pain-location-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .symptoms-pain-container {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  
+  .symptom-section,
+  .pain-section {
+    flex: 1 1 45%;
+    min-width: 300px;
+  }
+  
+  .symptoms-pain-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .symptoms-box, .pain-box {
+    flex: 1 1 300px;
+  }
+  
+  .section-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+  }
+  
+  .sub-label {
+    margin-top: 1rem;
+    font-weight: 500;
+    display: block;
+  }
+  
+  .symptom-row, .pain-location-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .text-input, .select-input {
+    flex: 1;
+    padding: 0.4rem 0.6rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+  }
+  
+  .remove-btn, .add-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+  }
+
+  .add-btn{
+    background-color: #0288D1;
+  }
+  
+  .remove-btn:hover, .add-btn:hover {
+    opacity: 0.85;
+  }

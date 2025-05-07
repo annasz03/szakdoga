@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, EventEmitter, Output } from '@angular/core';
 import { addDoc, collection, doc, Firestore, getDocs, Timestamp, updateDoc } from '@angular/fire/firestore';
 import { ForumCommentComponent } from '../forum-comment/forum-comment.component';
 import { IComment } from '../icomment';
@@ -33,6 +33,8 @@ export class ForumPostComponent implements OnInit, OnChanges {
   comments: IComment[] = [];
 
   currentUser: any;
+
+  @Output() postDeleted = new EventEmitter<string>();
 
   constructor(
     private datePipe: DatePipe,
@@ -142,13 +144,15 @@ export class ForumPostComponent implements OnInit, OnChanges {
   
 
   deletePost(postid: string) {
-    this.http.delete('http://localhost:3000/delete-post', {
-      body: { postid: postid }
-    }).subscribe({
-      next: () => {
-        
+    this.http.delete(`http://localhost:3000/api/delete-post/${this.post.id}`).subscribe({
+      next: (response) => {
+        this.postDeleted.emit(postid);
       }
     });
   }
+  
+  
+  
+  
   
 }

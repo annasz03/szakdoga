@@ -1,81 +1,93 @@
 <div class="form">
-  <button (click)="goToEditDiseases()"> {{ 'diseasecrud' | i18next }}</button>
-  
-<!-- Személyes adatok -->
-<div *ngIf="personalFromVisible">
-  <div class="title">
-    {{ 'personaldata' | i18next }}
-  </div>
-  <form [formGroup]="personalInformation">
-    <div class="inp">
-        <label for="age">{{ 'age' | i18next }}:</label><p>
-        <input type="number" formControlName="age" required>
-
+  <!-- Személyes adatok -->
+  <div *ngIf="personalFromVisible">
+    <div class="title">
+      {{ 'personaldata' | i18next }}
     </div>
-
-    <div class="inp">
-        <label for="gender">{{ 'gender' | i18next }}</label><p>
-        <select id="gender" formControlName="gender" required>
-          <option value="male">{{ 'male' | i18next }}</option>
-          <option value="female">{{ 'female' | i18next }}</option>
-        </select>
-    </div>  
-
-    <div>
-      <button class="button-small" type="submit" (click)="formVisible()">{{ 'next' | i18next }}</button>
-    </div>
-  </form>
-</div>
-
-<!-- Tünetek -->
-<div *ngIf="!personalFromVisible">
-  <div class="title">
-    {{ 'syptoms' | i18next }}
-  </div>
-<form [formGroup]="symptomsForm">
-  <label>{{ 'syptoms' | i18next }}:</label>
-  <div formArrayName="symptoms">
-    <div *ngFor="let control of symptomArray.controls; let i = index">
-      <input type="text" matInput [formControlName]="i" [matAutocomplete]="auto" (input)="filterSymptoms(i)">
-      <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let symptom of filteredSymptoms" [value]="symptom">
-          {{ symptom }}
-        </mat-option>
-      </mat-autocomplete>
-      
-      <button class="button-xsmall" type="button" (click)="removeSymptom(i)">-</button>
-    </div>
-  </div>
-  <button class="button-xsmall" type="button" (click)="addSymptom()">+</button>
-
-  <div>
-    <label for="pain">{{ 'pain' | i18next }}</label><p>
-    <select formControlName="pain" (change)="onPainChange($event)" value="no">
-      <option value="yes">{{ 'yes' | i18next }}</option>
-      <option value="no" selected>{{ 'no' | i18next }}</option>
-    </select>
-  </div>
-
-  <div>
-    <div *ngIf="isPainful">
-      <label for="painLocation">{{ 'where' | i18next }}</label>
-      <div formArrayName="painLocation">
-        <div *ngFor="let control of painLocationArray.controls; let i = index">
-          <select [formControlName]="i">
-            <option *ngFor="let pain of painLocation" [value]="pain">{{ pain }}</option>
-          </select>
-          <button class="button-xsmall" type="button" (click)="removePain(i)">-</button>
-        </div>
+    <form [formGroup]="personalInformation">
+      <div class="inp">
+        <mat-form-field appearance="fill">
+          <mat-label>{{ 'age' | i18next }}</mat-label>
+          <input matInput type="number" formControlName="age" required />
+        </mat-form-field>
       </div>
-      <button class="button-xsmall" type="button" (click)="addPain()">+</button>
-    </div>
+
+      <div class="inp">
+        <mat-form-field appearance="fill">
+          <mat-label>{{ 'gender' | i18next }}</mat-label>
+          <mat-select formControlName="gender" required>
+            <mat-option value="male">{{ 'male' | i18next }}</mat-option>
+            <mat-option value="female">{{ 'female' | i18next }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="button-group">
+        <button mat-raised-button class="button-small" type="submit" (click)="formVisible()">
+          {{ 'next' | i18next }}
+        </button>
+        <button mat-raised-button class="button-small disease-managemet-button" (click)="goToEditDiseases()">
+          {{ 'diseasecrud' | i18next }}
+        </button>
+      </div>
+    </form>
   </div>
 
-  <button class="button-small" type="submit" (click)="symptomCheckerResult()">OK</button>
-</form>
-</div>
-
-<div>
-  {{errorMessage}}
-</div>
-</div>
+  <!-- Tünetek -->
+  <div *ngIf="!personalFromVisible" class="pain-section">
+    <div class="title">
+      {{ 'symptoms' | i18next }}
+    </div>
+    <form [formGroup]="symptomsForm">
+      <div class="symptoms-pain-container">
+    
+        <!-- Tünetek -->
+        <div class="symptoms-box">
+          <label class="section-label">{{ 'symptoms' | i18next }}</label>
+          <div formArrayName="symptoms">
+            <div *ngFor="let control of symptomArray.controls; let i = index" class="symptom-row">
+              <input type="text" [formControlName]="i" (input)="filterSymptoms(i)" class="text-input" >
+              <button type="button" (click)="removeSymptom(i)" class="remove-btn">-</button>
+              <button type="button" (click)="addSymptom()" class="add-btn">+</button>
+            </div>
+          </div>
+        </div>
+    
+        <!-- Fájdalom -->
+        <div class="pain-box">
+          <label class="section-label">{{ 'pain' | i18next }}</label>
+          <select formControlName="pain" (change)="onPainChange($event)" class="select-input">
+            <option value="yes">{{ 'yes' | i18next }}</option>
+            <option value="no">{{ 'no' | i18next }}</option>
+          </select>
+    
+          <div *ngIf="isPainful" class="pain-location-box">
+            <label class="sub-label">{{ 'where' | i18next }}</label>
+            <div formArrayName="painLocation">
+              <div *ngFor="let control of painLocationArray.controls; let i = index" class="pain-location-row">
+                <select [formControlName]="i" class="select-input">
+                  <option *ngFor="let pain of painLocation" [value]="pain">{{ pain }}</option>
+                </select>
+                <button type="button" (click)="removePain(i)" class="remove-btn">-</button>
+                <button type="button" (click)="addPain()" class="add-btn">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+      </div>
+    
+      <div>
+        <button class="option-buttons" type="submit" (click)="symptomCheckerResult()">OK</button>
+      </div>
+    </form>
+    
+  </div>
+  
+  <div>
+    {{errorMessage}}
+  </div>
+  </div>
+  
+  
+  

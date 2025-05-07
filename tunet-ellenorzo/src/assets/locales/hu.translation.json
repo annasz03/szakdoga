@@ -104,7 +104,24 @@
     "addComment": "Írj hozzászólást",
      "share": "Megosztás",
      "medName": "Gyógyszer neve:",
-    "frequency": "Ismétlés:",
-    "timeOfNotification": "Értesítés ideje:"
+    "timeOfNotification": "Értesítés ideje:",
+    "frequency": {
+          "onceADay": "Naponta egyszer",
+          "twiceADay": "Naponta kétszer",
+          "threeTimesADay": "Naponta háromszor",
+          "onceAWeek": "Hetente egyszer",
+          "onceAMonth": "Havonta egyszer"
+        },
+
+        "docreq": "Orvosi fiók regisztrálási kérések",
+        "cancel": "Mégse",
+        "registerdoc": "Orvosi fiók regisztrálása",
+        "letters": "Számjegy",
+        "regist": "Regisztrálás",
+        "nodoc": "Nincs találat a keresési feltételeknek megfelelő orvos.",
+        "nyilv": "Orvosi nyilvántartási szám"
     
+
+
+
 }

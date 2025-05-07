@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IComment } from '../icomment';
 import { DatePipe } from '@angular/common';
 import { collection, Firestore, getDocs } from '@angular/fire/firestore';
@@ -18,6 +18,8 @@ export class ForumCommentComponent {
   date:any;
   username:any;
 
+  @Output() commentDeleted = new EventEmitter<string>();
+
   constructor(private datePipe: DatePipe, private firestore: Firestore, private http:HttpClient){}
 
   ngOnInit(){
@@ -35,6 +37,14 @@ export class ForumCommentComponent {
           this.username = response.username;
         }
       });
+  }
+
+  deleteComment(postid: string) {
+    this.http.delete(`http://localhost:3000/api/delete-post/${this.comment.id}`).subscribe({
+      next: (response) => {
+        this.commentDeleted.emit(postid);
+      }
+    });
   }
 
 }

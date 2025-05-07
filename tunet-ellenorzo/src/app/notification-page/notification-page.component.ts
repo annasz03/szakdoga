@@ -43,8 +43,15 @@ export class NotificationPageComponent {
   currentUser: any;
 
   openDialog(): void {
-    this.dialog.open(NotificationDialog, {});
+    const dialogRef = this.dialog.open(NotificationDialog, {});
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.getAlerts();
+      }
+    });
   }
+  
 
   getAlerts() {
     this.http.post<{ alerts: any[] }>('http://localhost:3000/get-alerts', { uid: this.currentUser!.uid })
@@ -74,13 +81,14 @@ export class NotificationPageComponent {
 export class NotificationDialog {
   name: string = "";
   frequency: string = "";
-  frequencies: string[] = [
-    'Naponta egyszer',
-    'Naponta kétszer',
-    'Naponta háromszor',
-    'Hetente egyszer',
-    'Havonta egyszer'
+  frequencies = [
+    { key: 'onceADay', value: 'once' },
+    { key: 'twiceADay', value: 'twice' },
+    { key: 'threeTimesADay', value: 'three' },
+    { key: 'onceAWeek', value: 'weekly' },
+    { key: 'onceAMonth', value: 'monthly' }
   ];
+  
 
   hour: string = "";
   hours: string[] = [
@@ -99,7 +107,6 @@ export class NotificationDialog {
   constructor(
     public dialogRef: MatDialogRef<NotificationDialog>,
     private authService: AuthService,
-    private firestore: Firestore,
     private fcmService: FcmService,
     @Inject(MAT_DIALOG_DATA) public data: any, private http:HttpClient
   ) { }
@@ -124,23 +131,24 @@ export class NotificationDialog {
 
   onChange() {
     switch (this.frequency) {
-      case 'Naponta egyszer':
+      case 'once':
         this.timeDiv = 1;
         break;
-      case 'Naponta kétszer':
+      case 'twice':
         this.timeDiv = 2;
         break;
-      case 'Naponta háromszor':
+      case 'three':
         this.timeDiv = 3;
         break;
       default:
         this.timeDiv = 1;
         break;
     }
-
+  
     this.timeArray = Array(this.timeDiv).fill(0).map((_, i) => i);
     this.times = new Array(this.timeDiv).fill("");
   }
+  
 
   closeDialog(): void {
     this.dialogRef.close();
@@ -151,6 +159,16 @@ export class NotificationDialog {
       alert('Kérjük, töltse ki az összes időpontot!');
       return;
     }
+
+    const frequencyMap = {
+      once: 'onceADay',
+      twice: 'twiceADay',
+      three: 'threeTimesADay',
+      weekly: 'onceAWeek',
+      monthly: 'onceAMonth'
+    };
+  
+    const mappedFrequency = frequencyMap[this.frequency as keyof typeof frequencyMap] || 'onceADay';
   
     this.fcmService.requestPermission().then((token) => {
       if (!token) {
@@ -159,15 +177,14 @@ export class NotificationDialog {
   
       const newDoc = {
         uid: this.currentUser.uid,
-        frequency: this.frequency,
+        frequency: mappedFrequency,
         times: this.times,
         name: this.name,
         createdAt: new Date().toISOString(),
         fcmToken: token,
         isActive: true
       };
-
-
+  
       this.http.post<{ alert: any }>('http://localhost:3000/save-alert', newDoc)
         .subscribe({
           next: (res) => {
@@ -176,5 +193,6 @@ export class NotificationDialog {
         });
     });
   }
+  
   
 }

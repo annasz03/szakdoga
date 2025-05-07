@@ -102,8 +102,23 @@
     "share": "Share",
 
     "medName": "Name of medication:",
-    "frequency": "Frequency:",
-    "timeOfNotification": "Time of Notification:"
+    "timeOfNotification": "Time of Notification:",
+    "frequency": {
+    "onceADay": "Once a day",
+    "twiceADay": "Twice a day",
+    "threeTimesADay": "Three times a day",
+    "onceAWeek": "Once a week",
+    "onceAMonth": "Once a month"
+  },
+
+  "docreq": "Doctor profile requests",
+        "cancel": "Cancel",
+        "registerdoc": "Register doctor profile",
+        "letters": "numbers",
+        "regist": "Register",
+        "nodoc": "Can't find doctors with there requirements.",
+        "nyilv": "medical registration number"
+      
 
 
 

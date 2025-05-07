@@ -30,12 +30,13 @@ export class DoctorComponent {
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
     });
+  }
 
+  ngOnInit(){
     this.http.get<Ratings[]>(`http://localhost:3000/api/ratings/${this.doc.id}`)
     .subscribe(data => {
       this.ratings = data;
     });
-
   }
 
   openMoreData() {
@@ -69,7 +70,7 @@ export class DoctorComponent {
       doctorId: this.doc.id,
       rating: this.selectedRating,
       comment: this.comment,
-      createdBy: this.currentUser?.uid || 'anonymous'
+      createdBy: this.currentUser.uid || 'anonymous'
     }).subscribe(() => {
       this.selectedRating = 0;
       this.comment = '';

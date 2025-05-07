@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { NotificationComponent } from '../notification/notification.component';
 import { DataService } from '../data.service';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { addDoc, doc, Firestore, getDocs, updateDoc, } from '@angular/fire/firestore';
@@ -10,11 +10,20 @@ import { collection, collectionData, query } from '@angular/fire/firestore';
 import { FcmService } from '../services/fcm.service';
 import { Alerts } from '../alerts';
 import { HttpClient } from '@angular/common/http';
+import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
+import { MatOptionModule } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { I18NextModule } from 'angular-i18next';
 
 @Component({
   selector: 'app-notification-page',
   standalone: true,
-  imports: [CommonModule, NotificationComponent,],
+  imports: [CommonModule, NotificationComponent,MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatDialogModule],
   templateUrl: './notification-page.component.html',
   styleUrl: './notification-page.component.css'
 })
@@ -25,8 +34,9 @@ export class NotificationPageComponent {
   ngOnInit() {
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
+      this.getAlerts();
     });
-    this.getAlerts();
+    
   }
 
   alerts: Alerts[] = [];
@@ -37,9 +47,10 @@ export class NotificationPageComponent {
   }
 
   getAlerts() {
-    this.http.post<{ alerts: any[] }>('http://localhost:3000/get-alerts', { uid: this.currentUser?.uid })
+    this.http.post<{ alerts: any[] }>('http://localhost:3000/get-alerts', { uid: this.currentUser!.uid })
       .subscribe({
         next: (res) => {
+          console.log(res)
           this.alerts = res.alerts;
         }
       });
@@ -53,7 +64,12 @@ export class NotificationPageComponent {
   selector: 'notification-dialog',
   templateUrl: './notification-dialog.component.html',
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule, MatFormFieldModule,I18NextModule,
+    MatInputModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatDialogModule],
+    styleUrl: './notification-page.component.css'
 })
 export class NotificationDialog {
   name: string = "";
@@ -150,7 +166,8 @@ export class NotificationDialog {
         fcmToken: token,
         isActive: true
       };
-  
+
+
       this.http.post<{ alert: any }>('http://localhost:3000/save-alert', newDoc)
         .subscribe({
           next: (res) => {

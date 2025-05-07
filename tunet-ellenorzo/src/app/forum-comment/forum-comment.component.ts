@@ -21,7 +21,7 @@ export class ForumCommentComponent {
   constructor(private datePipe: DatePipe, private firestore: Firestore, private http:HttpClient){}
 
   ngOnInit(){
-    this.date = this.comment.date.toDate();
+    this.date = this.comment.date
     this.formattedDate = this.datePipe.transform(this.date, 'yyyy-MM-dd HH:mm:ss');
 
     this.getUsernameByUid(this.comment.uid);

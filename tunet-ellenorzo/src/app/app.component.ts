@@ -2,7 +2,6 @@ import { Component, Inject, inject, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import {SwPush} from "@angular/service-worker"
 import { getToken, getMessaging, } from '@angular/fire/messaging';
-import { AuthPageComponent } from './auth-page/auth-page.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -19,7 +18,7 @@ import { MatSelectModule } from '@angular/material/select';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, AuthPageComponent, NavbarComponent, CommonModule, FormsModule, I18NextModule,MatFormFieldModule, MatSelectModule],
+  imports: [RouterOutlet, NavbarComponent, CommonModule, FormsModule, I18NextModule,MatFormFieldModule, MatSelectModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

@@ -42,6 +42,7 @@ export class DocumentComponent {
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
     });
+    console.log(this.text)
   }
 
   getUrl(){
@@ -74,6 +75,7 @@ export class DocumentComponent {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(ShareDialog, {
+      width: '45vw', 
       data: { document_id: this.id }
     });
   
@@ -90,7 +92,8 @@ export class DocumentComponent {
   selector: 'share-dialog',
   templateUrl: './send-to-doc-dialog.component.html',
   standalone: true,
-  imports: [CommonModule, FormsModule,MatPaginatorModule, I18NextModule, MatLabel, MatFormField]
+  imports: [CommonModule, FormsModule,MatPaginatorModule, I18NextModule, MatLabel, MatFormField],
+  styleUrl: './document.component.css'
 })
 export class ShareDialog {
   @Input() doctor_id: string ="";
@@ -109,13 +112,10 @@ export class ShareDialog {
     public dialogRef: MatDialogRef<NotificationDialog>,
     private http: HttpClient,
     @Inject(MAT_DIALOG_DATA) public data: { document_id: string }
-
   ) {
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
     });
-
-    console.log(this.data.document_id);
   }
   
 

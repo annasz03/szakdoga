@@ -90,8 +90,21 @@
     "profiledata": "Profil adatok",
     "newPass": "Új jelszó",
     "docProfile": "Orvosi profil adatok",
-    "delDocProfile": "Orvosi profil törlése"
+    "delDocProfile": "Orvosi profil törlése",
 
 
+
+    "birthDate": "Születési dátum:",
+    "pass": "Új jelszó:",
+    "passAgain": "Jelszó megerősítése:",
+    "city": "Város:",
+    "address":"Cím:",
+    "specialty": "Szakirány:",
+    "phone": "Tel.:",
+    "addComment": "Írj hozzászólást",
+     "share": "Megosztás",
+     "medName": "Gyógyszer neve:",
+    "frequency": "Ismétlés:",
+    "timeOfNotification": "Értesítés ideje:"
     
 }

@@ -6,5 +6,6 @@ export interface Iuser {
     gender: 'male' | 'female' | 'other';
     username: string;
     role:string;
+    profilepic:string;
   }
   

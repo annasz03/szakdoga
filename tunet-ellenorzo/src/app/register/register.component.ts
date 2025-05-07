@@ -121,7 +121,8 @@ export class RegisterComponent {
 @Component({
   selector: 'app-validate-dialog',
   standalone: true,
-  imports: [MatDialogModule, CommonModule],
+  imports: [MatDialogModule, CommonModule, TranslateModule],
   templateUrl: './validate-dialog.component.html',
+  styleUrl: './register.component.css',
 })
 export class ValidateDialog {}

@@ -24,6 +24,7 @@ import { I18NextModule } from 'angular-i18next';
 export class ProfilePageComponent {
 
   savedRes=false;
+  profilepic: string = "";
   uploaded=false;
   notifications=false;
   posts=true;
@@ -70,6 +71,15 @@ export class ProfilePageComponent {
         this.displayName = res.displayName;
       }
     });
+
+    this.http.post<{ user: { profilepic: string } }>('http://localhost:3000/get-user-profile-picture', {
+      uid: this.profileUid
+    }).subscribe({
+      next: (res) => {
+        this.profilepic = res.user.profilepic;
+      }
+    });
+    
   }
 
   deleteProfileAdmin(){

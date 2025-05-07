@@ -1,46 +1,91 @@
 .post-container {
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 15px;
-    margin: 10px 0;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
-  }
-  
-  .post-username {
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .post-date {
-    font-size: 0.9em;
-    color: #666;
-    margin-bottom: 8px;
-  }
-  
-  .post-body {
-    margin: 10px 0;
-    font-size: 1em;
-    color: #444;
-  }
-  
-  .post-tag {
-    display: inline-block;
-    background-color: #007bff;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 0.85em;
-  }
-  
-  .like-icon {
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-  .like-icon:hover {
-    transform: scale(1.1);
-  }
-  
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 16px 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s;
+}
+
+.post-container:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.post-username {
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin-bottom: 0.6rem;
+}
+
+.post-date {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.post-tag {
+  display: inline-block;
+  background-color: #0288D1;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.85em;
+  margin-bottom: 0.6rem;
+}
+
+.post-body {
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.interaction-bar {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.like-section, .comment-section {
+  display: flex;
+  align-items: center;
+}
+
+.like-icon {
+  width: 24px;
+  height: 24px;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  transition: transform 0.2s ease;
+}
+
+.like-icon:hover {
+  transform: scale(1.2);
+}
+
+.add-comment {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.add-comment input[type="text"] {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.add-comment button {
+  padding: 8px 14px;
+  background-color: #0288D1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.add-comment button:hover {
+  background-color: #0056b3;
+}

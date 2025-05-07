@@ -87,8 +87,23 @@
     "profiledata": "Profile",
     "newPass": "New profile",
     "docProfile": "Doctor profile",
-    "delDocProfile": "Delete doctor profile"
+    "delDocProfile": "Delete doctor profile",
 
+
+
+    "birthDate": "Birth date:",
+    "pass": "New password:",
+    "passAgain": "Confirm password:",
+    "city": "City:",
+    "address":"Address:",
+    "specialty": "Specialty:",
+    "phone": "Phone number:",
+    "addComment": "Write a comment",
+    "share": "Share",
+
+    "medName": "Name of medication:",
+    "frequency": "Frequency:",
+    "timeOfNotification": "Time of Notification:"
 
 
 

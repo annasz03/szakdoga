@@ -1,17 +1,22 @@
 <div class="profile">
     <div class="profileData">
-        <img src="../../assets/avatar.webp" class="profilePic" loading="lazy">
+        <img class="profilePic" [src]="profilepic || '../../assets/avatar.webp'" class="profilePic" loading="lazy">
+
+
         <span class="displayName" *ngIf="displayName">
             {{displayName}}
         </span>
 
-        <ng-container *ngIf="currentUser?.uid === profileUid">
-            <button (click)="profileDataModifying()">{{ 'editProfile' | i18next }}</button>
-        </ng-container>
-
-        <ng-container *ngIf="role==='admin'">
-            <button (click)="deleteProfileAdmin()">{{ 'deleteProfile' | i18next }}</button>
-        </ng-container>
+        <div class="profile-buttons">
+            <ng-container *ngIf="currentUser?.uid === profileUid">
+                <button (click)="profileDataModifying()">{{ 'editProfile' | i18next }}</button>
+            </ng-container>
+            
+            <ng-container *ngIf="role==='admin'">
+                <button class="deleteButton" (click)="deleteProfileAdmin()">{{ 'deleteProfile' | i18next }}</button>
+            </ng-container>
+        </div>
+        
     </div>
 
     <div class="stripe"></div>

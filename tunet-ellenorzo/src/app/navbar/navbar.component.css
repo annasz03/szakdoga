@@ -161,3 +161,7 @@ nav {
     transform: scale(1.1);
   }
   
+  .profilePic {
+    height: 3rem;
+    width: 3rem;
+  }

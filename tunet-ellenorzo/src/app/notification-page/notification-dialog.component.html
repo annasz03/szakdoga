@@ -1,20 +1,30 @@
-Gyógyszer neve: <input type="text" [(ngModel)]="name">
+<div class="form-container">
+  <mat-form-field class="full-width">
+    <mat-label>{{ 'medName' | i18next }}</mat-label>
+    <input matInput [(ngModel)]="name" />
+  </mat-form-field>
 
-Ismétlés: 
-<select [(ngModel)]="frequency" (change)="onChange()">
-    <option></option>
-    <option *ngFor="let frequency of frequencies" [value]="frequency">
-      {{ frequency }}
-    </option>
-</select>
+  <mat-form-field class="full-width">
+    <mat-label>{{ 'freq' | i18next }}: </mat-label>
+    <mat-select [(ngModel)]="frequency" (selectionChange)="onChange()">
+      <mat-option *ngFor="let frequency of frequencies" [value]="frequency">
+        {{ frequency }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 
-Értesítés ideje: 
-<div *ngFor="let index of timeArray; let i = index">
-    <select [(ngModel)]="times[i]">
-      <option *ngFor="let h of hours" [value]="h">
-        {{ h }}
-      </option>
-    </select>
+  <div *ngFor="let index of timeArray; let i = index" class="time-select">
+    <mat-form-field class="full-width">
+      <mat-label>{{ 'timeOfNotification' | i18next }} {{ i + 1 }}</mat-label>
+      <mat-select [(ngModel)]="times[i]">
+        <mat-option *ngFor="let h of hours" [value]="h">
+          {{ h }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <button class="option-buttons" (click)="saveAlert()">Hozzáadás</button>
 </div>
 
-<button (click)="saveAlert()">Hozzáadás</button>
+

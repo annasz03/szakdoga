@@ -4,7 +4,7 @@
 
     <div>
       <label>{{ 'profilepic' | i18next }}</label><br>
-      <input type="file" (change)="fileSelect($event)" />
+      <input class="fileInput" type="file" (change)="fileSelect($event)" />
       <br>
       <button (click)="uploadProfilePicture()">
         {{ 'upload' | i18next }}
@@ -47,17 +47,17 @@
   <h3>{{ 'newPass' | i18next }}</h3>
   <div class="form-group">
     <mat-form-field>
-      <mat-label>{{ 'newPassword' | i18next }}</mat-label>
+      <mat-label>{{ 'pass' | i18next }}</mat-label>
       <input matInput type="password" [(ngModel)]="pass">
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>{{ 'confirmPassword' | i18next }}</mat-label>
+      <mat-label>{{ 'passAgain' | i18next }}</mat-label>
       <input matInput type="password" [(ngModel)]="passAgain">
     </mat-form-field>
   </div>
 
-  <div *ngIf="passError" style="color: red; margin-bottom: 8px;">
+  <div *ngIf="passError">
     {{ passError }}
   </div>
 
@@ -66,37 +66,39 @@
   </button>
 
   <p>
-    <button color="warn" (click)="deleteProfileUser()">
+    <button class="deleteButton" (click)="deleteProfileUser()">
       {{ 'deleteMyProfile' | i18next }}
     </button>
   </p>
 </div>
 
+<div class="vertical-line"></div>
+
 <div class="section" *ngIf="role === 'doctor'">
   <h3>{{ 'docProfile' | i18next }}</h3>
   <div class="form-group">
     <mat-form-field>
-      <mat-label>Név</mat-label>
+      <mat-label>{{ 'name' | i18next }}</mat-label>
       <input matInput [(ngModel)]="name" name="name">
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Város</mat-label>
+      <mat-label>{{ 'city' | i18next }}</mat-label>
       <input matInput [(ngModel)]="city" name="city">
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Cím</mat-label>
+      <mat-label>{{ 'address' | i18next }}</mat-label>
       <input matInput [(ngModel)]="address" name="address">
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Telefon</mat-label>
+      <mat-label>{{ 'phone' | i18next }}</mat-label>
       <input matInput [(ngModel)]="phone" name="phone">
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Szakirány</mat-label>
+      <mat-label>{{ 'specialty' | i18next }}</mat-label>
       <input matInput [(ngModel)]="specialty" name="specialty">
     </mat-form-field>
   </div>
@@ -106,7 +108,8 @@
       {{ 'save' | i18next }}
     </button>
 
-    <button color="warn" (click)="deleteDoctorProfile()">
+    <br>
+    <button class="deleteButton" (click)="deleteDoctorProfile()">
       {{ 'delDocProfile' | i18next }}
     </button>
   </div>

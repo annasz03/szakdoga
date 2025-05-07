@@ -6,8 +6,12 @@
   </div>
   
   <div>
-    {{text}}
-    <button (click)="delete()">Törlés</button>
-    <button (click)="openDialog()">Megosztás orvossal</button>
+    <div class="comment">
+      {{text}}
+    </div>
+    
+    <p>
+    <button class="option-buttons" (click)="delete()">Törlés</button>
+    <button class="option-buttons" (click)="openDialog()">Megosztás orvossal</button>
   </div>
   

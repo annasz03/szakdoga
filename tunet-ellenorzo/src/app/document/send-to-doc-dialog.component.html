@@ -1,10 +1,11 @@
-<div class="container">
-        <mat-label>Név</mat-label>
-        <input type="text" [(ngModel)]="nameValue">
-    <button (click)="search()">{{ 'search' | i18next }}</button>
+
+<div class="form">
+    <input type="text" [(ngModel)]="nameValue">
+    <button class="option-buttons" (click)="search()">{{ 'search' | i18next }}</button>
     <div *ngFor="let doc of doctors">
         {{doc.name}}
-        <button (click)="sendToDoctor(doc.uid)">Megosztás</button><p>
+        <button class="option-buttons" (click)="sendToDoctor(doc.uid)">{{ 'share' | i18next }}</button><p>
+            <div class="horizontal-line"></div>
     </div>    
     <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50]" (page)="onPageChange($event)">
     </mat-paginator>

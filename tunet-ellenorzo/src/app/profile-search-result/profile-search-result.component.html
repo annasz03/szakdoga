@@ -1,7 +1,7 @@
 <div class="backg">
     <div *ngFor="let profile of profiles" class="profile-item" (click)="goToUserProfile(profile.uid)">
         <div class="profile-info">
-            <img src="../../assets/avatar.webp" class="avatar" loading="lazy">
+            <img class="profilePic" [src]="profile.profilepic || '../../assets/avatar.webp'" class="profilePic" loading="lazy">
             <a class="post-username">{{ profile.username }}</a>
         </div>
     </div>

@@ -36,7 +36,6 @@ export class ForumPostComponent implements OnInit, OnChanges {
 
   constructor(
     private datePipe: DatePipe,
-    private firestore: Firestore,
     private router: Router,
     private authService: AuthService, private http:HttpClient
   ) {
@@ -48,17 +47,14 @@ export class ForumPostComponent implements OnInit, OnChanges {
 
   checkIfLiked() {
     this.likedBy=this.post.likedBy
-    console.log(this.post)
-    console.log(this.likedBy)
-    console.log(this.currentUser.uid)
     if (this.post && this.likedBy && this.currentUser) {
       this.liked = this.likedBy.includes(this.currentUser.uid);
     }
   }
   
 
-  async ngOnInit() {
-    this.date = this.post.date.toDate();
+  ngOnInit() {
+    this.date = this.post.date;
     this.formattedDate = this.datePipe.transform(this.date, 'yyyy-MM-dd HH:mm:ss');
     this.likeCount = this.post.like || 0;
     this.commentCount = this.post.comment || 0;
@@ -142,6 +138,17 @@ export class ForumPostComponent implements OnInit, OnChanges {
           this.likeCount += this.liked ? 1 : -1;
         }
       });
+  }
+  
+
+  deletePost(postid: string) {
+    this.http.delete('http://localhost:3000/delete-post', {
+      body: { postid: postid }
+    }).subscribe({
+      next: () => {
+        
+      }
+    });
   }
   
 }

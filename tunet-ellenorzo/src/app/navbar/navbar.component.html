@@ -31,7 +31,7 @@
         
     
         <div class="profile" (click)="navigateProfile()">
-            <img src="../../assets/avatar.webp" class="avatar" loading="lazy">
+          <img class="profilePic" [src]="profilepic || '../../assets/avatar.webp'" class="profilePic" loading="lazy">
         </div>
     </nav>
 </div>

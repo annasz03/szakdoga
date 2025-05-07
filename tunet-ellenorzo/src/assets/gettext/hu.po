@@ -37,3 +37,7 @@ msgstr "Van már fiókod?"
 
 msgid "loggin"
 msgstr "Jelentkezz be!"
+
+
+msgid "verif"
+msgstr " Validáld az e-mail címedet a fiókod létrehozásának befejezéséhez, utána jelentkezz be!"

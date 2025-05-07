@@ -36,3 +36,6 @@ msgstr "Have an account?"
 
 msgid "loggin"
 msgstr "Log in!"
+
+msgid "verif"
+msgstr "Validate your e-mail address to finish creating your account, then log in!"

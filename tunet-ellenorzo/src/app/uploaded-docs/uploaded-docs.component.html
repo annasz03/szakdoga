@@ -1,16 +1,19 @@
-<input type="file" (change)="fileSelect($event)" />
-<input type="text" [(ngModel)]="comment" placeholder="Megjegyzés.." />
+<input class="fileInput" type="file" (change)="fileSelect($event)" />
+<div class="add-comment">
+  <input type="text" [(ngModel)]="comment" placeholder="Megjegyzés.." />
 <button (click)="uploadDoc()">{{ 'upload' | i18next }}</button>
+</div>
 
+<p>
 <div *ngIf="errorMessage">
   {{ errorMessage }}
 </div>
-
+<br>
 <button class="button" (click)="img()">{{ 'pic' | i18next }}</button>
 <button class="button" (click)="pdf()">PDF</button>
 
 <div class="doc-container">
     <div class="doc" *ngFor="let doc of filteredDocuments">
-        <app-document  [docType]="doc.type" [fileName]="doc.filename" [text]="doc.text" [file]="doc.file" [id]="doc.id"></app-document>
+        <app-document  [docType]="doc.type" [fileName]="doc.filename" [text]="doc.comment" [file]="doc.file" [id]="doc.id"></app-document>
     </div>      
 </div>

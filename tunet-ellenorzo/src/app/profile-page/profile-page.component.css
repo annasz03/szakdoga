@@ -17,11 +17,6 @@
     margin-bottom: 20px;
   }
   
-  .profilePic {
-    height: 5rem;
-    width: 5rem;
-  }
-  
   .displayName {
     font-size: 1.8rem;
     font-weight: bold;
@@ -29,8 +24,8 @@
   
   .profileData button {
     margin-left: auto;
-    margin-top: 0.5rem;
-    background-color: #1976d2;
+    margin-top: 0.5rem; 
+    background-color: #0288D1;
     color: white;
     border: none;
     padding: 0.4rem 0.8rem;
@@ -100,4 +95,23 @@
     padding: 2%;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   }
-  
+  .profile-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: auto;
+    margin-top: 0.5rem;
+}
+
+.profile-buttons button {
+  background-color: #0288D1;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.profile-buttons button:hover {
+  background-color: #0288D1;
+}

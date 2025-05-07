@@ -6,6 +6,7 @@ import { IPost } from '../ipost';
 import { CommonModule } from '@angular/common';
 import { ForumPostComponent } from '../forum-post/forum-post.component';
 import { HttpClient } from '@angular/common/http';
+import { LangService } from '../lang-service.service';
 
 @Component({
   selector: 'app-user-posts',
@@ -19,13 +20,10 @@ export class UserPostsComponent {
   displayName: string = '';
   posts: IPost[] = [];
   filteredPosts: IPost[] = [];
+  errorMessage="";
+  currLang:any;
 
-  constructor(
-    private route: ActivatedRoute,
-    private firestore: Firestore,
-    private authService: AuthService,
-    private http: HttpClient
-  ) {}
+  constructor(private route: ActivatedRoute,private firestore: Firestore,private authService: AuthService,private http: HttpClient, private langService:LangService) {}
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -41,12 +39,27 @@ export class UserPostsComponent {
         this.displayName = user.displayName || '';
       }
     });
+
+    this.langService.currentLang$.subscribe((lang) => {
+      this.currLang=lang
+    });
   }
 
   getPosts() {
-    this.http.post('http://localhost:3000/get-all-posts', {uid:this.currentUserId})
+    this.http.post<IPost[]>('http://localhost:3000/get-all-posts', {
+      uid:this.currentUserId
+    })
     .subscribe({
-          next: () => console.log('adatok'),
+          next: (response) => {
+            this.posts = response;
+            if(this.posts.length===0){
+              if(this.currLang==="hu"){
+                this.errorMessage = "Ez a felhasználó nem tett még közzé bejegyzést."
+              }else {
+                this.errorMessage = "This user has not posted yet."
+              }
+            }
+          },
     });
   }
 }

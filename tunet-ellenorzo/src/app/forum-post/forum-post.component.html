@@ -1,32 +1,42 @@
 <div class="post-container">
-  <div class="post-username">
+  <div class="post-header">
     <a (click)="goToUserProfile()" class="post-username">{{ post.username }}</a>
+    <br>
+    <div class="post-date">{{ formattedDate }}</div>
+    <div *ngIf="post.uid===currentUser.uid">
+      <button (click)="deletePost(post.uid)">Törlés</button>
+    </div>
+    
   </div>
-  <div class="post-date">{{ formattedDate }}</div>
-  <div class="post-body">{{ post.body }}</div>
+<br>  
   <div class="post-tag">{{ post.tag }}</div>
+  <br>
+  <div class="post-body">{{ post.body }}</div>
 
-  <!-- commentek -->
-  <div *ngFor="let comment of comments">
-    <app-forum-comment [comment]="comment"></app-forum-comment>
+  <!-- kommentek -->
+  <div class="comments">
+    <app-forum-comment *ngFor="let comment of comments" [comment]="comment"></app-forum-comment>
   </div>
 
   <div class="interaction-bar">
-    <img 
-      [src]="liked ? 'assets/heart-2.webp' : 'assets/heart-1.webp'" 
-      (click)="like()" 
-      class="like-icon"
-      style="cursor: pointer;"
-      loading="lazy"
-    />
-    <span>{{ likeCount }}</span>
+    <div class="like-section">
+      <img 
+        [src]="liked ? 'assets/heart-2.webp' : 'assets/heart-1.webp'" 
+        (click)="like()" 
+        class="like-icon"
+        loading="lazy"
+      />
+      <span>{{ likeCount }}</span>
+    </div>
 
-    <img src="assets/chat.webp" class="like-icon" loading="lazy"/>
-    <span>{{ commentCount }}</span>
+    <div class="comment-section">
+      <img src="assets/chat.webp" class="like-icon" loading="lazy"/>
+      <span>{{ commentCount }}</span>
+    </div>
   </div>
 
   <div class="add-comment">
-    <input type="text" [(ngModel)]="commentBody">
+    <input type="text" [(ngModel)]="commentBody" placeholder="{{ 'addcomment' | i18next }}">
     <button (click)="addComment()">{{ 'postcomment' | i18next }}</button>
   </div>
 </div>

@@ -149,3 +149,17 @@ body { margin: 0; font-family: 'font', san;
 }
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.profilePic {
+  height: 6rem;
+  width: 6rem;
+  margin-right: 0.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ccc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.deleteButton{
+  background-color: red !important;
+}

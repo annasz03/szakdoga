@@ -5,6 +5,7 @@ import { I18NEXT_SERVICE, I18NextModule, ITranslationService } from 'angular-i18
 import { CommonModule } from '@angular/common';
 import { DataService } from '../data.service';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-navbar',
@@ -19,13 +20,20 @@ export class NavbarComponent {
   hamMenu:any;
   offScreen:any;
   currentUser:any;
-
+  profilepic:string = ""
   name:string = "";
 
-  constructor(private router:Router,private dataService: DataService){
+  constructor(private router:Router,private dataService: DataService, private http:HttpClient){
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
-      
+
+      this.http.post<{ user: { profilepic: string } }>('http://localhost:3000/get-user-profile-picture', {
+        uid: this.currentUser.uid
+      }).subscribe({
+        next: (res) => {
+          this.profilepic = res.user.profilepic;
+        }
+      });
     });
   }
 

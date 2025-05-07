@@ -93,6 +93,7 @@ export class ProfileSettingsComponent {
       .subscribe({
         next: (response) => {
           console.log(response);
+          window.location.reload();
         },
         error: (error) => {
           console.error(error);
@@ -118,7 +119,7 @@ saveNewPassword() {
     .then(() => {
       updatePassword(user!, this.pass)
         .then(() => {
-          console.log("Jelszó sikeresen módosítva!");
+          window.location.reload();
         })
     })
 }
@@ -135,6 +136,7 @@ saveDoctorData() {
   }).subscribe({
     next: (response) => {
       console.log(response);
+      window.location.reload();
     }
   });
 
@@ -149,6 +151,7 @@ saveDoctorData() {
   }).subscribe({
     next: (response) => {
       console.log('doc updated', response);
+      window.location.reload();
     }
   })
 }
@@ -160,6 +163,7 @@ deleteDoctorProfile() {
   }).subscribe({
     next: (response) => {
       console.log(response);
+      window.location.reload();
     }
   });
 }
@@ -173,7 +177,7 @@ deleteProfileUser() {
         next: () => {
           console.log('Törölve');
           alert('Profil sikeresen törölve.');
-          this.router.navigate(['/login']); // Navigálás a login oldalra
+          this.router.navigate(['/login']);
         },
         error: (err) => {
           console.error('Hiba történt a törlés közben:', err);
@@ -191,7 +195,10 @@ uploadProfilePicture() {
     formData.append('file', this.selectedFile);
     formData.append('userId', this.currentUser.uid);
 
-    this.http.post('http://localhost:3000/api/upload-profilepic', formData).subscribe({
+    this.http.post('http://localhost:3000/api/upload-profilepic', formData).subscribe({next: (response) => {
+      console.log(response);
+      window.location.reload();
+    },
       error: (err) => {
         console.error('Hiba feltöltésekor', err);
       }

@@ -148,6 +148,12 @@ export class ForumPostComponent implements OnInit, OnChanges {
     });
   }
   
+  onCommentDeleted(postId: string) {
+    this.commentCount = Math.max(0, this.commentCount - 1);
+    this.post.comment = this.commentCount;
+    
+    this.loadComments();
+  }
   
   
   

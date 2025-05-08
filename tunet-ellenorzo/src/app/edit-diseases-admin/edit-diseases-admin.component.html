@@ -3,7 +3,7 @@
     <!-- Magyar Form -->
     <div class="disease-form">
       <h2>{{ 'hungarian' | i18next }}</h2>
-      <form [formGroup]="diseaseFormHu" (ngSubmit)="submitDisease('hu')">
+      <form [formGroup]="diseaseFormHu">
         <label>{{ 'id' | i18next }} <input formControlName="id" /></label>
 
         <label>{{ 'name' | i18next }} <input formControlName="name" /></label>
@@ -23,7 +23,7 @@
         <div formArrayName="symptoms">
           <div *ngFor="let control of symptomsArrayHu.controls; let i = index">
             <select [formControlName]="i">
-              <option *ngFor="let symptom of symptoms" [value]="symptom">{{ symptom }}</option>
+              <option *ngFor="let symptom of symptomsH" [value]="symptom">{{ symptom }}</option>
             </select>
             <button type="button" (click)="removeControl(symptomsArrayHu, i)">{{ 'delete' | i18next }}</button>
           </div>
@@ -43,11 +43,12 @@
 
         <label>{{ 'painful' | i18next }} <input type="checkbox" formControlName="painful" (change)="onPainfulChange($event, 'hu')" /></label>
 
-        {{ 'painLocation' | i18next }}
+        
         <div *ngIf="diseaseFormHu.get('painful')?.value" formArrayName="painLocation">
+          {{ 'painLocation' | i18next }}
           <div *ngFor="let control of painLocationArrayHu.controls; let i = index">
             <select [formControlName]="i">
-              <option *ngFor="let location of painLocation" [value]="location">{{ location }}</option>
+              <option *ngFor="let location of painLocationH" [value]="location">{{ location }}</option>
             </select>
             <button type="button" (click)="removeControl(painLocationArrayHu, i)">{{ 'delete' | i18next }}</button>
           </div>
@@ -81,14 +82,14 @@
           <button type="button" (click)="addControl(treatmentArrayHu)">+ {{ 'add' | i18next }}</button>
         </div>
 
-        <button type="submit">{{ 'save' | i18next }}</button>
+        <!--<button type="submit">{{ 'save' | i18next }}</button>-->
       </form>
     </div>
 
     <!-- Angol Form -->
     <div class="disease-form">
       <h2>{{ 'english' | i18next }}</h2>
-      <form [formGroup]="diseaseFormEn" (ngSubmit)="submitDisease('en')">
+      <form [formGroup]="diseaseFormEn">
         <label>{{ 'id' | i18next }} <input formControlName="id" /></label>
         <label>{{ 'name' | i18next }} <input formControlName="name" /></label>
         <label>{{ 'ageRange' | i18next }}</label>
@@ -105,13 +106,13 @@
 
         <label>{{ 'symptoms' | i18next }}</label>
         <div formArrayName="symptoms">
-          <div *ngFor="let control of symptomsArrayHu.controls; let i = index">
+          <div *ngFor="let control of symptomsArrayEn.controls; let i = index">
             <select [formControlName]="i">
-              <option *ngFor="let symptom of symptoms" [value]="symptom">{{ symptom }}</option>
+              <option *ngFor="let symptom of symptomsE" [value]="symptom">{{ symptom }}</option>
             </select>
-            <button type="button" (click)="removeControl(symptomsArrayHu, i)">{{ 'delete' | i18next }}</button>
+            <button type="button" (click)="removeControl(symptomsArrayEn, i)">{{ 'delete' | i18next }}</button>
           </div>
-          <button type="button" (click)="addControl(symptomsArrayHu)">+ {{ 'add' | i18next }}</button>
+          <button type="button" (click)="addControl(symptomsArrayEn)">+ {{ 'add' | i18next }}</button>
         </div>
 
 
@@ -127,11 +128,12 @@
 
         <label>{{ 'painful' | i18next }} <input type="checkbox" formControlName="painful" (change)="onPainfulChange($event, 'en')" /></label>
 
-        {{ 'painLocation' | i18next }}
+        
         <div *ngIf="diseaseFormEn.get('painful')?.value" formArrayName="painLocation">
+          {{ 'painLocation' | i18next }}
           <div *ngFor="let control of painLocationArrayEn.controls; let i = index">
             <select [formControlName]="i">
-              <option *ngFor="let location of painLocation" [value]="location">{{ location }}</option>
+              <option *ngFor="let location of painLocationE" [value]="location">{{ location }}</option>
             </select>
             <button type="button" (click)="removeControl(painLocationArrayEn, i)">{{ 'delete' | i18next }}</button>
           </div>
@@ -166,10 +168,11 @@
           <button type="button" (click)="addControl(treatmentArrayEn)">+ {{ 'add' | i18next }}</button>
         </div>
 
-        <button type="submit">{{ 'save' | i18next }}</button>
+        <!--<button type="submit">{{ 'save' | i18next }}</button>-->
       </form>
     </div>
   </div>
+  <button class="option-buttons save-button" (click)="submitDiseases()">{{ 'save' | i18next }}</button>
 
   <app-edit-disease
   *ngIf="selectedDiseaseId"
@@ -177,10 +180,9 @@
   (close)="selectedDiseaseId = null">
   </app-edit-disease>
 
-  <!-- Betegségek listázása -->
-  <div *ngFor="let d of allDiseases">
+  <div class="disease-card" *ngFor="let d of allDiseases">
     <app-disease [diseaseName]="d.id"></app-disease>
-    <button (click)="deleteDisease(d.id)">{{ 'delete' | i18next }}</button>
+    <button class="option-buttons del-button" (click)="deleteDisease(d.id)">{{ 'delete' | i18next }}</button>
   </div>
   <mat-paginator [length]="totalDiseases" 
                [pageSize]="pageSize"

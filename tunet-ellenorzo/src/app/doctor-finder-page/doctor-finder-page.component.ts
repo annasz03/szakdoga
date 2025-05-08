@@ -138,10 +138,12 @@ export class DoctorFinderPageComponent {
         specialty: this.selectedSpec,
         city: this.selectedArea
       }
-    }).subscribe((doctors: any) => {
-      this.doctors = doctors;
-      this.loading = false;
-    });
+    }).subscribe((response: any) => {
+      this.doctors = response.data;
+      this.totalItems = response.count;
+    })
+    
+    
     
   }
   

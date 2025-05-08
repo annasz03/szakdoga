@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { addDoc, collection, deleteDoc, doc, Firestore, getDocs, setDoc } from '@angular/fire/firestore';
 import { LangService } from '../lang-service.service';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -20,6 +20,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
   styleUrls: ['./edit-diseases-admin.component.css']
 })
 export class EditDiseasesAdminComponent {
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
   currentPage = 0;
   pageSize = 5;
   lastVisible: any = null;
@@ -31,8 +32,10 @@ export class EditDiseasesAdminComponent {
   ageLabelEn="All agegroups";
 
   selectedDiseaseId: string | null = null;
-  symptoms: string[] = [];
-  painLocation: string[] = [];
+  symptomsH: string[] = [];
+  symptomsE: string[] = [];
+  painLocationH: string[] = [];
+  painLocationE: string[] = [];
   prevention: string[] = [];
   riskFactors: string[] = [];
   treatment: string[] = [];
@@ -46,6 +49,7 @@ export class EditDiseasesAdminComponent {
   riskFactorsName = 'riskFactors';
   treatmentName = 'treatment';
   lang:string="en"
+  errorMessage="";
 
   constructor(private firestore: Firestore, private langService: LangService, private fb: FormBuilder, private http: HttpClient, private router: Router) {
     this.langService.currentLang$.subscribe((lang) => {
@@ -53,18 +57,82 @@ export class EditDiseasesAdminComponent {
       this.resetPagination();
       this.loadTotalCount(lang);
       this.loadDiseases(lang);
-      this.loadSymptoms(lang);
-      this.loadPainLocation(lang);
+      this.loadSymptoms();
+      this.loadPainLocation();
     });
     
     
   }
 
   ngOnInit(): void {
-    console.log('ngOnInit called');
     this.diseaseFormHu = this.initForm('hu');
     this.diseaseFormEn = this.initForm('en');
   }
+
+  ngAfterViewInit() {
+    if(this.lang==="hu"){
+      this.paginator._intl.itemsPerPageLabel = 'oldalankkénti elemek száma';
+    }else{
+      this.paginator._intl.itemsPerPageLabel = 'items per page';
+    }
+  }
+
+  submitDiseases() {
+    // magyar
+    const formHu = this.diseaseFormHu;
+    const formEn = this.diseaseFormEn;
+
+    if (formHu.valid) {
+      if(formHu.value.id === formEn.value.id){
+        const diseaseDataHu = formHu.value;
+        const diseaseIdHu = formHu.get('id')?.value;
+        if (diseaseIdHu) {
+          this.saveDisease(diseaseDataHu, 'hu', diseaseIdHu);
+        }
+      }else{
+        if (this.lang === 'hu') {
+          alert("Nem egyeznek az azonosítók");
+        } else {
+          alert("The ID's do not match.");
+        }
+      }
+    } else {
+      if (this.lang === 'hu') {
+        alert("Nem lett teljesen kitöltve az űrlap!");
+      } else {
+        alert("One of the forms is invalid!");
+      }
+    }
+  
+    // angol
+    
+    if (formEn.valid) {
+      if(formHu.value.id === formEn.value.id){
+        const diseaseDataEn = formEn.value;
+        const diseaseIdEn = formEn.get('id')?.value;
+        if (diseaseIdEn) {
+          this.saveDisease(diseaseDataEn, 'en', diseaseIdEn);
+        }
+      }else {
+        if (this.lang === 'hu') {
+          alert("Nem egyeznek az azonosítók");
+        } else {
+          alert("The ID's do not match.");
+        }
+      }
+      
+    } else {
+      if (this.lang === 'hu') {
+        alert("Nem lettek teljesen kitöltve az űrlapok!");
+      } else {
+        alert("One of the forms is invalid!");
+      }
+    }
+
+    this.loadDiseases(this.lang)
+  }
+  
+  
 
   initForm(lang: string): FormGroup {
     return this.fb.group({
@@ -98,38 +166,37 @@ export class EditDiseasesAdminComponent {
   }
   
 
-  async loadSymptoms(lang: string) {
-    this.http.post<string[]>('http://localhost:3000/api/get-all-symptoms', { lang })
+  async loadSymptoms() {
+    this.http.post<string[]>('http://localhost:3000/api/get-all-symptoms', { lang: 'hu' })
     .subscribe({
       next: (symptoms) => {
-        this.symptoms = symptoms;
+        this.symptomsH = symptoms;
       }
     });
+    
+    this.http.post<string[]>('http://localhost:3000/api/get-all-symptoms', { lang: 'en' })
+    .subscribe({
+      next: (symptoms) => {
+        this.symptomsE = symptoms;
+      }});
   }
 
-  async loadPainLocation(lang: string) {
-    this.http.post<string[]>('http://localhost:3000/api/get-all-pain', { lang })
+  async loadPainLocation() {
+    this.http.post<string[]>('http://localhost:3000/api/get-all-pain', { lang: 'hu' })
     .subscribe({
       next: (painList) => {
-        this.painLocation = painList;
+        this.painLocationH = painList;
+      }
+    });
+    
+    this.http.post<string[]>('http://localhost:3000/api/get-all-pain', { lang: 'en' })
+    .subscribe({
+      next: (painList) => {
+        this.painLocationE = painList;
       }
     });
   }
 
-
-  
-
-  submitDisease(lang: string): void {
-    const form = lang === 'hu' ? this.diseaseFormHu : this.diseaseFormEn;
-    if (form.valid) {
-      const diseaseData = form.value;
-      const diseaseId = form.get('id')?.value;
-      if (diseaseId) {
-        this.saveDisease(diseaseData, lang, diseaseId);
-        console.log(diseaseData);
-      }
-    }
-  }
 
   saveDisease(diseaseData: any, lang: string, diseaseId: string): void {
     this.http.post('http://localhost:3000/api/save-disease', {diseaseData,lang,diseaseId})

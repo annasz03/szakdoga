@@ -59,6 +59,8 @@
     "ageRange": "Age: ",
     "name": "Name:",
     "id": "ID:",
+     "rate_doctor": "Rate doctor",
+        "accept": "Accept",
 
 
 
@@ -120,7 +122,9 @@
         "nyilv": "medical registration number"
       ,
 
-      "export":"Export to PDF"
+      "export":"Export to PDF",
+      "submit_rating": "OK",
+      "ratings": "Ratings"
 
 
 

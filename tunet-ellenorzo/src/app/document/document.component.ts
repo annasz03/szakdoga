@@ -140,7 +140,7 @@ export class ShareDialog {
   
 
   loadTotalCount() {
-    this.http.get<{ totalCount: number }>('http://localhost:3000/api/load-total-count')
+    this.http.get<{ totalCount: number }>('http://localhost:3000/api/load-total-count-uid')
       .subscribe({
         next: (response) => {
           this.totalItems = response.totalCount;
@@ -156,7 +156,7 @@ export class ShareDialog {
       lastVisibleDocId: this.lastVisible?.id
     };
   
-    this.http.post<{ doctors: any[], lastVisible: string }>('http://localhost:3000/api/load-doctors', requestData)
+    this.http.post<{ doctors: any[], lastVisible: string }>('http://localhost:3000/api/load-doctors-uid', requestData)
       .subscribe({
         next: (response) => {
           this.doctors = [...this.doctors, ...response.doctors];

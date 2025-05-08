@@ -120,7 +120,13 @@
         "regist": "Regisztrálás",
         "nodoc": "Nincs találat a keresési feltételeknek megfelelő orvos.",
         "nyilv": "Orvosi nyilvántartási szám",
-        "export":"Exportálás PDF-be"
+        "export":"Exportálás PDF-be",
+        "submit_rating": "OK",
+        "ratings": "Vélemények",
+
+
+        "rate_doctor": "Orvos véleményezése",
+        "accept": "Elfogadás"
 
     
 

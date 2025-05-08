@@ -33,6 +33,10 @@ export class DoctorComponent {
   }
 
   ngOnInit(){
+    this.getRatings()
+  }
+
+  getRatings(){
     this.http.get<Ratings[]>(`http://localhost:3000/api/ratings/${this.doc.id}`)
     .subscribe(data => {
       this.ratings = data;
@@ -74,6 +78,7 @@ export class DoctorComponent {
     }).subscribe(() => {
       this.selectedRating = 0;
       this.comment = '';
+      this.getRatings()
     });
     
   }

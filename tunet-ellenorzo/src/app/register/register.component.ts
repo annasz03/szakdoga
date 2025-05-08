@@ -32,7 +32,7 @@ export class RegisterComponent {
   dialog = inject(MatDialog);
   lang:any;
 
-  constructor(private firestore: Firestore, private http: HttpClient, private langService:LangService) {
+  constructor(private firestore: Firestore, private http: HttpClient, private langService:LangService,) {
     this.langService.currentLang$.subscribe((lang) => {
       this.lang=lang
     });
@@ -47,22 +47,16 @@ export class RegisterComponent {
     gender: ['male', Validators.required]
   });
 
-    onSubmit(event: Event): void {
+  onSubmit(event: Event): void {
     const rawForm = this.form.getRawValue();
 
-    this.http.post(backendUrl, {
-      email: rawForm.email,
-      password: rawForm.password,
-      username: rawForm.username,
-      birth: rawForm.birth,
-      gender: rawForm.gender
-    }).subscribe({
+    this.authService.register(rawForm).subscribe({
       next: (response: any) => {
-        console.log('Sikeres regisztráció', response);
         this.dialog.open(ValidateDialog);
         this.router.navigate(['/login']);
-      }})
-    }
+      }
+    });
+  }
     
 
     formatCheck(): boolean {

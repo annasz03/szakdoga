@@ -1,15 +1,15 @@
-<div>
+<div class="form">
     <div class="name">
         {{doc.name}}
     </div>
-    {{doc.specialty}}
+    {{doc.speciality}}
     <div *ngFor="let d of doc.cities">
             {{d}},
     </div>
 
     {{doc.city}}
 
-    <button (click)="openMoreData()">{{ 'more' | i18next }}</button>
+    <button class="option-buttons" (click)="openMoreData()">{{ 'more' | i18next }}</button>
 
     <div *ngIf="opened">
         {{ 'gender' | i18next }} {{doc.gender}}<br>
@@ -21,7 +21,8 @@
         Cím: {{doc.address}} <br>
         Tel.: {{doc.phone}}<br>
 
-        Vélemények:
+        <p></p>
+        {{ 'ratings' | i18next }}:
         <div *ngFor="let rating of ratings">
             <app-ratings [rating]="rating"></app-ratings>
         </div>
@@ -30,20 +31,27 @@
                 <h4>{{ 'rate_doctor' | i18next }}</h4>
             
                 <div class="stars">
-                    <span *ngFor="let star of [1,2,3,4,5]" (click)="setRating(star)">
-                      <i>{{ star <= selectedRating ? '★' : '☆' }}</i>
+                    <span *ngFor="let star of [1, 2, 3, 4, 5]" (click)="setRating(star)">
+                      <img [src]="star <= selectedRating ? 'assets/star.webp' : 'assets/star2.webp'" 
+                           alt="star" 
+                           class="star-icon" />
                     </span>
                   </div>
                   
-                <textarea [(ngModel)]="comment" placeholder="{{ 'write_comment' | i18next }}"></textarea>
-                <button (click)="submitRating()">{{ 'submit_rating' | i18next }}</button>
+                  
+
+                  <div class="add-comment">
+                    <input type="text" [(ngModel)]="comment">
+                    <button (click)="submitRating()">{{ 'submit_rating' | i18next }}</button>
+                  </div>
+                
             </div>
   
     </div>
 
     <div *ngIf="role==='admin'">
-        <button (click)="deleteRequest()">Kérelem törlése</button>
-        <button (click)="acceptRequest()">Kérelem elfogadása</button>
+        <button (click)="deleteRequest()">{{ 'delete' | i18next }}</button>
+        <button (click)="acceptRequest()">{{ 'accept' | i18next }}</button>
     </div>
 
 </div>

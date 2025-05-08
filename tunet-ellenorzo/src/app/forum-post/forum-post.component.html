@@ -3,14 +3,12 @@
     <a (click)="goToUserProfile()" class="post-username">{{ post.username }}</a>
     <br>
     <div class="post-date">{{ formattedDate }}</div>
-    <div *ngIf="post.uid===currentUser.uid">
-      <button (click)="deletePost(post.uid)">Törlés</button>
+    <div class="post-tag">{{ post.tag }}</div>
+    <div *ngIf="post.uid===currentUser.uid" class="del-button ">
+      <button (click)="deletePost(post.uid)" class="option-buttons">Törlés</button>
     </div>
     
   </div>
-<br>  
-  <div class="post-tag">{{ post.tag }}</div>
-  <br>
   <div class="post-body">{{ post.body }}</div>
 
   <!-- kommentek -->

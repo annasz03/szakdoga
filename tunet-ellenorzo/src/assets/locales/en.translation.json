@@ -118,7 +118,9 @@
         "regist": "Register",
         "nodoc": "Can't find doctors with there requirements.",
         "nyilv": "medical registration number"
-      
+      ,
+
+      "export":"Export to PDF"
 
 
 

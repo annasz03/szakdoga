@@ -56,7 +56,7 @@ export class ForumPostComponent implements OnInit, OnChanges {
   
 
   ngOnInit() {
-    this.date = this.post.date;
+    this.date = this.post.date instanceof Timestamp ? this.post.date.toDate() : this.post.date;
     this.formattedDate = this.datePipe.transform(this.date, 'yyyy-MM-dd HH:mm:ss');
     this.likeCount = this.post.like || 0;
     this.commentCount = this.post.comment || 0;
@@ -80,9 +80,6 @@ export class ForumPostComponent implements OnInit, OnChanges {
         next: (res) => {
           this.comments = res.comments;
         },
-        error: (err) => {
-          console.error('Hiba: ', err);
-        }
       });
   }
   

@@ -30,8 +30,7 @@ export class AppComponent{
   languages: string[] = ['en', 'hu'];
 
 
-  constructor(private langService: LangService,private firestore: Firestore,
-    private messaging: Messaging, private translate: TranslateService, private router: Router, private swPush:SwPush, private authService:AuthService, @Inject(I18NEXT_SERVICE) private i18NextService: ITranslationService) {
+  constructor(private langService: LangService,private firestore: Firestore,private messaging: Messaging, private translate: TranslateService, private router: Router, private swPush:SwPush, private authService:AuthService, @Inject(I18NEXT_SERVICE) private i18NextService: ITranslationService) {
     translate.setDefaultLang('en');
     this.langService.setLanguage(this.language);
     this.translate.setDefaultLang(this.language);
@@ -48,12 +47,9 @@ export class AppComponent{
 
   ngOnInit(): void {
     this.i18NextService.events.initialized.subscribe((e) => {
-      if (e) {
-        this.updateState(this.i18NextService.language);
-        this.translate.use(this.i18NextService.language);
-      }
+      this.updateState(this.i18NextService.language);
+      this.translate.use(this.i18NextService.language);
     });
-    console.log(this.language)
 
     this.subscribeToPush();
     this.initializeFCM();

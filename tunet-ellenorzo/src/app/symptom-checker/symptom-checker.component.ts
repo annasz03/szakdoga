@@ -32,7 +32,7 @@ export class SymptomCheckerComponent {
   fb = inject(FormBuilder);
   errorMessage='';
 
-  filteredSymptoms: string[] = [];
+  filteredSymptoms: string[][] = [];
 
   personalFromVisible = true;
   isPainful=false;
@@ -69,15 +69,6 @@ export class SymptomCheckerComponent {
 
     this.addSymptom();
     this.addPain();
-  }
-
-  loadSymptoms(lang: string) {
-    this.http.post<string[]>('http://localhost:3000/api/get-all-symptoms', { lang })
-    .subscribe({
-      next: (symptomList) => {
-        this.symptoms = symptomList;
-      }
-    });
   }
   
 
@@ -122,14 +113,9 @@ export class SymptomCheckerComponent {
     this.symptomArray.push(this.fb.control('', Validators.required));
   }
 
-  removeSymptom(index: number): void {
-    this.symptomArray.removeAt(index);
-    this.filteredSymptoms.splice(index, 1);
-  }
-
   addPain() {
     this.painLocationArray.push(this.fb.control('', Validators.required));
-    this.filteredSymptoms = [...this.symptoms];
+    //this.filteredSymptoms = [...this.symptoms];
   }
 
   removePain(index: number): void {
@@ -163,15 +149,33 @@ export class SymptomCheckerComponent {
     }
   }
 
+  goToEditDiseases(){
+    this.router.navigate(['/diseases-edit']);
+  }
+
+  loadSymptoms(lang: string) {
+    this.http.post<string[]>('http://localhost:3000/api/get-all-symptoms', { lang })
+    .subscribe({
+      next: (symptomList) => {
+        this.symptoms = symptomList;
+        this.filteredSymptoms = this.symptomArray.controls.map(() => [...this.symptoms]);
+      }
+    });
+  }
+  showAllSymptoms(index: number) {
+    this.filteredSymptoms[index] = [...this.symptoms];
+  }
+
   filterSymptoms(index: number): void {
     const inputValue = this.symptomArray.at(index).value.toLowerCase();
-    this.filteredSymptoms = this.symptoms.filter((symptom) =>
+    this.filteredSymptoms[index] = this.symptoms.filter(symptom =>
       symptom.toLowerCase().includes(inputValue)
     );
   }
 
-  goToEditDiseases(){
-    this.router.navigate(['/diseases-edit']);
+  removeSymptom(index: number): void {
+    this.symptomArray.removeAt(index);
+    this.filteredSymptoms.splice(index, 1);
   }
 
 }

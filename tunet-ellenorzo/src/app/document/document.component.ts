@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, inject, Input } from '@angular/core';
+import { Component, EventEmitter, Inject, inject, Input, Output } from '@angular/core';
 import { DataService } from '../data.service';
 import { AuthService } from '../auth.service';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -21,6 +21,8 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
   styleUrl: './document.component.css'
 })
 export class DocumentComponent {
+  @Output() documentDeleted = new EventEmitter<void>();
+
 
   @Input() fileName="";
   @Input() text:string="";
@@ -36,13 +38,12 @@ export class DocumentComponent {
   @Input() file="";
   
   private authService = inject(AuthService);
-  constructor(private dialog: MatDialog,private dataService:DataService){}
+  constructor(private dialog: MatDialog,private dataService:DataService, private http : HttpClient){}
 
   ngOnInit(){
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
     });
-    console.log(this.text)
   }
 
   getUrl(){
@@ -50,14 +51,12 @@ export class DocumentComponent {
   }
 
   delete(){
-    this.dataService.deleteDoc(this.currentUser.uid, this.fileName).subscribe({
+    this.http.delete(`http://localhost:3000/api/delete-document/${this.id}`).subscribe({
       next: (response) => {
-        console.log("deleted")
+        //lefrissiteni
+        this.documentDeleted.emit();
       }
-    })
-    setTimeout(()=>{
-      this.dataService.setRefresh=true;
-    },100)
+    });
   }
 
   isImage(): boolean {

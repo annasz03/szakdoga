@@ -2,7 +2,7 @@
     <div class="comment-uid">{{ username }}</div>
     <div class="comment-date">{{ formattedDate }}</div>
     <div class="comment-body">{{ comment.body }}</div>
-    <div *ngIf="comment.uid===currentUser.uid">
-        <button (click)="deleteComment(comment.uid)">Törlés</button>
-      </div>
+    <div *ngIf="comment.uid===currentUser.uid"  class="del-button ">
+        <button class="option-buttons" (click)="deleteComment(comment.uid)">Törlés</button>
+    </div>
 </div>

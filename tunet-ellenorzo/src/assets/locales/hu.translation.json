@@ -119,7 +119,9 @@
         "letters": "Számjegy",
         "regist": "Regisztrálás",
         "nodoc": "Nincs találat a keresési feltételeknek megfelelő orvos.",
-        "nyilv": "Orvosi nyilvántartási szám"
+        "nyilv": "Orvosi nyilvántartási szám",
+        "export":"Exportálás PDF-be"
+
     
 
 

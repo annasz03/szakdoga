@@ -3,6 +3,7 @@ import { IComment } from '../icomment';
 import { DatePipe } from '@angular/common';
 import { collection, Firestore, getDocs } from '@angular/fire/firestore';
 import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-forum-comment',
@@ -17,12 +18,16 @@ export class ForumCommentComponent {
   formattedDate:any;
   date:any;
   username:any;
+  currentUser:any;
 
   @Output() commentDeleted = new EventEmitter<string>();
 
-  constructor(private datePipe: DatePipe, private firestore: Firestore, private http:HttpClient){}
+  constructor(private datePipe: DatePipe, private firestore: Firestore, private http:HttpClient, private authService: AuthService){}
 
   ngOnInit(){
+    this.authService.user$.subscribe(user => {
+      this.currentUser = user;
+    });
     this.date = this.comment.date
     this.formattedDate = this.datePipe.transform(this.date, 'yyyy-MM-dd HH:mm:ss');
 
@@ -40,7 +45,7 @@ export class ForumCommentComponent {
   }
 
   deleteComment(postid: string) {
-    this.http.delete(`http://localhost:3000/api/delete-post/${this.comment.id}`).subscribe({
+    this.http.delete(`http://localhost:3000/api/delete-comment/${this.comment.id}`).subscribe({
       next: (response) => {
         this.commentDeleted.emit(postid);
       }

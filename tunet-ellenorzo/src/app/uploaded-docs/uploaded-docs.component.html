@@ -14,6 +14,6 @@
 
 <div class="doc-container">
     <div class="doc" *ngFor="let doc of filteredDocuments">
-        <app-document  [docType]="doc.type" [fileName]="doc.filename" [text]="doc.comment" [file]="doc.file" [id]="doc.id"></app-document>
+        <app-document (documentDeleted)="getAllDocuments()"  [docType]="doc.type" [fileName]="doc.filename" [text]="doc.comment" [file]="doc.file" [id]="doc.id"></app-document>
     </div>      
 </div>

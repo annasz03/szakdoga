@@ -3,12 +3,7 @@
   border-radius: 12px;
   padding: 20px;
   margin: 16px 0;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   transition: box-shadow 0.3s;
-}
-
-.post-container:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 .post-username {
@@ -28,7 +23,6 @@
   color: white;
   padding: 5px 10px;
   border-radius: 5px;
-  font-size: 0.85em;
   margin-bottom: 0.6rem;
 }
 
@@ -55,7 +49,6 @@
   height: 24px;
   margin-left: 0.5rem;
   margin-right: 0.5rem;
-  transition: transform 0.2s ease;
 }
 
 .like-icon:hover {
@@ -88,4 +81,15 @@
 
 .add-comment button:hover {
   background-color: #0056b3;
+}
+
+.del-button {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  top: -3rem;
+}
+
+.option-buttons{
+  margin: 0 !important;
 }

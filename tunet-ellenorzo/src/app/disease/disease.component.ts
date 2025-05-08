@@ -48,7 +48,7 @@ export class DiseaseComponent {
 
   
     for (const key in data) {
-      if (data.hasOwnProperty(key)) {
+      if (data.hasOwnProperty(key) && key !== 'id' && key !== 'age') {
         this.dataSource.push({
           key: key,
           value: data[key]
@@ -75,20 +75,38 @@ export class DiseaseComponent {
   }
 
   getName(key: string): string {
-    const labels: { [key: string]: string } = {
-      name: 'Név: ',
-      ageLabel: 'Korosztály: ',
-      gender: 'Nem: ',
-      symptoms: 'Tünetek: ',
-      associatedDiseases: 'Vele járó betegségek: ',
-      description: 'Leírás: ',
-      causes: 'Kiváltó okok: ',
-      prevention: 'Megelőzés: ',
-      treatment: 'Gyógymód: ',
-      riskFactors: 'Kockázati faktorok: ',
-      painful: 'Fájdalmas: ',
-      painLocation: 'Fájdalom helye: ',
+    const labels: { [lang: string]: { [key: string]: string } } = {
+      hu: {
+        name: 'Név: ',
+        ageLabel: 'Korosztály: ',
+        gender: 'Nem: ',
+        symptoms: 'Tünetek: ',
+        associatedDiseases: 'Vele járó betegségek: ',
+        description: 'Leírás: ',
+        causes: 'Kiváltó okok: ',
+        prevention: 'Megelőzés: ',
+        treatment: 'Gyógymód: ',
+        riskFactors: 'Kockázati faktorok: ',
+        painful: 'Fájdalmas: ',
+        painLocation: 'Fájdalom helye: ',
+      },
+      en: {
+        name: 'Name: ',
+        ageLabel: 'Age groups: ',
+        gender: 'Gender: ',
+        symptoms: 'Symptoms: ',
+        associatedDiseases: 'Associated diseases: ',
+        description: 'Description: ',
+        causes: 'Causes: ',
+        prevention: 'Prevention: ',
+        treatment: 'Treatment: ',
+        riskFactors: 'Risk factors: ',
+        painful: 'Painful: ',
+        painLocation: 'Pain location: ',
+      }
     };
-    return labels[key] || key;
+  
+    return labels[this.lang]?.[key] || key;
   }
+  
 }

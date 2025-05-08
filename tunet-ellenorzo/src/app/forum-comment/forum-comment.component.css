@@ -21,3 +21,15 @@
     color: #222;
     line-height: 1.4;
 }
+
+
+.del-button {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    top: -3rem;
+  }
+  
+  .option-buttons{
+    margin: 0 !important;
+  }

@@ -102,7 +102,7 @@ export class ForumPageComponent {
   
     const requestData = {
       pageSize: this.pageSize,
-      pageIndex: this.currentPage // Használjuk a pageIndex-et, nem a lastVisiblePostId-t
+      pageIndex: this.currentPage 
     };
   
     this.http.post<{ posts: IPost[], totalCount: number }>(
@@ -110,9 +110,9 @@ export class ForumPageComponent {
       requestData
     ).subscribe({
       next: (response) => {
-        console.log('Válasz:', response);  // Naplózzuk a válasz tartalmát
+        console.log('Válasz:', response);
         this.posts = response.posts;
-        this.totalItems = response.totalCount;  // Beállítjuk a teljes elemek számát
+        this.totalItems = response.totalCount;
         this.loading = false;
       },
       error: (err) => {
@@ -123,15 +123,14 @@ export class ForumPageComponent {
   }
   
   
-  // Lapozás kezelése
   onPageChange(event: PageEvent) {
     if (this.pageSize !== event.pageSize) {
-      this.currentPage = 0; // Oldalméret változásnál visszaállítás
+      this.currentPage = 0;
     } else {
       this.currentPage = event.pageIndex;
     }
     this.pageSize = event.pageSize;
-    this.loadPosts();  // Új oldalt tölt be
+    this.loadPosts();
   }
   
   

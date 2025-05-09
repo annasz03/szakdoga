@@ -7,6 +7,8 @@ import { FormsModule } from '@angular/forms';
 import { addDoc,  Firestore, getDocs, query, where, } from '@angular/fire/firestore';
 import { HttpClient } from '@angular/common/http';
 import { I18NextModule } from 'angular-i18next';
+import { DoctorService } from '../doctor.service';
+import { DocumentService } from '../document.service';
 
 
 @Component({
@@ -17,6 +19,8 @@ import { I18NextModule } from 'angular-i18next';
   styleUrl: './uploaded-docs.component.css'
 })
 export class UploadedDocsComponent {
+  documentService = inject(DocumentService)
+
   selectedFile: File | null = null;
   imageUrl: string | null = null;
   comment: string = "";
@@ -51,11 +55,15 @@ export class UploadedDocsComponent {
   }
 
   getAllDocuments() {
-    this.http.post<{ user: any }>('http://localhost:3000/api/get-all-documents', {
+    this.documentService.getAllDocuments(this.currentUser.uid).subscribe(response => {
+      this.documents=response
+  });
+
+    /*this.http.post<{ user: any }>('http://localhost:3000/api/get-all-documents', {
       uid:this.currentUser.uid
     }).subscribe(response => {
       this.documents=response
-  });
+  });*/
     
   }
 
@@ -95,15 +103,17 @@ export class UploadedDocsComponent {
       formData.append('comment', this.comment);
       formData.append('userId', this.currentUser.uid);
   
-      this.http.post('http://localhost:3000/api/upload-document', formData).subscribe({
+      this.documentService.uploadDocument(formData).subscribe({
         next: (res) => {
-          console.log('Dokumentum sikeresen feltöltve');
           this.getAllDocuments();
-        },
-        error: (err) => {
-          console.error('Hiba dokumentum feltöltésekor', err);
         }
       });
+
+      /*this.http.post('http://localhost:3000/api/upload-document', formData).subscribe({
+        next: (res) => {
+          this.getAllDocuments();
+        }
+      });*/
     } else {
       this.errorMessage = "Nem megfelelő file formátum";
     }

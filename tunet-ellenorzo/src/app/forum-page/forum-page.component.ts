@@ -16,6 +16,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { BrowserModule } from '@angular/platform-browser';
 import { LangService } from '../lang-service.service';
+import { ForumService } from '../forum.service';
+import { DiseaseService } from '../disease.service';
 
 @Component({
   selector: 'app-forum-page',
@@ -31,8 +33,10 @@ import { LangService } from '../lang-service.service';
   styleUrl: './forum-page.component.css'
 })
 export class ForumPageComponent {
+  forumService = inject(ForumService)
+  diseaseService = inject(DiseaseService)
 
-  illnesses: string[] = [];
+  illnesses: Array<{id: string, name: string}> = [];
   currentUser:any;
   body:any;
   date:any;
@@ -57,14 +61,22 @@ export class ForumPageComponent {
 
   constructor(private dataService: DataService, private firestore: Firestore, private http:HttpClient, private langService:LangService) {
     this.langService.currentLang$.subscribe((lang: string) => {
-      this.currentLang = lang;
+  this.currentLang = lang;
+  this.diseaseService.getAllDiseaseNames().subscribe(response => {
+    this.illnesses = Object.entries(response).map(([id, names]) => ({
+      id: id,
+      name: lang === 'hu' ? names.name_hu : names.name_en
+    }));
+  });
+  console.log(this.illnesses)
+});
 
-      this.http.post<any>(`http://localhost:3000/api/get-all-disease-names`, { lang }).subscribe({
+    /*  this.http.post<any>(`http://localhost:3000/api/get-all-disease-names`, { lang }).subscribe({
         next: (response) => {
           this.illnesses = response;
         }
       })
-    });
+    });*/
   }
   
   ngOnInit(){
@@ -76,6 +88,8 @@ export class ForumPageComponent {
     });
   }
 
+
+
   addPost() {
     const postData = {
       uid: this.currentUser.uid,
@@ -84,42 +98,25 @@ export class ForumPageComponent {
       username: this.currentUser.displayName
     };
   
-    this.http.post('http://localhost:3000/add-post', postData)
-      .subscribe({
-        next: () => {
-          this.body = '';
-          this.tag = '';
-          this.lastVisible = null;
-          this.posts = [];
-          this.loadPosts();
-        }
-      });
+    this.forumService.addPost(postData).subscribe({
+      next: () => {
+        this.body = '';
+        this.tag = '';
+        this.lastVisible = null;
+        this.posts = [];
+        this.loadPosts();
+      }
+    });
   }
   
   loadPosts() {
-    this.posts = [];
-    this.loading = true;
-  
-    const requestData = {
-      pageSize: this.pageSize,
-      pageIndex: this.currentPage 
-    };
-  
-    this.http.post<{ posts: IPost[], totalCount: number }>(
-      'http://localhost:3000/api/forum-load-posts',
-      requestData
-    ).subscribe({
-      next: (response) => {
-        console.log('Válasz:', response);
-        this.posts = response.posts;
-        this.totalItems = response.totalCount;
+    this.forumService.getForumPosts({ pageSize: this.pageSize, pageIndex: this.currentPage })
+      .subscribe(({ posts, totalCount }) => {
+        this.posts = posts;
+        this.filteredPosts = posts;
+        this.totalItems = totalCount;
         this.loading = false;
-      },
-      error: (err) => {
-        console.error('Hiba a bejegyzések betöltésekor:', err);
-        this.loading = false;
-      }
-    });
+      });
   }
   
   
@@ -140,26 +137,14 @@ export class ForumPageComponent {
   
   
 
-  search(){
-    const filtered: IPost[] = [];
-
-    if (this.searchTag !== "" && this.searchText !== "") {
-        filtered.push(...this.posts.filter(post =>
-            post.tag===this.searchTag && post.body.includes(this.searchText)
-        ));
-    } 
-    if (this.searchTag !== "" && this.searchText === undefined) {
-        filtered.push(...this.posts.filter(post =>
-          post.tag===this.searchTag
-        ));
-    } 
-    if (this.searchText !== "" && this.searchTag === undefined) {
-        filtered.push(...this.posts.filter(post =>
-            post.body.includes(this.searchText)
-        ));
-    }
-
-    this.posts = filtered;
-}
-
+  search() {
+    this.filteredPosts = this.posts
+      .filter(post => this.searchTag ? post.tag === this.searchTag : true)
+      .filter(post => this.searchText
+         ? post.body.toLowerCase().includes(this.searchText.toLowerCase())
+         : true
+      );
+    this.totalItems = this.filteredPosts.length;
+    this.currentPage = 0;
+  }
 }

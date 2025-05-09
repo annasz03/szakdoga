@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, PipeTransform } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, PipeTransform } from '@angular/core';
 import { deleteDoc, doc, Firestore } from '@angular/fire/firestore';
 import { Alerts } from '../alerts';
 import { MatDialog } from '@angular/material/dialog';
@@ -6,6 +6,7 @@ import { NotificationDialog } from '../notification-page/notification-page.compo
 import { CommonModule } from '@angular/common';
 import { I18NextModule, I18NextService } from 'angular-i18next';
 import { HttpClient } from '@angular/common/http';
+import { AlertService } from '../alert.service';
 
 @Component({
   selector: 'app-notification',
@@ -18,6 +19,8 @@ export class NotificationComponent  {
   @Input()
   alert!: Alerts;
   @Output() alertDeleted = new EventEmitter<void>();
+
+  alertService = inject(AlertService)
 
 
   constructor(private dialog: MatDialog, private firestore: Firestore, private http:HttpClient, private i18next: I18NextService) {}
@@ -40,12 +43,11 @@ export class NotificationComponent  {
   }
 
   deleteAlert(alertId: string) {
-    this.http.post('http://localhost:3000/api/delete-alert', { alertId })
-      .subscribe({
+    this.alertService.deleteAlert(alertId).subscribe({
         next: (res) => {
           this.alertDeleted.emit()
         }
-      });
+      });      
   }
   
 

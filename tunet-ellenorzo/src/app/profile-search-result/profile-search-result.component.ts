@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { DataService } from '../data.service';
 import { Iuser } from '../iuser';
 import { HttpClient } from '@angular/common/http';
@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatPaginator, MatPaginatorIntl, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { LangService } from '../lang-service.service';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-profile-search-result',
@@ -15,6 +16,7 @@ import { LangService } from '../lang-service.service';
   styleUrl: './profile-search-result.component.css',
 })
 export class ProfileSearchResultComponent extends MatPaginatorIntl {
+  userService = inject(UserService)
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   name: string = "";
   profiles: Iuser[] = [];
@@ -25,14 +27,17 @@ export class ProfileSearchResultComponent extends MatPaginatorIntl {
   currentLang:any
 
   constructor(
-    private dataService: DataService, private http: HttpClient,  private router: Router, private langService:LangService) {
+    private dataService: DataService,
+    private router: Router,
+    private langService: LangService
+  ) {
     super();
-    this.dataService.getProfileSearch.subscribe(response => {
-      this.name = response;
+    this.dataService.getProfileSearch.subscribe(name => {
+      this.name = name;
       this.currentPage = 0;
       this.searchUsers();
     });
-    this.langService.currentLang$.subscribe((lang: string) => {
+    this.langService.currentLang$.subscribe(lang => {
       this.currentLang = lang;
     });
   }
@@ -45,24 +50,24 @@ export class ProfileSearchResultComponent extends MatPaginatorIntl {
     }
   }
 
-  searchUsers() {
-    this.loading = true;
-    this.http.post<any>('http://localhost:3000/api/get-user-search', {
-      search: this.name,
-      page: this.currentPage + 1,
-      pageSize: this.pageSize
-    }).subscribe({
-      next: (response) => {
-        this.profiles = response.users;
-        this.totalItems = response.totalCount;
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error(error);
-        this.loading = false;
-      }
-    });
-  }
+   searchUsers() {
+  this.loading = true;
+
+  this.userService.getUserSearch(
+    this.name,
+    this.currentPage,
+    this.pageSize
+  ).subscribe({
+    next: ({ users, totalCount }) => {
+      this.profiles   = users;
+      this.totalItems = totalCount;
+      this.loading    = false;
+    },
+    error: () => {
+      this.loading = false;
+    }
+  });
+}
 
   onPageChange(event: PageEvent) {
     this.currentPage = event.pageIndex;

@@ -16,6 +16,7 @@ import { LangService } from '../lang-service.service';
 import { MatIconButton } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { DiseaseService } from '../disease.service';
 
 
 
@@ -29,6 +30,8 @@ import { MatSelectModule } from '@angular/material/select';
   styleUrls: ['./symptom-checker.component.css'],
 })
 export class SymptomCheckerComponent {
+  diseaseService =inject(DiseaseService)
+
   fb = inject(FormBuilder);
   errorMessage='';
 
@@ -73,12 +76,18 @@ export class SymptomCheckerComponent {
   
 
   loadPainLocation(lang: string) {
-    this.http.post<string[]>('http://localhost:3000/api/get-all-pain', { lang })
-    .subscribe({
+    this.diseaseService.getAllPain(lang).subscribe({
       next: (painList) => {
         this.painLocation = painList;
       }
     });
+
+    /*this.http.post<string[]>('http://localhost:3000/api/get-all-pain', { lang })
+    .subscribe({
+      next: (painList) => {
+        this.painLocation = painList;
+      }
+    });*/
   }
   
 
@@ -154,13 +163,20 @@ export class SymptomCheckerComponent {
   }
 
   loadSymptoms(lang: string) {
-    this.http.post<string[]>('http://localhost:3000/api/get-all-symptoms', { lang })
-    .subscribe({
+    this.diseaseService.getAllSymptoms(lang).subscribe({
       next: (symptomList) => {
         this.symptoms = symptomList;
         this.filteredSymptoms = this.symptomArray.controls.map(() => [...this.symptoms]);
       }
     });
+
+    /*this.http.post<string[]>('http://localhost:3000/api/get-all-symptoms', { lang })
+    .subscribe({
+      next: (symptomList) => {
+        this.symptoms = symptomList;
+        this.filteredSymptoms = this.symptomArray.controls.map(() => [...this.symptoms]);
+      }
+    });*/
   }
   showAllSymptoms(index: number) {
     this.filteredSymptoms[index] = [...this.symptoms];

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, inject, Inject } from '@angular/core';
 import { NotificationComponent } from '../notification/notification.component';
 import { DataService } from '../data.service';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -15,6 +15,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { I18NextModule } from 'angular-i18next';
+import { AlertService } from '../alert.service';
 
 @Component({
   selector: 'app-notification-page',
@@ -28,6 +29,7 @@ import { I18NextModule } from 'angular-i18next';
   styleUrl: './notification-page.component.css'
 })
 export class NotificationPageComponent {
+  alertService = inject(AlertService)
 
   constructor(private dialog: MatDialog, private firestore: Firestore, private authService: AuthService, private http:HttpClient) {}
 
@@ -54,14 +56,15 @@ export class NotificationPageComponent {
   
 
   getAlerts() {
-    this.http.post<{ alerts: any[] }>('http://localhost:3000/get-alerts', { uid: this.currentUser!.uid })
-      .subscribe({
+    this.alertService.getAlerts(this.currentUser!.uid).subscribe({
         next: (res) => {
           console.log(res)
           this.alerts = res.alerts;
         }
-      });
+      });      
   }
+
+
   
 }
 
@@ -104,30 +107,38 @@ export class NotificationDialog {
   buttonTitle = "Hozzáadás";
   times: string[] = [];
 
+  alertService= inject(AlertService)
+
   constructor(
     public dialogRef: MatDialogRef<NotificationDialog>,
     private authService: AuthService,
     private fcmService: FcmService,
-    @Inject(MAT_DIALOG_DATA) public data: any, private http:HttpClient
+    @Inject(MAT_DIALOG_DATA) public data?: any
   ) { }
 
   ngOnInit() {
-    this.authService.user$.subscribe(user => {
-      this.currentUser = user;
-    });
+  this.authService.user$.subscribe(u => this.currentUser = u);
 
-    if (this.data) {
-      this.id = this.data.id || null;
-      this.name = this.data.name;
-      this.frequency = this.data.frequency;
-      this.times = this.data.times || [];
-      this.buttonTitle = "Módosítás";
+  if (this.data && this.data.frequency) {
+    const match = this.frequencies.find(f => f.key === this.data.frequency);
+    this.frequency = match ? match.value : 'once';
 
-      
-      this.timeDiv = this.times.length || 1;
-      this.timeArray = Array(this.timeDiv).fill(0).map((_, i) => i);
-    }
+    this.name      = this.data.name;
+    this.times     = Array.isArray(this.data.times) ? [...this.data.times] : [''];
+    this.timeDiv   = this.times.length;
+    this.timeArray = Array(this.timeDiv).fill(0).map((_, i) => i);
+    this.id        = this.data.id;
+    this.buttonTitle = 'Módosítás';
+  } else {
+    this.frequency = 'once';
+    this.times     = [''];
+    this.timeDiv   = 1;
+    this.timeArray = [0];
+    this.buttonTitle = 'Hozzáadás';
   }
+}
+
+
 
   onChange() {
     switch (this.frequency) {
@@ -160,35 +171,33 @@ export class NotificationDialog {
       return;
     }
 
-    const frequencyMap = {
-      once: 'onceADay',
-      twice: 'twiceADay',
-      three: 'threeTimesADay',
-      weekly: 'onceAWeek',
-      monthly: 'onceAMonth'
-    };
-  
-    const mappedFrequency = frequencyMap[this.frequency as keyof typeof frequencyMap] || 'onceADay';
-  
-    this.fcmService.requestPermission().then((token) => {
-      if (!token) {
-        return;
-      }
-  
+    const frequencyMap: Record<string, string> = {
+  once:    'onceADay',
+  twice:   'twiceADay',
+  three:   'threeTimesADay',
+  weekly:  'onceAWeek',
+  monthly: 'onceAMonth'
+};
+
+    const mappedFrequency = frequencyMap[this.frequency] || 'onceADay';
+
+    this.fcmService.requestPermission().then(token => {
+      if (!token) return;
+
       const newDoc = {
-        uid: this.currentUser.uid,
-        frequency: mappedFrequency,
-        times: this.times,
-        name: this.name,
-        createdAt: new Date().toISOString(),
-        fcmToken: token,
-        isActive: true
+        uid:        this.currentUser.uid,
+        frequency:  mappedFrequency,
+        times:      this.times,
+        name:       this.name,
+        createdAt:  new Date().toISOString(),
+        fcmToken:   token,
+        isActive:   true,
       };
-  
-      this.http.post<{ alert: any }>('http://localhost:3000/save-alert', newDoc)
+
+      this.alertService.saveAlert(newDoc)
         .subscribe({
-          next: (res) => {
-            this.dialogRef.close(res.alert);
+          next: ({ alert }) => {
+            this.dialogRef.close(alert);
           }
         });
     });

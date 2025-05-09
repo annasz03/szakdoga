@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { DataService } from '../data.service';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
 import { LangService } from '../lang-service.service';
+import { DiseaseService } from '../disease.service';
 
 @Component({
   selector: 'app-disease',
@@ -13,6 +14,7 @@ import { LangService } from '../lang-service.service';
   styleUrls: ['./disease.component.css']
 })
 export class DiseaseComponent {
+  diseaseService = inject(DiseaseService)
 
   @Input() diseaseName: any;
   @Input() i: any;
@@ -22,14 +24,14 @@ export class DiseaseComponent {
   opened = false;
   lang:string = ""
 
-  constructor(private http: HttpClient, private langService:LangService, private dataService:DataService) {
+  constructor(private langService:LangService) {
     this.langService.currentLang$.subscribe((lang) => {
       this.lang=lang
     });
   }
 
   ngOnInit() {
-    this.http.get(`http://localhost:3000/diseases/${this.lang}/${this.diseaseName}`).subscribe({
+    this.diseaseService.getDiseaseData(this.lang, this.diseaseName).subscribe({
       next: (response) => {
         this.res = response;
         this.formatDataSource();
@@ -61,7 +63,11 @@ export class DiseaseComponent {
   dataSourceFormatting() {
     this.dataSource.forEach(item => {
       if (item.key === 'painful') {
-        item.value = item.value === false ? 'Nem' : 'Igen';
+        if(item.value === false){
+          item.value='Nem'
+        }else {
+          item.value='Igen'
+        }
       }
 
       if (item.key === 'painLocation' && item.value.length === 0) {

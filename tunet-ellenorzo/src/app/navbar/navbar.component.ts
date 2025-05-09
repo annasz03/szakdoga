@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { DataService } from '../data.service';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-navbar',
@@ -16,6 +17,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class NavbarComponent {
   authService = inject(AuthService)
+  userService = inject(UserService)
 
   hamMenu:any;
   offScreen:any;
@@ -23,13 +25,11 @@ export class NavbarComponent {
   profilepic:string = ""
   name:string = "";
 
-  constructor(private router:Router,private dataService: DataService, private http:HttpClient){
+  constructor(private router:Router,private dataService: DataService){
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
 
-      this.http.post<{ user: { profilepic: string } }>('http://localhost:3000/get-user-profile-picture', {
-        uid: this.currentUser.uid
-      }).subscribe({
+      this.userService.getProfilePicture(this.currentUser.uid).subscribe({
         next: (res) => {
           this.profilepic = res.user.profilepic;
         }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ResultService } from '../result.service';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
@@ -10,6 +10,7 @@ import { jsPDF } from 'jspdf';
 import { LangService } from '../lang-service.service';
 import { HttpClient } from '@angular/common/http';
 import { I18NextModule } from 'angular-i18next';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-result-page',
@@ -19,6 +20,8 @@ import { I18NextModule } from 'angular-i18next';
   styleUrls: ['./result-page.component.css']
 })
 export class ResultPageComponent {
+  userService = inject(UserService)
+
   result: any;
   currentUser: any;
   currentLang: string=""
@@ -44,7 +47,11 @@ export class ResultPageComponent {
       uid: this.currentUser.uid
     };
     
-    this.http.post('http://localhost:3000/saved-results', body).subscribe({
+    /*this.http.post('http://localhost:3000/saved-results', body).subscribe({
+      next: () => console.log('success'),
+    });*/
+
+    this.userService.getSavedResults(body).subscribe({
       next: () => console.log('success'),
     });
   }
@@ -69,7 +76,6 @@ export class ResultPageComponent {
     const diseaseKeys = this.result.map((item: any) => item.key);
     const queryParam = diseaseKeys.join(',');
   
-    console.log(lang)
     const response = await fetch(`http://localhost:3000/export-results?lang=${lang}&keys=${queryParam}`);
     const data = await response.json();
   

@@ -16,6 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { Router } from '@angular/router';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-profile-settings',
@@ -26,6 +27,8 @@ import { Router } from '@angular/router';
 })
 export class ProfileSettingsComponent {
   private authService = inject(AuthService);
+  private userService = inject(UserService);
+
   currentUser:any;
   displayName: any;
   currUserData:Iuser| null=null;
@@ -52,6 +55,8 @@ export class ProfileSettingsComponent {
   phone: string = '';
   specialty: string = '';
 
+  
+
   constructor(private firestore: Firestore, private http:HttpClient, private router:Router){}
 
   ngOnInit() {
@@ -59,9 +64,7 @@ export class ProfileSettingsComponent {
       this.currentUser = user;
       this.displayName = user?.displayName;
   
-      this.http.post<{ user: any }>('http://localhost:3000/api/get-user', {
-        uid: this.currentUser.uid
-      }).subscribe({
+      this.userService.getUserData(this.currentUser.uid).subscribe({
         next: (response) => {
           const userData = response.user;
           this.userId = userData.id;
@@ -74,7 +77,6 @@ export class ProfileSettingsComponent {
           console.log(this.role)
         }
     })
-    ;
     
   })
   }
@@ -89,7 +91,13 @@ export class ProfileSettingsComponent {
       birth: this.birth
     };
   
-    this.http.post('http://localhost:3000/api/users/update-user', updateData)
+
+    this.userService.updateUser(updateData).subscribe({
+      next: (response) => {
+        window.location.reload();
+      }
+    });
+    /*this.http.post('http://localhost:3000/api/users/update-user', updateData)
       .subscribe({
         next: (response) => {
           console.log(response);
@@ -98,7 +106,7 @@ export class ProfileSettingsComponent {
         error: (error) => {
           console.error(error);
         }
-      });
+      });*/
   }
 
 
@@ -158,14 +166,20 @@ saveDoctorData() {
 
 
 deleteDoctorProfile() {
-  this.http.post('http://localhost:3000/api/users/delete-doctor-profile', {
+  this.userService.deleteProfile(this.currentUser.uid).subscribe({
+    next: (response) => {
+      window.location.reload();
+    }
+  });
+
+  /*this.http.post('http://localhost:3000/api/users/delete-doctor-profile', {
     uid: this.currentUser.uid
   }).subscribe({
     next: (response) => {
       console.log(response);
       window.location.reload();
     }
-  });
+  });*/
 }
 
 deleteProfileUser() {
@@ -195,14 +209,16 @@ uploadProfilePicture() {
     formData.append('file', this.selectedFile);
     formData.append('userId', this.currentUser.uid);
 
-    this.http.post('http://localhost:3000/api/upload-profilepic', formData).subscribe({next: (response) => {
+    this.userService.uploadProfilePicture(formData).subscribe({next: (response) => {
+      window.location.reload();
+    }
+    });
+
+    /*this.http.post('http://localhost:3000/api/upload-profilepic', formData).subscribe({next: (response) => {
       console.log(response);
       window.location.reload();
-    },
-      error: (err) => {
-        console.error('Hiba feltöltésekor', err);
-      }
-    });
+    }
+    });*/
   } else {
     this.errorMessage = "Nem megfelelő file formátum";
   }

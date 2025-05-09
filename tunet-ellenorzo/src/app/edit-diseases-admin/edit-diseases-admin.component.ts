@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { addDoc, collection, deleteDoc, doc, Firestore, getDocs, setDoc } from '@angular/fire/firestore';
 import { LangService } from '../lang-service.service';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { EditDiseaseComponent } from '../edit-disease/edit-disease.component';
 import { I18NextModule } from 'angular-i18next';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { DiseaseService } from '../disease.service';
 
 @Component({
   selector: 'app-edit-diseases-admin',
@@ -20,6 +21,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
   styleUrls: ['./edit-diseases-admin.component.css']
 })
 export class EditDiseasesAdminComponent {
+  diseaseService = inject(DiseaseService)
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   currentPage = 0;
   pageSize = 5;
@@ -167,7 +169,19 @@ export class EditDiseasesAdminComponent {
   
 
   async loadSymptoms() {
-    this.http.post<string[]>('http://localhost:3000/api/get-all-symptoms', { lang: 'hu' })
+    this.diseaseService.getAllSymptoms('hu').subscribe({
+      next: (symptoms) => {
+        this.symptomsH = symptoms;
+      }
+    });
+
+    this.diseaseService.getAllSymptoms('en').subscribe({
+      next: (symptoms) => {
+        this.symptomsE = symptoms;
+      }
+    });
+
+    /*this.http.post<string[]>('http://localhost:3000/api/get-all-symptoms', { lang: 'hu' })
     .subscribe({
       next: (symptoms) => {
         this.symptomsH = symptoms;
@@ -178,11 +192,23 @@ export class EditDiseasesAdminComponent {
     .subscribe({
       next: (symptoms) => {
         this.symptomsE = symptoms;
-      }});
+      }});*/
   }
 
   async loadPainLocation() {
-    this.http.post<string[]>('http://localhost:3000/api/get-all-pain', { lang: 'hu' })
+    this.diseaseService.getAllPain('hu').subscribe({
+      next: (painList) => {
+        this.painLocationH = painList;
+      }
+    });
+
+    this.diseaseService.getAllPain('en').subscribe({
+      next: (painList) => {
+        this.painLocationE = painList;
+      }
+    });
+
+    /*this.http.post<string[]>('http://localhost:3000/api/get-all-pain', { lang: 'hu' })
     .subscribe({
       next: (painList) => {
         this.painLocationH = painList;
@@ -194,17 +220,23 @@ export class EditDiseasesAdminComponent {
       next: (painList) => {
         this.painLocationE = painList;
       }
-    });
+    });*/
   }
 
 
   saveDisease(diseaseData: any, lang: string, diseaseId: string): void {
-    this.http.post('http://localhost:3000/api/save-disease', {diseaseData,lang,diseaseId})
+    this.diseaseService.saveDisease(diseaseData, lang, diseaseId).subscribe({
+      next: (response) => {
+        console.log('saved:', response);
+      }
+    });
+
+    /*this.http.post('http://localhost:3000/api/save-disease', {diseaseData,lang,diseaseId})
       .subscribe({
         next: (response) => {
           console.log('saved:', response);
         }
-      });
+      });*/
   }
   
 
@@ -257,13 +289,20 @@ export class EditDiseasesAdminComponent {
   }
 
   deleteDisease(diseaseId: string): void {
-    this.http.post('http://localhost:3000/delete-disease', { diseaseId })
+    this.diseaseService.deleteDisease(diseaseId).subscribe({
+      next: (response) => {
+        this.loadDiseases('hu');
+        this.loadDiseases('en');
+      }
+    });
+
+    /*this.http.post('http://localhost:3000/delete-disease', { diseaseId })
       .subscribe({
         next: (response) => {
           this.loadDiseases('hu');
           this.loadDiseases('en');
         }
-      });
+      });*/
   }
   async editDisease(diseaseId: string): Promise<void> {
     this.selectedDiseaseId = diseaseId;
@@ -283,7 +322,15 @@ export class EditDiseasesAdminComponent {
       lang: lang
     };
   
-    this.http.post<{ diseases: any[], lastVisible: string, totalCount: number }>
+    this.diseaseService.loadDiseases(requestData).subscribe({
+      next: (response) => {
+        this.allDiseases = response.diseases;
+        this.lastVisible = response.lastVisible ? { id: response.lastVisible } : null;
+        this.totalDiseases = response.totalCount;
+        this.loading = false;
+      }})
+
+    /*this.http.post<{ diseases: any[], lastVisible: string, totalCount: number }>
       ('http://localhost:3000/api/load-diseases', requestData)
       .subscribe({
         next: (response) => {
@@ -296,7 +343,7 @@ export class EditDiseasesAdminComponent {
           console.error(err);
           this.loading = false;
         }
-      });
+      });*/
   }
 
   onPageChange(event: PageEvent) {
@@ -317,12 +364,18 @@ export class EditDiseasesAdminComponent {
   }
 
   loadTotalCount(lang: string) {
-    this.http.post<{ totalCount: number }>('http://localhost:3000/api/disease-total-count', { lang })
+    this.diseaseService.getDiseaseTotalCount(lang).subscribe({
+      next: (response) => {
+        this.totalDiseases = response.totalCount;
+      }
+    });
+
+    /*this.http.post<{ totalCount: number }>('http://localhost:3000/api/disease-total-count', { lang })
       .subscribe({
         next: (response) => {
           this.totalDiseases = response.totalCount;
         }
-      });
+      });*/
   }
   
 }

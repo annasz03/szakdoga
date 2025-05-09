@@ -1,10 +1,11 @@
 import { HttpClient } from "@angular/common/http";
-import { Component, Input } from "@angular/core";
+import { Component, inject, Input } from "@angular/core";
 import { FormGroup, FormBuilder, FormArray, ReactiveFormsModule, FormControl } from "@angular/forms";
 import { Idisease } from "../idisease";
 import { LangService } from "../lang-service.service";
 import { CommonModule } from "@angular/common";
 import { I18NextModule } from "angular-i18next";
+import { DiseaseService } from "../disease.service";
 
 @Component({
   selector: 'app-edit-disease',
@@ -14,6 +15,7 @@ import { I18NextModule } from "angular-i18next";
   imports: [CommonModule, ReactiveFormsModule, I18NextModule]
 })
 export class EditDiseaseComponent {
+  diseaseService =inject(DiseaseService)
   @Input() diseaseId: any;
 
   diseaseFormHu!: FormGroup;
@@ -57,11 +59,14 @@ export class EditDiseaseComponent {
   }
 
   loadData() {
-    this.http.post<Idisease>('http://localhost:3000/api/get-disease-data-hu', { diseaseId: this.diseaseId })
+    this.diseaseService.getDiseaseDataHu(this.diseaseId).subscribe(data => this.patchForm(this.diseaseFormHu, data));
+    this.diseaseService.getDiseaseDataEn(this.diseaseId).subscribe(data => this.patchForm(this.diseaseFormEn, data));
+
+    /*this.http.post<Idisease>('http://localhost:3000/api/get-disease-data-hu', { diseaseId: this.diseaseId })
       .subscribe(data => this.patchForm(this.diseaseFormHu, data));
     
     this.http.post<Idisease>('http://localhost:3000/api/get-disease-data-en', { diseaseId: this.diseaseId })
-      .subscribe(data => this.patchForm(this.diseaseFormEn, data));
+      .subscribe(data => this.patchForm(this.diseaseFormEn, data));*/
   }
 
   patchForm(form: FormGroup, data: Idisease) {
@@ -124,13 +129,17 @@ export class EditDiseaseComponent {
   }
 
   loadSymptoms(lang: string) {
-    this.http.post<string[]>('http://localhost:3000/api/get-all-symptoms', { lang })
-      .subscribe(symptoms => this.symptoms = symptoms);
+    this.diseaseService.getAllSymptoms(lang).subscribe(symptoms => this.symptoms = symptoms);
+    
+    /*this.http.post<string[]>('http://localhost:3000/api/get-all-symptoms', { lang })
+      .subscribe(symptoms => this.symptoms = symptoms);*/
   }
 
   loadPainLocation(lang: string) {
-    this.http.post<string[]>('http://localhost:3000/api/get-all-pain', { lang })
-      .subscribe(painList => this.painLocation = painList);
+    this.diseaseService.getAllPain(lang).subscribe(painList => this.painLocation = painList);
+
+    /*this.http.post<string[]>('http://localhost:3000/api/get-all-pain', { lang })
+      .subscribe(painList => this.painLocation = painList);*/
   }
 
   onSubmit(lang: 'hu' | 'en') {

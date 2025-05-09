@@ -3,18 +3,22 @@
     <a (click)="goToUserProfile()" class="post-username">{{ post.username }}</a>
     <br>
     <div class="post-date">{{ formattedDate }}</div>
-    <div class="post-tag">{{ post.tag }}</div>
-    <div *ngIf="post.uid===currentUser.uid" class="del-button ">
-      <button (click)="deletePost(post.uid)" class="option-buttons">Törlés</button>
+    <div class="post-tag">{{ getTranslatedTag(post.tag) }}</div>
+    <div *ngIf="currentUser?.uid === post.uid" class="del-button">
+      <button (click)="deletePost(post.id)" class="option-buttons">{{ 'delete' | i18next }}</button>
     </div>
     
   </div>
   <div class="post-body">{{ post.body }}</div>
 
   <!-- kommentek -->
-  <div class="comments">
-    <app-forum-comment   (commentDeleted)="onCommentDeleted($event)" *ngFor="let comment of comments" [comment]="comment"></app-forum-comment>
-  </div>
+  <div *ngFor="let comment of comments" class="comments">
+  <app-forum-comment 
+    *ngIf="comment" 
+    [comment]="comment" 
+    (commentDeleted)="onCommentDeleted($event)"
+  ></app-forum-comment>
+</div>
 
   <div class="interaction-bar">
     <div class="like-section">

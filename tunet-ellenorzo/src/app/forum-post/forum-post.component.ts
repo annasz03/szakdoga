@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, Input, OnInit, OnChanges, SimpleChanges, EventEmitter, Output } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, EventEmitter, Output, inject } from '@angular/core';
 import { addDoc, collection, doc, Firestore, getDocs, Timestamp, updateDoc } from '@angular/fire/firestore';
 import { ForumCommentComponent } from '../forum-comment/forum-comment.component';
 import { IComment } from '../icomment';
@@ -8,6 +8,9 @@ import { I18NextModule } from 'angular-i18next';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { HttpClient } from '@angular/common/http';
+import { ForumService } from '../forum.service';
+import { DiseaseService } from '../disease.service';
+import { LangService } from '../lang-service.service';
 
 @Component({
   selector: 'app-forum-post',
@@ -18,6 +21,9 @@ import { HttpClient } from '@angular/common/http';
   providers: [DatePipe]
 })
 export class ForumPostComponent implements OnInit, OnChanges {
+  forumService = inject(ForumService)
+  diseaseService = inject(DiseaseService)
+
   @Input() post!: any;
 
   date: any;
@@ -33,18 +39,18 @@ export class ForumPostComponent implements OnInit, OnChanges {
   comments: IComment[] = [];
 
   currentUser: any;
+  currentLang:any
 
   @Output() postDeleted = new EventEmitter<string>();
 
   constructor(
     private datePipe: DatePipe,
     private router: Router,
-    private authService: AuthService, private http:HttpClient
+    private authService: AuthService, private http:HttpClient, private langService:LangService
   ) {
-    this.authService.user$.subscribe(user => {
-      this.currentUser = user;
-      this.checkIfLiked();
-    });
+    this.langService.currentLang$.subscribe((lang: string) => {
+      this.currentLang=lang
+    })
   }
 
   checkIfLiked() {
@@ -56,14 +62,19 @@ export class ForumPostComponent implements OnInit, OnChanges {
   
 
   ngOnInit() {
-    this.date = this.post.date instanceof Timestamp ? this.post.date.toDate() : this.post.date;
+    this.authService.user$.subscribe(user => {
+      this.currentUser = user;
+      this.checkIfLiked();
+      this.loadComments();
+       this.date = this.post.date instanceof Timestamp ? this.post.date.toDate() : this.post.date;
     this.formattedDate = this.datePipe.transform(this.date, 'yyyy-MM-dd HH:mm:ss');
     this.likeCount = this.post.like || 0;
     this.commentCount = this.post.comment || 0;
     this.likedBy = this.post.likedBy || [];
+    });
 
-    this.checkIfLiked();
-    this.loadComments();
+    console.log(this.post)
+    
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -75,12 +86,18 @@ export class ForumPostComponent implements OnInit, OnChanges {
   }
 
   loadComments() {
-    this.http.post<{ comments: IComment[] }>('http://localhost:3000/load-comments', { postid: this.post.id })
+    this.forumService.getComments(this.post.id).subscribe({
+      next: (res) => {
+        this.comments = res.comments;
+      },
+    });
+
+    /*this.http.post<{ comments: IComment[] }>('http://localhost:3000/load-comments', { postid: this.post.id })
       .subscribe({
         next: (res) => {
           this.comments = res.comments;
         },
-      });
+      });*/
   }
   
 
@@ -100,7 +117,16 @@ export class ForumPostComponent implements OnInit, OnChanges {
       username: this.currentUser?.displayName
     };
   
-    this.http.post('http://localhost:3000/add-comment', commentData)
+    this.forumService.addComments(commentData).subscribe({
+      next: () => {
+        this.commentCount++;
+        this.updateCommentCount();
+        this.loadComments();
+        this.commentBody = '';
+      }
+    });
+
+    /*this.http.post('http://localhost:3000/add-comment', commentData)
       .subscribe({
         next: () => {
           this.commentCount++;
@@ -108,18 +134,24 @@ export class ForumPostComponent implements OnInit, OnChanges {
           this.loadComments();
           this.commentBody = '';
         }
-      });
+      });*/
   }
   
   updateCommentCount() {
     const postData = { postid: this.post.id };
   
-    this.http.post('http://localhost:3000/update-comment-count', postData)
+    this.forumService.updateCommentCount(postData).subscribe({
+      next: () => {
+        console.log('updated');
+      }
+    });
+
+    /*this.http.post('http://localhost:3000/update-comment-count', postData)
       .subscribe({
         next: () => {
           console.log('updated');
         }
-      });
+      });*/
   }
   
 
@@ -130,23 +162,43 @@ export class ForumPostComponent implements OnInit, OnChanges {
       liked: this.liked
     };
   
-    this.http.post('http://localhost:3000/like-post', likeData)
+    this.forumService.likePost(likeData).subscribe({
+      next: () => {
+        this.liked = !this.liked;
+        this.likeCount += this.liked ? 1 : -1;
+      }
+    });
+
+    /*this.http.post('http://localhost:3000/like-post', likeData)
       .subscribe({
         next: () => {
           this.liked = !this.liked;
           this.likeCount += this.liked ? 1 : -1;
         }
-      });
+      });*/
   }
   
 
+  
   deletePost(postid: string) {
-    this.http.delete(`http://localhost:3000/api/delete-post/${this.post.id}`).subscribe({
+    this.forumService.deletePost(this.post.id).subscribe({
       next: (response) => {
         this.postDeleted.emit(postid);
       }
     });
+
+    /*this.http.delete(`http://localhost:3000/api/delete-post/${this.post.id}`).subscribe({
+      next: (response) => {
+        this.postDeleted.emit(postid);
+      }
+    });*/
   }
+
+  getTranslatedTag(tagId: string): string {
+  const disease = this.diseaseService.getDiseaseById(tagId);
+  if (!disease) return tagId; // fallback, ha még nincs betöltve vagy ismeretlen
+  return this.currentLang === 'hu' ? disease.name_hu : disease.name_en;
+}
   
   onCommentDeleted(postId: string) {
     this.commentCount = Math.max(0, this.commentCount - 1);

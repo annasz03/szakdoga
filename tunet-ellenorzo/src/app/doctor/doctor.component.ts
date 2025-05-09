@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { Ratings } from '../ratings';
 import { RatingsComponent } from '../ratings/ratings.component';
 import { HttpClient } from '@angular/common/http';
+import { DoctorService } from '../doctor.service';
 
 @Component({
   selector: 'app-doctor',
@@ -16,6 +17,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './doctor.component.css'
 })
 export class DoctorComponent {
+  doctorService = inject(DoctorService)
   @Input() doc: any;
   @Input() role: any;
   ratings: Ratings[]=[];
@@ -37,10 +39,14 @@ export class DoctorComponent {
   }
 
   getRatings(){
-    this.http.get<Ratings[]>(`http://localhost:3000/api/ratings/${this.doc.id}`)
-    .subscribe(data => {
+    this.doctorService.getRatings(this.doc.id).subscribe(data => {
       this.ratings = data;
     });
+
+    /*this.http.get<Ratings[]>(`http://localhost:3000/api/ratings/${this.doc.id}`)
+    .subscribe(data => {
+      this.ratings = data;
+    });*/
   }
 
   openMoreData() {
@@ -48,19 +54,26 @@ export class DoctorComponent {
   }
 
   deleteRequest() {
-    this.http.delete(`http://localhost:3000/doctors_temp/${this.doc.id}`)
+    this.doctorService.deleteDoctorTemp(this.doc.id).subscribe(() => {
+    });
+
+    /*this.http.delete(`http://localhost:3000/doctors_temp/${this.doc.id}`)
       .subscribe(() => {
-      });
+      });*/
 
   }
 
   acceptRequest() {
-    this.http.post('http://localhost:3000/api/doctors_temp/accept', {
+    this.doctorService.acceptDoctorTemp(this.doc,this.currentUser.displayName).subscribe(() => {
+      console.log('accepted');
+    });
+
+    /*this.http.post('http://localhost:3000/api/doctors_temp/accept', {
       doc: this.doc,
       currentUsername: this.currentUser.displayName
     }).subscribe(() => {
       console.log('accepted');
-    });
+    });*/
     
   }
   
@@ -70,7 +83,13 @@ export class DoctorComponent {
   }
 
   async submitRating() {
-    this.http.post('http://localhost:3000/api/submit-rating', {
+    this.doctorService.submitRating(this.doc.id,this.selectedRating,this.comment,this.currentUser.uid).subscribe(() => {
+      this.selectedRating = 0;
+      this.comment = '';
+      this.getRatings()
+    });
+
+    /*this.http.post('http://localhost:3000/api/submit-rating', {
       doctorId: this.doc.id,
       rating: this.selectedRating,
       comment: this.comment,
@@ -79,7 +98,7 @@ export class DoctorComponent {
       this.selectedRating = 0;
       this.comment = '';
       this.getRatings()
-    });
+    });*/
     
   }
 }

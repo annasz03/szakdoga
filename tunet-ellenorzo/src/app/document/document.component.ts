@@ -12,6 +12,8 @@ import { IDoctorResponse } from '../doctorres.interface';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { I18NextModule } from 'angular-i18next';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { DocumentService } from '../document.service';
+import { DoctorService } from '../doctor.service';
 
 @Component({
   selector: 'app-document',
@@ -21,6 +23,8 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
   styleUrl: './document.component.css'
 })
 export class DocumentComponent {
+  documentService = inject(DocumentService)
+
   @Output() documentDeleted = new EventEmitter<void>();
 
 
@@ -51,12 +55,17 @@ export class DocumentComponent {
   }
 
   delete(){
-    this.http.delete(`http://localhost:3000/api/delete-document/${this.id}`).subscribe({
+    this.documentService.deleteDocument(this.id).subscribe({
       next: (response) => {
-        //lefrissiteni
         this.documentDeleted.emit();
       }
     });
+
+    /*this.http.delete(`http://localhost:3000/api/delete-document/${this.id}`).subscribe({
+      next: (response) => {
+        this.documentDeleted.emit();
+      }
+    });*/
   }
 
   isImage(): boolean {
@@ -95,6 +104,9 @@ export class DocumentComponent {
   styleUrl: './document.component.css'
 })
 export class ShareDialog {
+  documentService = inject(DocumentService)
+  doctorService = inject(DoctorService)
+
   @Input() doctor_id: string ="";
   doctors:IDoctorResponse[]=[]
   private authService = inject(AuthService);
@@ -129,24 +141,37 @@ export class ShareDialog {
       doctor_id: id,
       document_id: this.data.document_id
     };
+
+    this.documentService.sendToDoctor(newDoc).subscribe({
+      next: (response) => {
+        console.log(response);
+      }
+    });
   
-    this.http.post('http://localhost:3000/api/send-to-doctor', newDoc)
+    /*this.http.post('http://localhost:3000/api/send-to-doctor', newDoc)
       .subscribe({
         next: (response) => {
           console.log(response);
         }
-      });
+      });*/
   }
   
 
   loadTotalCount() {
-    this.http.get<{ totalCount: number }>('http://localhost:3000/api/load-total-count-uid')
+    this.documentService.loadTotalCountUID().subscribe({
+      next: (response) => {
+        this.totalItems = response.totalCount;
+        this.loading = false;
+      }
+    });
+
+    /*this.http.get<{ totalCount: number }>('http://localhost:3000/api/load-total-count-uid')
       .subscribe({
         next: (response) => {
           this.totalItems = response.totalCount;
           this.loading = false;
         }
-      });
+      });*/
   }
   
   
@@ -155,14 +180,21 @@ export class ShareDialog {
       pageSize: this.pageSize,
       lastVisibleDocId: this.lastVisible?.id
     };
-  
-    this.http.post<{ doctors: any[], lastVisible: string }>('http://localhost:3000/api/load-doctors-uid', requestData)
+    
+    this.doctorService.loadDoctorUID(requestData).subscribe({
+      next: (response) => {
+        this.doctors = [...this.doctors, ...response.doctors];
+        this.lastVisible = response.lastVisible ? { id: response.lastVisible } : null;
+      }
+    });
+
+    /*this.http.post<{ doctors: any[], lastVisible: string }>('http://localhost:3000/api/load-doctors-uid', requestData)
       .subscribe({
         next: (response) => {
           this.doctors = [...this.doctors, ...response.doctors];
           this.lastVisible = response.lastVisible ? { id: response.lastVisible } : null;
         }
-      });
+      });*/
   }
   
   
@@ -173,7 +205,16 @@ export class ShareDialog {
     }
     
     loadNextPage() {    
-      this.http.post<{ doctors: IDoctorResponse[], lastVisible: string }>(
+      this.doctorService.loadDoctorsNext(this.lastVisible.id,this.pageSize).subscribe({
+        next: response => {
+          if (response.doctors.length > 0) {
+            this.doctors = response.doctors;
+            this.lastVisible = { id: response.lastVisible };
+          }
+        }
+      });
+
+      /*this.http.post<{ doctors: IDoctorResponse[], lastVisible: string }>(
         'http://localhost:3000/api/load-doctors-next',
         {
           lastVisibleDocId: this.lastVisible.id,
@@ -186,7 +227,7 @@ export class ShareDialog {
             this.lastVisible = { id: response.lastVisible };
           }
         }
-      });
+      });*/
     }
     
 
@@ -195,13 +236,19 @@ export class ShareDialog {
   }
 
   search() {
-    this.http.post<IDoctorResponse[]>('http://localhost:3000/api/get-searched-doctors', {
+    this.doctorService.getSearchedDoctor(this.nameValue).subscribe({
+      next: (response) => {
+        this.doctors = response;
+      }
+    });
+
+    /*this.http.post<IDoctorResponse[]>('http://localhost:3000/api/get-searched-doctors', {
       searchkey: this.nameValue
     }).subscribe({
       next: (response) => {
         this.doctors = response;
       }
-    });
+    });*/
   }
   
    

@@ -13,6 +13,7 @@ import { deleteUser, EmailAuthProvider, getAuth, reauthenticateWithCredential } 
 import { HttpClient } from '@angular/common/http';
 import { SharedDocumentsComponent } from '../shared-documents/shared-documents.component';
 import { I18NextModule } from 'angular-i18next';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-profile-page',
@@ -22,6 +23,7 @@ import { I18NextModule } from 'angular-i18next';
   styleUrl: './profile-page.component.css'
 })
 export class ProfilePageComponent {
+  userService = inject(UserService)
 
   savedRes=false;
   profilepic: string = "";
@@ -47,12 +49,19 @@ export class ProfilePageComponent {
   }
   
   loadCurrentUserData() {
-    this.http.post<{ userId: string, role: string }>('http://localhost:3000/api/get-user-data-by-username', { displayName: this.currentUser.displayName }).subscribe({
+    this.userService.getUserDataByUsername(this.currentUser.displayName).subscribe({
       next: (res) => {
         this.userId = res.userId;
         this.role = res.role;
       }
     });
+
+    /*this.http.post<{ userId: string, role: string }>('http://localhost:3000/api/get-user-data-by-username', { displayName: this.currentUser.displayName }).subscribe({
+      next: (res) => {
+        this.userId = res.userId;
+        this.role = res.role;
+      }
+    });*/
   }
   
 
@@ -64,17 +73,21 @@ export class ProfilePageComponent {
   }
   
   loadProfileUser() {
-    this.http.post<{ displayName: string }>('http://localhost:3000/get-profile', {
-      uid: this.profileUid
-    }).subscribe({
+    this.userService.getDisplayName(this.profileUid).subscribe({
       next: (res) => {
         this.displayName = res.displayName;
       }
     });
 
-    this.http.post<{ user: { profilepic: string } }>('http://localhost:3000/get-user-profile-picture', {
+    /*this.http.post<{ displayName: string }>('http://localhost:3000/get-profile', {
       uid: this.profileUid
     }).subscribe({
+      next: (res) => {
+        this.displayName = res.displayName;
+      }
+    });*/
+
+    this.userService.getProfilePicture(this.profileUid).subscribe({
       next: (res) => {
         this.profilepic = res.user.profilepic;
       }
@@ -83,12 +96,18 @@ export class ProfilePageComponent {
   }
 
   deleteProfileAdmin(){
-    this.http.post('http://localhost:3000/delete-user', { uid: this.userId })
-    .subscribe({
+    this.userService.deleteProfile(this.userId).subscribe({
       next: () => {
         console.log('törölve');
       },
     });
+
+    /*this.http.post('http://localhost:3000/delete-user', { uid: this.userId })
+    .subscribe({
+      next: () => {
+        console.log('törölve');
+      },
+    });*/
   }
 
   openSavedResults(){

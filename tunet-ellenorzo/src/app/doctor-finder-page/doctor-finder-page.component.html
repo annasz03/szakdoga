@@ -90,19 +90,23 @@
             </button>
         </div>
     </div>
-    
+
     <div *ngIf="!loading" class="doctors-list">
-        <div *ngIf="doctors.length === 0" class="no-results">
-            {{ 'nodoc' | i18next }}
-        </div>
+  <div *ngIf="doctors.length === 0" class="no-results">
+    {{ 'nodoc' | i18next }}
+  </div>
 
-        <div *ngFor="let doc of doctors" class="doctor-item">
-            <div class="docCard">
-                <app-doctor [doc]="doc"></app-doctor>
-            </div>
-        </div>
+  <div *ngFor="let doc of doctors" class="docFinder">
+    <app-doctor [doc]="doc"></app-doctor>
+  </div>
 
-        <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50]" (page)="onPageChange($event)">
-        </mat-paginator>
-    </div>
+  <mat-paginator
+  #paginator
+  [length]="totalItems"
+  [pageSize]="pageSize"
+  [pageIndex]="currentPageIndex"
+  [pageSizeOptions]="[10, 20, 50]"
+  (page)="onPageChange($event)">
+</mat-paginator>
+</div>
 </div>

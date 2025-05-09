@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Route } from '@angular/router';
 import { DocumentComponent } from '../document/document.component';
+import { DocumentService } from '../document.service';
 
 @Component({
   selector: 'app-shared-documents',
@@ -16,6 +17,7 @@ import { DocumentComponent } from '../document/document.component';
   styleUrl: './shared-documents.component.css'
 })
 export class SharedDocumentsComponent {
+  documentService = inject(DocumentService)
   @Input() fileName="";
     @Input() text:string="";
   
@@ -39,12 +41,16 @@ export class SharedDocumentsComponent {
         const urlSegments = window.location.href.split('/');
         const doctorId = urlSegments[urlSegments.length - 1];
   
-        this.http.post('http://localhost:3000/api/get-all-shared-documents', {
+        this.documentService.getAllSharedDocuments(this.currentUser.uid, doctorId).subscribe(response => {
+          this.documents = response;
+        });
+
+        /*this.http.post('http://localhost:3000/api/get-all-shared-documents', {
           doctor_id: this.currentUser.uid,
           uid: doctorId
         }).subscribe(response => {
           this.documents = response;
-        });
+        });*/
       });
     }
     

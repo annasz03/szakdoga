@@ -14,6 +14,8 @@ import { Timestamp } from 'firebase/firestore';
 import { Idoctor } from '../idoctor';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { HttpClient } from '@angular/common/http';
+import { DocumentService } from '../document.service';
+import { DoctorService } from '../doctor.service';
 
 type selectType = { key: string; value: string };
 
@@ -25,6 +27,9 @@ type selectType = { key: string; value: string };
   styleUrls: ['./doctor-finder-page.component.css']
 })
 export class DoctorFinderPageComponent {
+  documentService = inject(DocumentService)
+  doctorService = inject(DoctorService)
+
   nameValue = '';
   selectedArea: string = "";
   selectedSpec: string = "";
@@ -65,7 +70,16 @@ export class DoctorFinderPageComponent {
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
 
-      this.http.get('http://localhost:3000/api/init-data', {
+      this.doctorService.initData(this.currentUser.displayName).subscribe((data: any) => {
+        this.area = data.area;
+        this.specList = data.specList;
+        this.role = data.role;
+      
+        this.loadTotalCount();
+        this.loadDoctors();
+      });
+
+      /*this.http.get('http://localhost:3000/api/init-data', {
         params: { username: this.currentUser.displayName }
       }).subscribe((data: any) => {
         this.area = data.area;
@@ -74,78 +88,88 @@ export class DoctorFinderPageComponent {
       
         this.loadTotalCount();
         this.loadDoctors();
-      });
+      });*/
     });
     
     
   }
 
   loadTotalCount() {
-    this.http.get<{ totalCount: number }>('http://localhost:3000/api/load-total-count')
+    this.documentService.loadTotalCount().subscribe({
+      next: (response) => {
+        this.totalItems = response.totalCount;
+        this.loading = false;
+      }
+    });
+
+    /*this.http.get<{ totalCount: number }>('http://localhost:3000/api/load-total-count')
       .subscribe({
         next: (response) => {
           this.totalItems = response.totalCount;
           this.loading = false;
         }
-      });
+      });*/
   }
 
   loadDoctors() {
-    const requestData = {
-      pageSize: this.pageSize,
-      lastVisibleDocId: this.lastVisible?.id
-    };
-  
-    this.http.post<{ doctors: any[], lastVisible: string }>('http://localhost:3000/api/load-doctors', requestData)
-      .subscribe({
-        next: (response) => {
-          console.log(response)
-          this.doctors = [...this.doctors, ...response.doctors];
-          this.lastVisible = response.lastVisible ? { id: response.lastVisible } : null;
-        }
-      });
-  }
+  this.loading = true;
+  const requestData = {
+    pageSize: this.pageSize,
+    lastVisibleDocId: this.lastVisible
+  };
 
-  onPageChange(event: any) {
-    const startIndex = event.pageIndex * event.pageSize;
-    const endIndex = startIndex + event.pageSize;
+  this.doctorService.loadDoctors(requestData).subscribe({
+    next: (response) => {
+      this.doctors = response.doctors; 
+      this.lastVisible = response.lastVisible;
+      this.loading = false;
+    }
+  });
+}
+
+loadNextPage() {    
+  this.loading = true;
+  this.doctorService.loadDoctorsNext(
+    this.lastVisible, 
+    this.pageSize
+  ).subscribe({
+    next: response => {
+      this.doctors = response.doctors;
+      this.lastVisible = response.lastVisible;
+      this.loading = false;
+    }
+  });
+}
+
+  currentPageIndex = 0;
+
+onPageChange(event: PageEvent) {
+  this.currentPageIndex = event.pageIndex;
+  this.pageSize = event.pageSize;
+  
+  if (event.pageIndex > event.previousPageIndex!) {
     this.loadNextPage();
+  } else {
+    this.loadDoctors();
   }
+}
   
-  loadNextPage() {    
-    this.http.post<{ doctors: IDoctorResponse[], lastVisible: string }>(
-      'http://localhost:3000/api/load-doctors-next',
-      {
-        lastVisibleDocId: this.lastVisible.id,
-        pageSize: this.pageSize
-      }
-    ).subscribe({
-      next: response => {
-        if (response.doctors.length > 0) {
-          this.doctors = response.doctors;
-          this.lastVisible = { id: response.lastVisible };
-        }
-      }
-    });
-  }
 
   
 
-  search() {
-    this.http.get('http://localhost:3000/api/search-doctors', {
-      params: {
-        name: this.nameValue,
-        specialty: this.selectedSpec,
-        city: this.selectedArea
-      }
-    }).subscribe((response: any) => {
-      this.doctors = response.data;
-      this.totalItems = response.count;
-    })
-    
-    
-    
-  }
+search() {
+  this.doctors = [];
+  this.lastVisible = null;
+  
+  this.doctorService.searchDoctors(
+    this.nameValue.toLowerCase(),
+    this.selectedSpec,
+    this.selectedArea
+  ).subscribe((response: any) => {
+    this.doctors = response.data;
+    this.totalItems = response.count;
+  });
+}
   
 
   removeFilters() {
@@ -157,10 +181,15 @@ export class DoctorFinderPageComponent {
   
 
   reqDoc() {
-    this.http.get<any[]>('http://localhost:3000/doctors-temp').subscribe(docs => {
+    this.doctorService.getDoctorTemp().subscribe(docs => {
       this.docs_temp = docs;
       this.reqOpen = !this.reqOpen;
     });
+
+    /*this.http.get<any[]>('http://localhost:3000/doctors-temp').subscribe(docs => {
+      this.docs_temp = docs;
+      this.reqOpen = !this.reqOpen;
+    });*/
     
   }
 
@@ -180,16 +209,13 @@ export class DoctorFinderPageComponent {
       number: this.newDocNumber
     };
 
-    console.log(newDoc)
 
-
-  
-    this.http.post('http://localhost:3000/api/doctors-temp', newDoc).subscribe({
+    this.doctorService.postDoctorTemp(newDoc).subscribe({
       next: () => {
         this.errorMsg = '';
         this.openDocReg = false;
       }
-    });
+    })
     
   }
   

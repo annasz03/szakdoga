@@ -1,7 +1,6 @@
 <div class="card" *ngIf="res">
   {{ res.name }}
   <button class="option-buttons" (click)="openDiseaseData()">></button>
-
   <div *ngIf="opened">
       <table mat-table [dataSource]="dataSource">
           <ng-container matColumnDef="label">

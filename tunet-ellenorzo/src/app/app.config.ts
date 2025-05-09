@@ -17,8 +17,10 @@ import i18nextLanguageDetector from 'i18next-browser-languagedetector';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { PoTranslateLoader } from './po-translate-loader';
+import { registerLocaleData } from '@angular/common';
+import localeHu from '@angular/common/locales/hu';
 
-
+registerLocaleData(localeHu);
 const firebaseConfig = {
   apiKey: "AIzaSyD5JSxkcZOBFie5bfWu1wM7vwMW-c9WzYU",
   authDomain: "https://tunet-ellenorzo-f8999.firebaseapp.com",

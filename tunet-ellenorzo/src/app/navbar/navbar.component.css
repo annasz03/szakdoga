@@ -128,9 +128,9 @@ nav {
     align-items: center;
     gap: 1rem;
     padding-right: 3rem;
-  }
+}
   
-  input {
+input {
     padding: 0 0.5rem;
     font-size: 1rem;
     border: none;
@@ -140,14 +140,14 @@ nav {
     width: 200px;
     height: 30px;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  }
+}
   
-  input:focus {
+input:focus {
     border-bottom: 2px solid rgba(0, 0, 0, 0.6);
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
-  }
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+}
   
-  .search-button {
+.search-button {
     background: none;
     border: none;
     padding: 0;
@@ -155,13 +155,13 @@ nav {
     height: 20px;
     display: flex;
     align-items: center;
-  }
+}
   
-  .search-button:hover .search-icon {
+.search-button:hover .search-icon {
     transform: scale(1.1);
-  }
+}
   
-  .profilePic {
+.profilePic {
     height: 3rem;
     width: 3rem;
-  }
+}

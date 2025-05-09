@@ -23,8 +23,6 @@ export class HomeComponent {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private firestore: Firestore) {}
-
   navigateToSymptomChecker() {
     this.router.navigateByUrl('/symptom-checker');
   }

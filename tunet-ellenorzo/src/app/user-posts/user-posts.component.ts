@@ -32,7 +32,6 @@ export class UserPostsComponent {
       const uidFromRoute = params.get('uid');
       if (uidFromRoute) {
         this.currentUserId = uidFromRoute;
-        
       }
     });
 
@@ -56,27 +55,9 @@ getPosts() {
       }
     }
   });
-
-    /*this.http.post<IPost[]>('http://localhost:3000/get-all-posts', {
-      uid:this.currentUserId
-    })
-    .subscribe({
-          next: (response) => {
-            this.posts = response;
-            if(this.posts.length===0){
-              if(this.currLang==="hu"){
-                this.errorMessage = "Ez a felhasználó nem tett még közzé bejegyzést."
-              }else {
-                this.errorMessage = "This user has not posted yet."
-              }
-            }
-          },
-    });*/
   }
 
   handlePostDeleted(postid: string) {
     this.getPosts(); 
-  }
-  
-  
+  } 
 }

@@ -18,7 +18,7 @@
         <div *ngFor="let d of doc.available">
             {{d.day}}: {{d.city}} - {{d.address}}
         </div>
-        Cím: {{doc.address}} <br>
+        {{ 'address' | i18next }}: {{doc.address}} <br>
         Tel.: {{doc.phone}}<br>
 
         <p></p>
@@ -32,9 +32,7 @@
             
                 <div class="stars">
                     <span *ngFor="let star of [1, 2, 3, 4, 5]" (click)="setRating(star)">
-                      <img [src]="star <= selectedRating ? 'assets/star.webp' : 'assets/star2.webp'" 
-                           alt="star" 
-                           class="star-icon" />
+                      <img [src]="star <= selectedRating ? 'assets/star.webp' : 'assets/star2.webp'" alt="star" class="star-icon" />
                     </span>
                   </div>
                   

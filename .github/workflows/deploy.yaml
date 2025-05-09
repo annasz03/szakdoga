@@ -1,4 +1,4 @@
-name: Deploy Angular App to Firebase
+name: Firebase hosting
 
 on:
   push:
@@ -10,26 +10,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: checkout
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
+      - name: Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      - name: Install dependencies
+      - name: install dependencies
         working-directory: tunet-ellenorzo
         run: npm ci
 
-      - name: Build Angular project
+      - name: build
         working-directory: tunet-ellenorzo
         run: npm run build -- --configuration=production
 
-      - name: Install Firebase CLI
+      - name: Firebase CLI
         run: npm install -g firebase-tools
 
-      - name: Deploy to Firebase Hosting
+      - name: upload to firebase
         working-directory: tunet-ellenorzo
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

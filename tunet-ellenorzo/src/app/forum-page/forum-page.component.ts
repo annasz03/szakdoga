@@ -22,13 +22,7 @@ import { DiseaseService } from '../disease.service';
 @Component({
   selector: 'app-forum-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, ForumPostComponent, I18NextModule,MatPaginator, 
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatPaginatorModule,
-    MatButtonModule,],
+  imports: [CommonModule, FormsModule, ForumPostComponent, I18NextModule,MatPaginator,FormsModule,MatFormFieldModule,MatInputModule,MatSelectModule,MatPaginatorModule,MatButtonModule,],
   templateUrl: './forum-page.component.html',
   styleUrl: './forum-page.component.css'
 })
@@ -59,37 +53,24 @@ export class ForumPageComponent {
 
   private authService = inject(AuthService);
 
-  constructor(private dataService: DataService, private firestore: Firestore, private http:HttpClient, private langService:LangService) {
+  constructor(private langService:LangService) {
     this.langService.currentLang$.subscribe((lang: string) => {
-  this.currentLang = lang;
-  this.diseaseService.getAllDiseaseNames().subscribe(response => {
-    this.illnesses = Object.entries(response).map(([id, names]) => ({
-      id: id,
-      name: lang === 'hu' ? names.name_hu : names.name_en
-    }));
-  });
-  console.log(this.illnesses)
-});
-
-    /*  this.http.post<any>(`http://localhost:3000/api/get-all-disease-names`, { lang }).subscribe({
-        next: (response) => {
-          this.illnesses = response;
-        }
-      })
-    });*/
+      this.currentLang = lang;
+      this.diseaseService.getAllDiseaseNames().subscribe(response => {
+        this.illnesses = Object.entries(response).map(([id, names]) => ({
+          id: id,
+          name: lang === 'hu' ? names.name_hu : names.name_en
+        }));
+      });
+    });
   }
   
   ngOnInit(){
     this.authService.user$.subscribe(user => {
-      if (user) {
-        this.currentUser = user;
-    this.loadPosts();
-      }
+      this.currentUser = user;
+      this.loadPosts();
     });
   }
-
-
-
   addPost() {
     const postData = {
       uid: this.currentUser.uid,
@@ -130,20 +111,8 @@ export class ForumPageComponent {
     this.loadPosts();
   }
   
-  
-  
-    
-  
-  
-  
-
   search() {
-    this.filteredPosts = this.posts
-      .filter(post => this.searchTag ? post.tag === this.searchTag : true)
-      .filter(post => this.searchText
-         ? post.body.toLowerCase().includes(this.searchText.toLowerCase())
-         : true
-      );
+    this.filteredPosts = this.posts.filter(post => this.searchTag ? post.tag === this.searchTag : true).filter(post => this.searchText? post.body.toLowerCase().includes(this.searchText.toLowerCase()) : true);
     this.totalItems = this.filteredPosts.length;
     this.currentPage = 0;
   }

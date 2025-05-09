@@ -19,30 +19,28 @@ export class LoginComponent {
   email: string = '';
   password: string = '';
   errorMessage: string | null = null;  
+  currentLang:any;
   
   fb = inject(FormBuilder)
   router = inject(Router)
   authService = inject(AuthService)
 
   form = this.fb.nonNullable.group({
-      email: ['', Validators.required],
-      password: ['', Validators.required],
+    email: ['', Validators.required],
+    password: ['', Validators.required],
+  });
+
+  constructor(private langService:LangService){}
+
+  ngOnInit(){
+    this.langService.currentLang$.subscribe((lang: string) => {
+      this.currentLang = lang;
     });
+  }
 
-    currentLang:any;
-
-    constructor(private langService:LangService){}
-
-    ngOnInit(){
-      this.langService.currentLang$.subscribe((lang: string) => {
-        this.currentLang = lang;
-      });
-    }
-
-    onSubmit(): void {
-      const rawForm = this.form.getRawValue();
-      this.authService.login(rawForm.email, rawForm.password)
-      .subscribe({
+  onSubmit(): void {
+    const rawForm = this.form.getRawValue();
+      this.authService.login(rawForm.email, rawForm.password).subscribe({
         next: ()=> {
         this.router.navigateByUrl('/home')},
         error: (err) => {

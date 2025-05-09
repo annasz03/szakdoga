@@ -50,12 +50,10 @@ export class DiseaseComponent {
 
   
     for (const key in data) {
-      if (data.hasOwnProperty(key) && key !== 'id' && key !== 'age') {
-        this.dataSource.push({
+      this.dataSource.push({
           key: key,
           value: data[key]
         });
-      }
     }
     this.dataSourceFormatting();
   }

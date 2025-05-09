@@ -2,12 +2,12 @@
     <div class="new-post-section">
   <h2>{{ 'newpost' | i18next }}</h2>
 
-  <mat-form-field appearance="fill" class="full-width">
+  <mat-form-field class="full-width">
     <mat-label>{{ 'posttext' | i18next }}</mat-label>
     <textarea matInput rows="3" [(ngModel)]="body"></textarea>
   </mat-form-field>
 
-  <mat-form-field appearance="fill" class="full-width">
+  <mat-form-field class="full-width">
     <mat-label>{{ 'addtag' | i18next }}</mat-label>
     <mat-select [(ngModel)]="tag">
       <mat-option *ngFor="let i of illnesses" [value]="i.id">
@@ -23,31 +23,25 @@
   </div>
 </div>
     <div class="search search-filters">
-      <mat-form-field appearance="fill" class="full-width">
+      <mat-form-field class="full-width">
         <mat-label>{{ 'search' | i18next }}</mat-label>
         <input matInput type="text" [(ngModel)]="searchText" placeholder="{{ 'search' | i18next }}">
       </mat-form-field>
-      <mat-form-field appearance="fill" class="full-width">
-  <mat-label>{{ 'searchtag' | i18next }}</mat-label>
-  <mat-select [(ngModel)]="searchTag">
-    <mat-option *ngFor="let i of illnesses" [value]="i.id">
-      {{i.name}}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>{{ 'searchtag' | i18next }}</mat-label>
+        <mat-select [(ngModel)]="searchTag">
+          <mat-option *ngFor="let i of illnesses" [value]="i.id">
+            {{i.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
       <button class="option-buttons" (click)="search()">{{ 'search' | i18next }}</button>
     </div>
   
     <div *ngFor="let post of filteredPosts" >
-  <app-forum-post [post]="post" ></app-forum-post>
-</div>
-<mat-paginator
-  [length]="totalItems"
-  [pageSize]="pageSize"
-  [pageSizeOptions]="[5,10,20]"
-  (page)="onPageChange($event)"
-  showFirstLastButtons>
-</mat-paginator>
+      <app-forum-post [post]="post" ></app-forum-post>
+    </div>
+    <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[5,10,20]" (page)="onPageChange($event)" showFirstLastButtons></mat-paginator>
 
   </div>
   

@@ -5,7 +5,7 @@ import { db } from '../config/firebase.mjs';
 
 const router = express.Router();
 
-router.post('/diseases', async (req, res) => {
+router.post('/result', async (req, res) => {
   const data = req.body;
   const language = data.language || 'hu';
   const collectionName = language === 'en' ? 'diseases_en' : 'diseases_hu';
@@ -34,25 +34,16 @@ router.post('/diseases', async (req, res) => {
     });
 
     result = orderResult(result);
-    res.json({ message: 'Result:', result });
+    res.json({ message: 'result:', result });
   
 });
 
 router.get('/diseases/:lang/:id', async (req, res) => {
   const { lang, id } = req.params;
   const collectionName = lang === 'en' ? 'diseases_en' : 'diseases_hu';
-
-  try {
     const doc = await db.collection(collectionName).doc(id).get();
 
-    if (!doc.exists) {
-      return res.status(404).json({ error: 'cannot find disease' });
-    }
-
     res.json({ id: doc.id, ...doc.data() });
-  } catch (error) {
-    res.status(500).json({ error: 'error while requesting disease' });
-  }
 });
 
 
@@ -90,26 +81,6 @@ router.post('/get-all-pain', async (req, res) => {
   res.status(200).send(painList);
 });
 
-
-router.post('/get-all-diseases', async (req, res) => {
-    const data = req.body;
-
-    const lang = data.lang || 'hu';
-    const collectionName = lang === 'en' ? 'diseases_en' : 'diseases_hu';
-
-    const snapshot = await db.collection(collectionName).get();
-    console.log("Fetched documents:", snapshot.size);
-
-    const result = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-
-    res.json({ message: 'All diseases:', result });
-
-});
-
-
 //get disease data hu
 router.post('/get-disease-data-hu', async (req, res) => {
   const { diseaseId } = req.body;
@@ -124,23 +95,6 @@ router.post('/get-disease-data-en', async (req, res) => {
     const doc = await db.collection('diseases_en').doc(diseaseId).get();
     const data = doc.data();
     res.status(200).send(data);
-});
-
-//update disease hu
-router.post('/update-disease-en', async (req, res) => {
-  const { diseaseId, data } = req.body;
-    const docRef = db.collection('diseases_en').doc(diseaseId);
-    await docRef.update(data);
-    res.status(200).json({ message: 'success' });
-});
-
-
-//update disease en
-router.post('/update-disease-hu', async (req, res) => {
-  const { diseaseId, data } = req.body;
-    const docRef = db.collection('diseases_hu').doc(diseaseId);
-    await docRef.update(data);
-    res.status(200).json({ message: 'success' });
 });
 
 router.post('/save-disease', async (req, res) => {
@@ -196,5 +150,34 @@ router.post('/api/disease-total-count', async (req, res) => {
   const snapshot = await db.collection(`diseases_${lang}`).count().get();
   res.json({ totalCount: snapshot.data().count });
 });
+
+router.get('/get-all-disease-names', async (req, res) => {
+    const [huSnapshot, enSnapshot] = await Promise.all([
+      db.collection('diseases_hu').get(),
+      db.collection('diseases_en').get()
+    ]);
+
+    const mergedDiseases = {};
+
+    huSnapshot.forEach(doc => {
+      mergedDiseases[doc.id] = {
+        name_hu: doc.data().name,
+        name_en: ''
+      };
+    });
+
+    enSnapshot.forEach(doc => {
+      if (mergedDiseases[doc.id]) {
+        mergedDiseases[doc.id].name_en = doc.data().name;
+      } else {
+        mergedDiseases[doc.id] = {
+          name_hu: '',
+          name_en: doc.data().name
+        };
+      }
+    });
+
+    res.status(200).json(mergedDiseases);
+  })
 
 export default router;

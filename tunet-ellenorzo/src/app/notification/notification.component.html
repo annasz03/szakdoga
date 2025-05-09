@@ -5,6 +5,6 @@
     <div class="alert-times">
       <span *ngFor="let time of alert.times">{{ time }}</span>
     </div>
-    <button (click)="editAlert(alert)">{{ 'edit' | i18next }}</button>
-    <button (click)="deleteAlert(alert.id)">{{ 'delete' | i18next }}</button>
+    <button class="option-buttons" (click)="editAlert(alert)">{{ 'edit' | i18next }}</button>
+    <button class="option-buttons" (click)="deleteAlert(alert.id)">{{ 'delete' | i18next }}</button>
 </div>

@@ -128,7 +128,8 @@
         "rate_doctor": "Orvos véleményezése",
         "accept": "Elfogadás",
         "posttext": "Bejegyzés szövege",
-        "searchtag": "Tag"
+        "searchtag": "Tag",
+        "anon" : "Anoním felhasználó"
 
     
 

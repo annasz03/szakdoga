@@ -1,8 +1,6 @@
 <div class="profile">
     <div class="profileData">
         <img class="profilePic" [src]="profilepic || '../../assets/avatar.webp'" class="profilePic" loading="lazy">
-
-
         <span class="displayName" *ngIf="displayName">
             {{displayName}}
         </span>
@@ -16,7 +14,6 @@
                 <button class="deleteButton" (click)="deleteProfileAdmin()">{{ 'deleteProfile' | i18next }}</button>
             </ng-container>
         </div>
-        
     </div>
 
     <div class="stripe"></div>

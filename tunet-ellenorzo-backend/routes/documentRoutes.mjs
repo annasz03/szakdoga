@@ -6,7 +6,7 @@ import { db } from '../config/firebase.mjs';
 const router = express.Router();
 const upload = multer();
 
-
+//kesz
 router.post('/get-all-documents', async (req, res) => {
     const docref = db.collection('documents');
     const uid = req.body.uid;
@@ -16,25 +16,19 @@ router.post('/get-all-documents', async (req, res) => {
         id: doc.id,
         ...doc.data()
       }));
-
-
     res.status(200).send(documents);
 });
 
+//kesz
 router.post('/get-all-shared-documents', async (req, res) => {
   const { doctor_id, uid } = req.body;
 
     const sharedRef = db.collection('shared_documents');
 
-    const sharedSnap = await sharedRef
-      .where('doctor_id', '==', doctor_id)
-      .where('uid', '==', uid)
-      .get();
+    const sharedSnap = await sharedRef.where('doctor_id', '==', doctor_id).where('uid', '==', uid).get();
 
     const sharedDocs = sharedSnap.docs.map(doc => doc.data());
-    const documentIds = sharedDocs
-      .map(doc => doc.document_id)
-      .filter(Boolean);
+    const documentIds = sharedDocs.map(doc => doc.document_id).filter(Boolean);
     const documentRef = db.collection('documents');
     const results = [];
 
@@ -60,15 +54,11 @@ router.post('/get-all-shared-documents', async (req, res) => {
 
 
 
-
+//kesz
 router.post('/upload-document', upload.single('file'), async (req, res) => {
   const file = req.file;
   const comment = req.body.comment;
   const userId = req.body.userId;
-
-  if (!file) {
-      return res.status(400).send({ message: 'Nincs fájl feltöltve.' });
-  }
 
   const base64Data = file.buffer.toString('base64');
   const fileType = file.mimetype;
@@ -82,9 +72,10 @@ router.post('/upload-document', upload.single('file'), async (req, res) => {
 
   await db.collection('documents').add(newDoc);
 
-  res.status(200).send({ message: 'Dokumentum sikeresen feltöltve' });
+  res.status(200).send({ message: 'success' });
 });
 
+//kesz
 router.post('/send-to-doctor', async (req, res) => {
   const { uid, doctor_id, document_id } = req.body;
     const newDoc = {
@@ -94,17 +85,34 @@ router.post('/send-to-doctor', async (req, res) => {
     };
     const docRef = await db.collection('shared_documents').add(newDoc);
     
-    res.status(200).send({ message: 'Dokumentum sikeresen hozzáadva a doktorhoz!', docId: docRef.id });
+    res.status(200).send({ message: 'success', docId: docRef.id });
 });
 
-
-router.get('/load-total-count', async (req, res) => {
-    const areasRef = db.collection('doctors');
+//kesz
+router.get('/load-total-count-uid', async (req, res) => {
+    const areasRef = db.collection('doctors').where('uid', '!=', null).orderBy('uid');
     const snapshot = await areasRef.get();
     const totalCount = snapshot.size;
 
     res.status(200).send({ totalCount: totalCount });
 });
+
+//kesz
+router.get('/load-total-count', async (req, res) => {
+  const areasRef = db.collection('doctors');
+  const snapshot = await areasRef.get();
+  const totalCount = snapshot.size;
+
+  res.status(200).send({ totalCount: totalCount });
+});
+
+router.delete('/delete-document/:id', async (req, res) => {
+    const { id } = req.params;
+    const docRef = db.collection('documents').doc(id);
+    await docRef.delete();
+    return res.status(200).send({ message: 'deleted' });
+});
+
 
 
 export default router;

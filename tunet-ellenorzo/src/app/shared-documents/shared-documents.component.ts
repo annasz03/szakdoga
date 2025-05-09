@@ -32,29 +32,21 @@ export class SharedDocumentsComponent {
     documents: any;
     
     private authService = inject(AuthService);
-    constructor(private dialog: MatDialog,private dataService:DataService, private sanitizer: DomSanitizer, private http:HttpClient, private route:ActivatedRoute){}
+    constructor(private dataService:DataService){}
   
     ngOnInit() {
       this.authService.user$.subscribe(user => {
         this.currentUser = user;
 
-        const urlSegments = window.location.href.split('/');
-        const doctorId = urlSegments[urlSegments.length - 1];
+        const url = window.location.href.split('/');
+        const doctorId = url[url.length - 1];
   
         this.documentService.getAllSharedDocuments(this.currentUser.uid, doctorId).subscribe(response => {
           this.documents = response;
         });
-
-        /*this.http.post('http://localhost:3000/api/get-all-shared-documents', {
-          doctor_id: this.currentUser.uid,
-          uid: doctorId
-        }).subscribe(response => {
-          this.documents = response;
-        });*/
       });
     }
-    
-  
+
     getUrl(){
       return `http://localhost:3000/uploads/${this.file}`;
     }

@@ -3,9 +3,5 @@
 </div>
 <div *ngFor="let post of posts">
     <p></p>
-  <app-forum-post 
-    *ngIf="post" 
-    [post]="post" 
-    (postDeleted)="handlePostDeleted($event)"
-  ></app-forum-post>
+  <app-forum-post *ngIf="post" [post]="post" (postDeleted)="handlePostDeleted($event)"></app-forum-post>
 </div>

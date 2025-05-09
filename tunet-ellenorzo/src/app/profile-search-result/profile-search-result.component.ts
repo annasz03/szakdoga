@@ -26,11 +26,7 @@ export class ProfileSearchResultComponent extends MatPaginatorIntl {
   loading = false;
   currentLang:any
 
-  constructor(
-    private dataService: DataService,
-    private router: Router,
-    private langService: LangService
-  ) {
+  constructor(private dataService: DataService, private router: Router, private langService: LangService){
     super();
     this.dataService.getProfileSearch.subscribe(name => {
       this.name = name;
@@ -50,24 +46,20 @@ export class ProfileSearchResultComponent extends MatPaginatorIntl {
     }
   }
 
-   searchUsers() {
-  this.loading = true;
+  searchUsers() {
+    this.loading = true;
 
-  this.userService.getUserSearch(
-    this.name,
-    this.currentPage,
-    this.pageSize
-  ).subscribe({
-    next: ({ users, totalCount }) => {
-      this.profiles   = users;
-      this.totalItems = totalCount;
-      this.loading    = false;
-    },
-    error: () => {
-      this.loading = false;
-    }
-  });
-}
+    this.userService.getUserSearch(
+      this.name,
+      this.currentPage,
+      this.pageSize).subscribe({
+        next: ({ users, totalCount }) => {
+          this.profiles   = users;
+          this.totalItems = totalCount;
+          this.loading    = false;
+        }
+      });
+  }
 
   onPageChange(event: PageEvent) {
     this.currentPage = event.pageIndex;

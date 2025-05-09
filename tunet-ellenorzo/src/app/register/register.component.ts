@@ -32,7 +32,7 @@ export class RegisterComponent {
   dialog = inject(MatDialog);
   lang:any;
 
-  constructor(private firestore: Firestore, private http: HttpClient, private langService:LangService,) {
+  constructor(private langService:LangService,) {
     this.langService.currentLang$.subscribe((lang) => {
       this.lang=lang
     });

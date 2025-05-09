@@ -22,12 +22,12 @@ export class NotificationComponent  {
 
   alertService = inject(AlertService)
 
-
-  constructor(private dialog: MatDialog, private firestore: Firestore, private http:HttpClient, private i18next: I18NextService) {}
+  constructor(private dialog: MatDialog, private i18next: I18NextService) {}
 
   getTranslatedFrequency(frequency: string): string {
     return this.i18next.t(`frequency.${frequency}`);
   }
+
   editAlert(alert: Alerts) {
     console.log(alert)
     const dialogRef = this.dialog.open(NotificationDialog, {
@@ -47,7 +47,7 @@ export class NotificationComponent  {
         next: (res) => {
           this.alertDeleted.emit()
         }
-      });      
+    });      
   }
   
 

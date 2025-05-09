@@ -20,18 +20,17 @@ import { AlertService } from '../alert.service';
 @Component({
   selector: 'app-notification-page',
   standalone: true,
-  imports: [CommonModule, NotificationComponent,MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatDialogModule],
+  imports: [CommonModule, NotificationComponent,MatFormFieldModule,MatInputModule,MatSelectModule,MatOptionModule,MatDialogModule],
   templateUrl: './notification-page.component.html',
   styleUrl: './notification-page.component.css'
 })
 export class NotificationPageComponent {
   alertService = inject(AlertService)
 
-  constructor(private dialog: MatDialog, private firestore: Firestore, private authService: AuthService, private http:HttpClient) {}
+  alerts: Alerts[] = [];
+  currentUser: any;
+
+  constructor(private dialog: MatDialog, private authService: AuthService, ) {}
 
   ngOnInit() {
     this.authService.user$.subscribe(user => {
@@ -41,31 +40,21 @@ export class NotificationPageComponent {
     
   }
 
-  alerts: Alerts[] = [];
-  currentUser: any;
-
   openDialog(): void {
     const dialogRef = this.dialog.open(NotificationDialog, {});
   
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.getAlerts();
-      }
+      this.getAlerts();
     });
   }
-  
 
   getAlerts() {
     this.alertService.getAlerts(this.currentUser!.uid).subscribe({
         next: (res) => {
-          console.log(res)
           this.alerts = res.alerts;
         }
       });      
   }
-
-
-  
 }
 
 
@@ -74,12 +63,8 @@ export class NotificationPageComponent {
   selector: 'notification-dialog',
   templateUrl: './notification-dialog.component.html',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatFormFieldModule,I18NextModule,
-    MatInputModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatDialogModule],
-    styleUrl: './notification-page.component.css'
+  imports: [CommonModule, FormsModule, MatFormFieldModule,I18NextModule, MatInputModule, MatSelectModule, MatOptionModule, MatDialogModule],
+  styleUrl: './notification-page.component.css'
 })
 export class NotificationDialog {
   name: string = "";
@@ -95,10 +80,7 @@ export class NotificationDialog {
 
   hour: string = "";
   hours: string[] = [
-    '00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00',
-    '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00',
-    '20:00', '21:00', '22:00', '23:00'
-  ];
+    '00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00','20:00', '21:00', '22:00', '23:00'];
 
   timeDiv: number = 0;
   timeArray: number[] = [];
@@ -109,36 +91,27 @@ export class NotificationDialog {
 
   alertService= inject(AlertService)
 
-  constructor(
-    public dialogRef: MatDialogRef<NotificationDialog>,
-    private authService: AuthService,
-    private fcmService: FcmService,
-    @Inject(MAT_DIALOG_DATA) public data?: any
-  ) { }
+  constructor(public dialogRef: MatDialogRef<NotificationDialog>, private authService: AuthService, private fcmService: FcmService, @Inject(MAT_DIALOG_DATA) public data?: any) { }
 
   ngOnInit() {
-  this.authService.user$.subscribe(u => this.currentUser = u);
-
-  if (this.data && this.data.frequency) {
-    const match = this.frequencies.find(f => f.key === this.data.frequency);
-    this.frequency = match ? match.value : 'once';
-
-    this.name      = this.data.name;
-    this.times     = Array.isArray(this.data.times) ? [...this.data.times] : [''];
-    this.timeDiv   = this.times.length;
-    this.timeArray = Array(this.timeDiv).fill(0).map((_, i) => i);
-    this.id        = this.data.id;
-    this.buttonTitle = 'Módosítás';
-  } else {
-    this.frequency = 'once';
-    this.times     = [''];
-    this.timeDiv   = 1;
-    this.timeArray = [0];
-    this.buttonTitle = 'Hozzáadás';
+    this.authService.user$.subscribe(u => this.currentUser = u);
+    if (this.data && this.data.frequency) {
+      const match = this.frequencies.find(f => f.key === this.data.frequency);
+      this.frequency = match ? match.value : 'once';
+      this.name      = this.data.name;
+      this.times     = Array.isArray(this.data.times) ? [...this.data.times] : [''];
+      this.timeDiv   = this.times.length;
+      this.timeArray = Array(this.timeDiv).fill(0).map((_, i) => i);
+      this.id        = this.data.id;
+      this.buttonTitle = 'Módosítás';
+    } else {
+      this.frequency = 'once';
+      this.times     = [''];
+      this.timeDiv   = 1;
+      this.timeArray = [0];
+      this.buttonTitle = 'Hozzáadás';
+    }
   }
-}
-
-
 
   onChange() {
     switch (this.frequency) {
@@ -172,12 +145,12 @@ export class NotificationDialog {
     }
 
     const frequencyMap: Record<string, string> = {
-  once:    'onceADay',
-  twice:   'twiceADay',
-  three:   'threeTimesADay',
-  weekly:  'onceAWeek',
-  monthly: 'onceAMonth'
-};
+      once:    'onceADay',
+      twice:   'twiceADay',
+      three:   'threeTimesADay',
+      weekly:  'onceAWeek',
+      monthly: 'onceAMonth'
+    };
 
     const mappedFrequency = frequencyMap[this.frequency] || 'onceADay';
 

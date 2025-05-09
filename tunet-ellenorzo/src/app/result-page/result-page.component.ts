@@ -46,11 +46,6 @@ export class ResultPageComponent {
       result: this.result,
       uid: this.currentUser.uid
     };
-    
-    /*this.http.post('http://localhost:3000/saved-results', body).subscribe({
-      next: () => console.log('success'),
-    });*/
-
     this.userService.getSavedResults(body).subscribe({
       next: () => console.log('success'),
     });

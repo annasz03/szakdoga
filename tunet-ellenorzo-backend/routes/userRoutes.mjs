@@ -2,6 +2,8 @@ import { admin } from '../config/firebase.mjs';
 import express from 'express';
 import { db } from '../config/firebase.mjs';
 import nodemailer from 'nodemailer';
+import multer from 'multer';
+const upload = multer();
 
 
 const router = express.Router();
@@ -14,20 +16,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-//get all user
-router.get('/get-all-users', async (req, res) => {
-    const snapshot = await db.collection('users').get();
-
-    const users = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-
-    res.status(200).send({ users });
-});
-
-//get user
-// get specific user by uid
+// get user by id - kesz
 router.post('/get-user', async (req, res) => {
   const { uid } = req.body;
     const snapshot = await db.collection('users').where('uid', '==', uid).get();
@@ -42,25 +31,37 @@ router.post('/get-user', async (req, res) => {
 });
 
 
+//kesz
+router.post('/get-user-profile-picture', async (req, res) => {
+  const { uid } = req.body;
+    const snapshot = await db.collection('users').where('uid', '==', uid).get();
+    const userDoc = snapshot.docs[0].data();
 
-//get user filter
-router.post('/get-user-search', async (req, res) => {
-  const { search } = req.body;
-
-    const snapshot = await db.collection('users').get();
-
-    const users = snapshot.docs
-      .map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }))
-      .filter(user =>
-        user.username?.toLowerCase().includes(search.toLowerCase())
-      );
-
-    res.status(200).send({ users });
+    res.status(200).send({ user: { profilepic: userDoc.profilepic } });
 });
 
+//kesz
+//get user filter
+router.post('/get-user-search', async (req, res) => {
+  const { search = '', page = 0, pageSize = 10 } = req.body;
+  const p = parseInt(page, 10);
+  const ps = parseInt(pageSize, 10);
+
+  const snapshot = await db.collection('users').get();
+  const matched = snapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() })).filter(u => u.username?.toLowerCase().includes(search.toLowerCase()));
+
+  const totalCount = matched.length;
+
+  const start = p * ps;
+  const end   = start + ps;
+  const pageOfUsers = matched.slice(start, end);
+
+  return res.json({
+    users: pageOfUsers,
+    totalCount
+  });
+});
+//kesz
 router.post('/get-username-by-id', async (req, res) => {
     const { uid } = req.body;
 
@@ -73,7 +74,7 @@ router.post('/get-username-by-id', async (req, res) => {
     res.status(200).json({ username });
 });
 
-
+//kesz
 //get saved results
 router.post('/get-user-saved-results', async (req, res) => {
   const { uid } = req.body;
@@ -106,7 +107,7 @@ router.post('/get-user-saved-results', async (req, res) => {
 });
 
 
-
+//kesz
 //add user
 router.post('/register', async (req, res) => {
   const { email, password, username, birth, gender } = req.body;
@@ -117,39 +118,33 @@ router.post('/register', async (req, res) => {
       emailVerified: false
     });
 
-    const userRef = db.collection('users').doc(userRecord.uid);
-
+    const user = db.collection('users').doc(userRecord.uid);
     const verificationLink = await admin.auth().generateEmailVerificationLink(email);
 
-    await transporter.sendMail({
+    transporter.sendMail({
       from: 'Tünetellenőrző',
       to: email,
       subject: 'Email megerősítés',
-      html: `<p>Kérlek erősítsd meg az email címed: <a href="${verificationLink}">Kattints ide</a></p>`
+      html: `Kérlek erősítsd meg az email címed: <a href="${verificationLink}">Link</a>`
     });
 
-    await userRef.set({
+    user.set({
       uid: userRecord.uid,
       email,
       username,
       birth,
       gender,
       documents: [],
-      role: "user",
-      createdAt: admin.firestore.FieldValue.serverTimestamp()
+      role: "user"
     });
 
-    res.status(201).json({ 
-      success: true,
-      uid: userRecord.uid 
-    });
+    res.status(201).json({ success: true, uid: userRecord.uid});
 });
 
-
+//kesz
 //update user
 router.post('/update-user', async (req, res) => {
   const { uid, email, password, username, birth, gender, } = req.body;
-  try {
     const updateData = {};
 
     if (email) updateData.email = email;
@@ -161,22 +156,26 @@ router.post('/update-user', async (req, res) => {
     const userRef = db.collection('users').doc(uid);
 
     const firestoreUpdateData = {};
-    if (email) firestoreUpdateData.email = email;
-    if (username) firestoreUpdateData.username = username;
-    if (birth) firestoreUpdateData.birth = birth;
-    if (gender) firestoreUpdateData.gender = gender;
+    if (email){
+      firestoreUpdateData.email = email;
+    } 
+    if (username){
+      firestoreUpdateData.username = username;
+    } 
+    if (birth){
+      firestoreUpdateData.birth = birth;
+    } 
+    if (gender){
+      firestoreUpdateData.gender = gender;
+    } 
 
     await userRef.update(firestoreUpdateData);
 
-    res.status(200).send({ message: 'User updated' });
-  } catch (error) {
-    console.error('Error updating user:', error);
-    res.status(500).send({ error: 'Error updating user', details: error.message });
-  }
+    res.status(200).send({ message: 'updated' });
 });
 
 
-
+//kesz
 // delete user
 router.post('/delete-user', async (req, res) => {
   const { uid } = req.body;
@@ -185,9 +184,9 @@ router.post('/delete-user', async (req, res) => {
     const userRef = db.collection('users').doc(uid);
     await userRef.delete();
 
-    res.status(200).send({ message: 'User deleted' });
+    res.status(200).send({ message: 'deleted' });
 });
-
+//kesz
 //delet doc
 router.post('/delete-doctor-profile', async (req, res) => {
   const { uid } = req.body;
@@ -196,9 +195,7 @@ router.post('/delete-doctor-profile', async (req, res) => {
     const userSnapshot = await usersRef.where('uid', '==', uid).limit(1).get();
 
     const userDoc = userSnapshot.docs[0];
-    await userDoc.ref.update({ 
-      role: 'user' 
-    });
+    await userDoc.ref.update({role: 'user'});
 
     const doctorsRef = db.collection('doctors');
     const doctorSnapshot = await doctorsRef.where('uid', '==', uid).limit(1).get();
@@ -206,10 +203,11 @@ router.post('/delete-doctor-profile', async (req, res) => {
     const doctorDoc = doctorSnapshot.docs[0];
     await doctorDoc.ref.delete();
 
-    res.status(200).send({ message: 'error deleting doctor' });
+    res.status(200).send({ message: 'deleted' });
   }
 );
 
+//kesz
 // get-user-data-by-username
 router.post('/api/get-user-data-by-username', async (req, res) => {
   const { displayName } = req.body;
@@ -220,7 +218,7 @@ router.post('/api/get-user-data-by-username', async (req, res) => {
 
     res.status(200).send({ userId: doc.id, role: userData.role, username: userData.username});
 });
-
+//kesz
 router.post('/get-profile', async (req, res) => {
   const { uid } = req.body;
   const snapshot = await db.collection('users').where('uid', '==', uid).get();
@@ -233,40 +231,7 @@ router.post('/get-profile', async (req, res) => {
   });
 });
 
-router.post('/get-username-by-uid', async (req, res) => {
-  const { uid } = req.body;
-
-    const snapshot = await db.collection('users').where('uid', '==', uid).get();
-    const userDoc = snapshot.docs[0];
-    const username = userDoc.data().username;
-
-    res.status(200).send({ username });
-});
-
-router.post('/api/get-user-search', async (req, res) => {
-    const { search, page = 1, pageSize = 10 } = req.body;
-    const offset = (page - 1) * pageSize;
-
-    let query = db.collection('users')
-                  .where('username', '>=', search)
-                  .where('username', '<=', search + '\uf8ff')
-                  .limit(pageSize)
-                  .offset(offset);
-
-    const snapshot = await query.get();
-    const totalSnapshot = await db.collection('users').where('username', '>=', search).where('username', '<=', search + '\uf8ff').get();
-
-    const users = snapshot.docs.map(doc => ({
-      uid: doc.id,
-      ...doc.data()
-    }));
-
-    res.json({
-      users,
-      totalCount: totalSnapshot.data().count
-    });
-});
-
+//kesz
 router.post('/saved-results', async (req, res) => {
     const { result, uid } = req.body;
 
@@ -287,6 +252,8 @@ router.post('/saved-results', async (req, res) => {
     res.status(200).json({ message: 'saved' });
 });
 
+
+//kesz
 router.get('/export-results', async (req, res) => {
     const { lang = 'hu', keys } = req.query;
 
@@ -297,14 +264,31 @@ router.get('/export-results', async (req, res) => {
     const promises = keyList.map(async (key) => {
       const docRef = db.collection(collectionName).doc(key);
       const snapshot = await docRef.get();
-
-      if (snapshot.exists) {
-        results.push({ id: key, ...snapshot.data() });
-      }
+      results.push({ id: key, ...snapshot.data() });
     });
 
     await Promise.all(promises);
     res.status(200).json(results);
 });
+
+//kesz
+router.post('/upload-profilepic', upload.single('file'), async (req, res) => {
+    const file = req.file;
+    const userId = req.body.userId;
+    const base64Data = file.buffer.toString('base64');
+    const fileType = file.mimetype;
+
+    const profilePicData = `data:${fileType};base64,${base64Data}`;
+
+    const usersRef = db.collection('users');
+    const snapshot = await usersRef.where('uid', '==', userId).get();
+    const userDoc = snapshot.docs[0];
+    await userDoc.ref.update({
+      profilepic: profilePicData,
+    });
+
+    res.status(200).send({ message: 'sucess' });
+});
+
 
 export default router;

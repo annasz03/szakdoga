@@ -83,12 +83,6 @@
     background-color: #ccc;
   }
   
-  @media (max-width: 780px) {
-    .vertical-line {
-      display: none;
-    }
-  }
-  
   .right {
     background-color: #fafafa;
     border-radius: 20px;
@@ -100,18 +94,4 @@
     gap: 0.5rem;
     margin-left: auto;
     margin-top: 0.5rem;
-}
-
-.profile-buttons button {
-  background-color: #0288D1;
-    color: white;
-    border: none;
-    padding: 0.4rem 0.8rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.profile-buttons button:hover {
-  background-color: #0288D1;
 }

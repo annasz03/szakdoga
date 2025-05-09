@@ -6,11 +6,12 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth.service';
 import { UserService } from '../user.service';
 import { ForumService } from '../forum.service';
+import { I18NextModule } from 'angular-i18next';
 
 @Component({
   selector: 'app-forum-comment',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule , I18NextModule],
   templateUrl: './forum-comment.component.html',
   styleUrl: './forum-comment.component.css'
 })
@@ -26,11 +27,10 @@ export class ForumCommentComponent {
 
   @Output() commentDeleted = new EventEmitter<string>();
 
-  constructor(private datePipe: DatePipe, private firestore: Firestore, private http:HttpClient, private authService: AuthService){
+  constructor(private datePipe: DatePipe, private authService: AuthService){
     this.authService.user$.subscribe(user => {
         this.currentUser = user;
     });
-    
   }
 
   ngOnChanges() {
@@ -49,14 +49,6 @@ export class ForumCommentComponent {
         this.username = response.displayName;
       }
     });
-
-    //nem biztos jo masik apit hasznal
-    /*this.http.post<{ username: string }>('http://localhost:3000/api/get-username-by-uid', { uid })
-      .subscribe({
-        next: (response) => {
-          this.username = response.username;
-        }
-      });*/
   }
 
   deleteComment(postid: string) {
@@ -65,13 +57,6 @@ export class ForumCommentComponent {
         this.commentDeleted.emit(postid);
       }
     });
-
-    
-    /*this.http.delete(`http://localhost:3000/api/delete-comment/${this.comment.postid}/${this.comment.id}`).subscribe({
-      next: (response) => {
-        this.commentDeleted.emit(postid);
-      }
-    });*/
   }
 
 }

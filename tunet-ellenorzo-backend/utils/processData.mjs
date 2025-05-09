@@ -26,7 +26,7 @@ export function processData(data, key, value) {
   }
   
   function genderCheck(inputGender, diseaseGender) {
-    if(diseaseGender == 'Mindkettő') {
+    if(diseaseGender == 'Mindkettő' || diseaseGender == 'Both') {
       return true;
     }
     if(inputGender == 'male' && diseaseGender == 'Férfi' || diseaseGender == 'Nő' && inputGender == 'female') {

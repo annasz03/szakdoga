@@ -6,7 +6,6 @@
     height: 100vh;
     text-align: center;
     color: #fff;
-    font-family: 'Arial', sans-serif;
     padding: 20px;
 }
 
@@ -39,39 +38,11 @@ small {
     font-size: 1.1rem;
     border: none;
     border-radius: 50px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .button:hover {
     background-color: #2575fc;
-    transform: translateY(-5px);
 }
 
-.button:focus {
-    outline: none;
-}
-
-@media (max-width: 768px) {
-    .container {
-        padding: 10px;
-    }
-
-    .description {
-        margin-bottom: 20px;
-    }
-
-    h1 {
-        font-size: 2rem;
-    }
-
-    p {
-        font-size: 1rem;
-    }
-
-    .button {
-        font-size: 1rem;
-        padding: 12px 25px;
-    }
-}

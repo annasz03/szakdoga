@@ -19,10 +19,7 @@ export class AlertService {
   constructor(private http: HttpClient) {}
 
   getAlerts(uid: string) {
-    return this.http.post<{ alerts: SavedAlert[] }>(
-      backendUrl + 'get-alerts',
-      { uid }
-    );
+    return this.http.post<{ alerts: SavedAlert[] }>( backendUrl + 'get-alerts', { uid });
   }
 
   deleteAlert(alertId: string) {
@@ -30,9 +27,6 @@ export class AlertService {
   }
 
   saveAlert(payload: Partial<SavedAlert> & { uid: string }) {
-    return this.http.post<{ alert: SavedAlert }>(
-      backendUrl + 'save-alert',
-      payload
-    );
+    return this.http.post<{ alert: SavedAlert }>(backendUrl + 'save-alert', payload);
   }
 }

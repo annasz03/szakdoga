@@ -28,7 +28,7 @@ export class DoctorComponent {
   currentUser:any;
   private authService = inject(AuthService);
 
-  constructor(private http:HttpClient){
+  constructor(){
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
     });
@@ -42,11 +42,6 @@ export class DoctorComponent {
     this.doctorService.getRatings(this.doc.id).subscribe(data => {
       this.ratings = data;
     });
-
-    /*this.http.get<Ratings[]>(`http://localhost:3000/api/ratings/${this.doc.id}`)
-    .subscribe(data => {
-      this.ratings = data;
-    });*/
   }
 
   openMoreData() {
@@ -56,28 +51,14 @@ export class DoctorComponent {
   deleteRequest() {
     this.doctorService.deleteDoctorTemp(this.doc.id).subscribe(() => {
     });
-
-    /*this.http.delete(`http://localhost:3000/doctors_temp/${this.doc.id}`)
-      .subscribe(() => {
-      });*/
-
   }
 
   acceptRequest() {
     this.doctorService.acceptDoctorTemp(this.doc,this.currentUser.displayName).subscribe(() => {
       console.log('accepted');
     });
-
-    /*this.http.post('http://localhost:3000/api/doctors_temp/accept', {
-      doc: this.doc,
-      currentUsername: this.currentUser.displayName
-    }).subscribe(() => {
-      console.log('accepted');
-    });*/
-    
   }
   
-
   setRating(star: number) {
     this.selectedRating = star;
   }
@@ -87,18 +68,6 @@ export class DoctorComponent {
       this.selectedRating = 0;
       this.comment = '';
       this.getRatings()
-    });
-
-    /*this.http.post('http://localhost:3000/api/submit-rating', {
-      doctorId: this.doc.id,
-      rating: this.selectedRating,
-      comment: this.comment,
-      createdBy: this.currentUser.uid || 'anonymous'
-    }).subscribe(() => {
-      this.selectedRating = 0;
-      this.comment = '';
-      this.getRatings()
-    });*/
-    
+    });    
   }
 }

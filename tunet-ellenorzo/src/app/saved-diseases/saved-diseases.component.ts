@@ -28,32 +28,15 @@ export class SavedDiseasesComponent {
   ngOnInit() {
     this.authService.user$.subscribe(user => {
         this.currentUser = user;
-        this.fetchSavedDiseasesFromFirestore();
+        this.getSavedDiseases();
     });
   }
   
-  fetchSavedDiseasesFromFirestore() {
+  getSavedDiseases() {
     this.userService.getSavedResult(this.currentUser.uid).subscribe({
       next: (response) => {
         this.savedDiseases = response.savedDiseases;
       }
     });
-
-    /*this.http.post<{ savedDiseases: string[][] }>('http://localhost:3000/api/get-user-saved-results', {
-      uid: this.currentUser.uid
-    }).subscribe({
-      next: (response) => {
-        this.savedDiseases = response.savedDiseases;
-      },
-      error: (error) => {
-        this.savedDiseases = [];
-      }
-    });*/
-  }
-  
-  
-
-  openSaved(saved: string[]) {
-    
   }
 }

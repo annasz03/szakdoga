@@ -1,37 +1,34 @@
 
-    <div class="off-screen-menu" id="offScreenMenu">
-        <div class="menu-content">
-          <div class="menu-items">
-            <a class="menu-item" (click)="navigateSymptomChecker()">{{ 'title' | i18next }}</a>
-            <a class="menu-item" (click)="navigateProfile()">{{ 'profile' | i18next }}</a>
-            <a class="menu-item" (click)="navigateDoctorFinder()">{{ 'docfinder' | i18next }}</a>
-            <a class="menu-item" (click)="navigateForum()">{{ 'forum' | i18next }}</a>
-          </div>
-          <a class="menu-item signout" (click)="navigateSignOut()">{{ 'signout' | i18next }}</a>
-        </div>
+<div class="off-screen-menu" id="offScreenMenu">
+  <div class="menu-content">
+      <div class="menu-items">
+        <a class="menu-item" (click)="navigateSymptomChecker()">{{ 'title' | i18next }}</a>
+        <a class="menu-item" (click)="navigateProfile()">{{ 'profile' | i18next }}</a>
+        <a class="menu-item" (click)="navigateDoctorFinder()">{{ 'docfinder' | i18next }}</a>
+        <a class="menu-item" (click)="navigateForum()">{{ 'forum' | i18next }}</a>
       </div>
+      <a class="menu-item signout" (click)="navigateSignOut()">{{ 'signout' | i18next }}</a>
+    </div>
+  </div>
       
-<div class="top-menu">
+  <div class="top-menu">
     <nav>
-        <div class="navbar" id="navbar">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-        <div class="title">
-            <a (click)="navigateHome()">{{ 'title' | i18next }}</a>
-        </div>
-        <div class="search-container">
-            <input matInput type="text" [(ngModel)]="name">
-            <button (click)="searchProfile()" class="search-button">
-              <img src="../../assets/search.webp" alt="Search" class="search-icon">
-            </button>
-          </div>
-          
-        
-    
-        <div class="profile" (click)="navigateProfile()">
-          <img class="profilePic" [src]="profilepic || '../../assets/avatar.webp'" class="profilePic" loading="lazy">
-        </div>
-    </nav>
+      <div class="navbar" id="navbar">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="title">
+        <a (click)="navigateHome()">{{ 'title' | i18next }}</a>
+      </div>
+      <div class="search-container">
+        <input matInput type="text" [(ngModel)]="name">
+        <button (click)="searchProfile()" class="search-button">
+          <img src="../../assets/search.webp" alt="Search" class="search-icon">
+        </button>
+      </div>
+    <div class="profile" (click)="navigateProfile()">
+    <img class="profilePic" [src]="profilepic || '../../assets/avatar.webp'" class="profilePic" loading="lazy">
+  </div>
+  </nav>
 </div>

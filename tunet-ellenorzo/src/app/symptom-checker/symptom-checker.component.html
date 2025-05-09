@@ -1,5 +1,5 @@
 <div class="form">
-  <!-- Személyes adatok -->
+  <!-- personal part -->
   <div *ngIf="personalFromVisible">
     <div class="title">
       {{ 'personaldata' | i18next }}
@@ -23,47 +23,38 @@
       </div>
 
       <div class="button-group">
-        <button mat-raised-button class="button-small" type="submit" (click)="formVisible()">
+        <button class="button-small" type="submit" (click)="formVisible()">
           {{ 'next' | i18next }}
         </button>
-        <button mat-raised-button class="button-small disease-managemet-button" (click)="goToEditDiseases()">
+        <button class="button-small disease-managemet-button" (click)="goToEditDiseases()">
           {{ 'diseasecrud' | i18next }}
         </button>
       </div>
     </form>
   </div>
 
-  <!-- Tünetek -->
+  <!-- symp -->
   <div *ngIf="!personalFromVisible" class="pain-section">
     <div class="title">
       {{ 'symptoms' | i18next }}
     </div>
     <form [formGroup]="symptomsForm">
       <div class="symptoms-pain-container">
-    
-        <!-- Tünetek -->
         <div class="symptoms-box">
           <label class="section-label">{{ 'symptoms' | i18next }}</label>
           <div formArrayName="symptoms">
-<div *ngFor="let control of symptomArray.controls; let i = index" class="symptom-row">
-  <input type="text" matInput  class="text-input"
-         [formControlName]="i" 
-         [matAutocomplete]="auto"
-         (input)="filterSymptoms(i)"
-         (focus)="showAllSymptoms(i)">
-  <mat-autocomplete #auto="matAutocomplete">
-    <mat-option *ngFor="let symptom of filteredSymptoms[i]" [value]="symptom">
-      {{ symptom }}
-    </mat-option>
-  </mat-autocomplete>
-  <button type="button" (click)="removeSymptom(i)" class="remove-btn">-</button>
+            <div *ngFor="let control of symptomArray.controls; let i = index" class="symptom-row">
+              <input type="text" matInput  class="text-input" [formControlName]="i" [matAutocomplete]="auto" (input)="filterSymptoms(i)" (focus)="showAllSymptoms(i)">
+              <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let symptom of filteredSymptoms[i]" [value]="symptom">
+                  {{ symptom }}
+                </mat-option>
+              </mat-autocomplete>
+              <button type="button" (click)="removeSymptom(i)" class="remove-btn">-</button>
               <button type="button" (click)="addSymptom()" class="add-btn">+</button>
-
-</div>
+            </div>
           </div>
         </div>
-    
-        <!-- Fájdalom -->
         <div class="pain-box">
           <label class="section-label">{{ 'pain' | i18next }}</label>
           <select formControlName="pain" (change)="onPainChange($event)" class="select-input">

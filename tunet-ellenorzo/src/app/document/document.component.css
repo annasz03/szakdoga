@@ -5,36 +5,36 @@ img{
 
   
 .option-buttons{
-    margin-top: 0.5rem; 
-    margin-right: 1rem;
-    margin-left: 0.5rem;
-    background-color: #0288D1;
-    color: white;
-    border: none;
-    padding: 0.4rem 0.8rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
+  margin-top: 0.5rem; 
+  margin-right: 1rem;
+  margin-left: 0.5rem;
+  background-color: #0288D1;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
 
-  .comment{
-    font-size: medium;
-    margin-bottom: 0.5rem;
-  }
-  .form {
-    padding: 2%;
-    padding-left: 5%;
-    max-width: 600px;
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.803);
-    border-radius: 5%;
-    font-weight: 500 !important;
-    box-sizing: border-box;
-  }
+.comment{
+  font-size: medium;
+  margin-bottom: 0.5rem;
+}
+.form {
+  padding: 2%;
+  padding-left: 5%;
+  max-width: 600px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.803);
+  border-radius: 5%;
+  font-weight: 500 !important;
+  box-sizing: border-box;
+}
   
 
 .horizontal-line {
-    width: 600px;
-    height: 1px;
-    background-color: #aaaaaaa5;
-  }
+  width: 600px;
+  height: 1px;
+  background-color: #aaaaaaa5;
+}

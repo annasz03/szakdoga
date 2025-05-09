@@ -24,9 +24,7 @@ import { DoctorService } from '../doctor.service';
 })
 export class DocumentComponent {
   documentService = inject(DocumentService)
-
   @Output() documentDeleted = new EventEmitter<void>();
-
 
   @Input() fileName="";
   @Input() text:string="";
@@ -42,7 +40,7 @@ export class DocumentComponent {
   @Input() file="";
   
   private authService = inject(AuthService);
-  constructor(private dialog: MatDialog,private dataService:DataService, private http : HttpClient){}
+  constructor(private dialog: MatDialog){}
 
   ngOnInit(){
     this.authService.user$.subscribe(user => {
@@ -60,12 +58,6 @@ export class DocumentComponent {
         this.documentDeleted.emit();
       }
     });
-
-    /*this.http.delete(`http://localhost:3000/api/delete-document/${this.id}`).subscribe({
-      next: (response) => {
-        this.documentDeleted.emit();
-      }
-    });*/
   }
 
   isImage(): boolean {
@@ -94,8 +86,6 @@ export class DocumentComponent {
   
 }
 
-
-
 @Component({
   selector: 'share-dialog',
   templateUrl: './send-to-doc-dialog.component.html',
@@ -119,17 +109,12 @@ export class ShareDialog {
   lastVisible: any = null;
   nameValue:any;
 
-  constructor(
-    public dialogRef: MatDialogRef<NotificationDialog>,
-    private http: HttpClient,
-    @Inject(MAT_DIALOG_DATA) public data: { document_id: string }
-  ) {
+  constructor(public dialogRef: MatDialogRef<NotificationDialog>, private http: HttpClient,@Inject(MAT_DIALOG_DATA) public data: { document_id: string }) {
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
     });
   }
   
-
   ngOnInit(){
     this.loadTotalCount();
     this.loadDoctors();
@@ -147,13 +132,6 @@ export class ShareDialog {
         console.log(response);
       }
     });
-  
-    /*this.http.post('http://localhost:3000/api/send-to-doctor', newDoc)
-      .subscribe({
-        next: (response) => {
-          console.log(response);
-        }
-      });*/
   }
   
 
@@ -164,14 +142,6 @@ export class ShareDialog {
         this.loading = false;
       }
     });
-
-    /*this.http.get<{ totalCount: number }>('http://localhost:3000/api/load-total-count-uid')
-      .subscribe({
-        next: (response) => {
-          this.totalItems = response.totalCount;
-          this.loading = false;
-        }
-      });*/
   }
   
   
@@ -187,48 +157,25 @@ export class ShareDialog {
         this.lastVisible = response.lastVisible ? { id: response.lastVisible } : null;
       }
     });
-
-    /*this.http.post<{ doctors: any[], lastVisible: string }>('http://localhost:3000/api/load-doctors-uid', requestData)
-      .subscribe({
-        next: (response) => {
-          this.doctors = [...this.doctors, ...response.doctors];
-          this.lastVisible = response.lastVisible ? { id: response.lastVisible } : null;
-        }
-      });*/
   }
   
   
-    onPageChange(event: any) {
-      const startIndex = event.pageIndex * event.pageSize;
-      const endIndex = startIndex + event.pageSize;
-      this.loadNextPage();
-    }
+  onPageChange(event: any) {
+    const startIndex = event.pageIndex * event.pageSize;
+    const endIndex = startIndex + event.pageSize;
+    this.loadNextPage();
+  }
     
-    loadNextPage() {    
-      this.doctorService.loadDoctorsNext(this.lastVisible.id,this.pageSize).subscribe({
-        next: response => {
-          if (response.doctors.length > 0) {
-            this.doctors = response.doctors;
-            this.lastVisible = { id: response.lastVisible };
-          }
+  loadNextPage() {    
+    this.doctorService.loadDoctorsNext(this.lastVisible.id,this.pageSize).subscribe({
+      next: response => {
+        if (response.doctors.length > 0) {
+          this.doctors = response.doctors;
+          this.lastVisible = { id: response.lastVisible };
         }
-      });
-
-      /*this.http.post<{ doctors: IDoctorResponse[], lastVisible: string }>(
-        'http://localhost:3000/api/load-doctors-next',
-        {
-          lastVisibleDocId: this.lastVisible.id,
-          pageSize: this.pageSize
-        }
-      ).subscribe({
-        next: response => {
-          if (response.doctors.length > 0) {
-            this.doctors = response.doctors;
-            this.lastVisible = { id: response.lastVisible };
-          }
-        }
-      });*/
-    }
+      }
+    });
+  }
     
 
   closeDialog(): void {
@@ -241,16 +188,6 @@ export class ShareDialog {
         this.doctors = response;
       }
     });
-
-    /*this.http.post<IDoctorResponse[]>('http://localhost:3000/api/get-searched-doctors', {
-      searchkey: this.nameValue
-    }).subscribe({
-      next: (response) => {
-        this.doctors = response;
-      }
-    });*/
   }
-  
-   
-  
+
 }

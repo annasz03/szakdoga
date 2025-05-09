@@ -54,10 +54,7 @@ export class ProfileSettingsComponent {
   address: string = '';
   phone: string = '';
   specialty: string = '';
-
-  
-
-  constructor(private firestore: Firestore, private http:HttpClient, private router:Router){}
+  constructor(private http:HttpClient, private router:Router){}
 
   ngOnInit() {
     this.authService.user$.subscribe(user => {
@@ -73,12 +70,9 @@ export class ProfileSettingsComponent {
           this.birth = userData.birth;
           this.gender = userData.gender;
           this.role = userData.role;
-
-          console.log(this.role)
         }
+      })
     })
-    
-  })
   }
 
 
@@ -97,135 +91,102 @@ export class ProfileSettingsComponent {
         window.location.reload();
       }
     });
-    /*this.http.post('http://localhost:3000/api/users/update-user', updateData)
-      .subscribe({
-        next: (response) => {
-          console.log(response);
-          window.location.reload();
-        },
-        error: (error) => {
-          console.error(error);
-        }
-      });*/
   }
 
 
-saveNewPassword() {
-  if (this.pass !== this.passAgain) {
-    this.passError = "A jelszavak nem egyeznek";
-  } else if (!this.isStrongPassword(this.pass)) {
-    this.passError = "A jelszónak tartalmaznia kell legalább egy nagybetűt, számot és speciális karaktert, és minimum 8 karakter hosszúnak kell lennie.";
-  } else {
-    this.passError = null;
+  saveNewPassword() {
+    if (this.pass !== this.passAgain) {
+      this.passError = "A jelszavak nem egyeznek";
+    } else if (!this.isStrongPassword(this.pass)) {
+      this.passError = "A jelszónak tartalmaznia kell legalább egy nagybetűt, számot és speciális karaktert, és minimum 8 karakter hosszúnak kell lennie.";
+    } else {
+      this.passError = null;
+    }
+
+    const auth = getAuth();
+    const user = auth.currentUser;
+    const credential = EmailAuthProvider.credential(user!.email!, this.pass);
+
+    reauthenticateWithCredential(user!, credential).then(() => {
+        updatePassword(user!, this.pass).then(() => {
+            window.location.reload();
+          })
+      })
   }
 
-  const auth = getAuth();
-  const user = auth.currentUser;
-  const credential = EmailAuthProvider.credential(user!.email!, this.pass);
-
-  reauthenticateWithCredential(user!, credential)
-    .then(() => {
-      updatePassword(user!, this.pass)
-        .then(() => {
-          window.location.reload();
-        })
-    })
-}
-
-isStrongPassword(password: string): boolean {
-  const strongPasswordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-  return strongPasswordRegex.test(password);
-}
-
-
-saveDoctorData() {
-  this.http.post('http://localhost:3000/api/users/save-doctor-data', {
-    uid: this.currentUser.uid
-  }).subscribe({
-    next: (response) => {
-      console.log(response);
-      window.location.reload();
-    }
-  });
-
-
-  this.http.post('http://localhost:3000/api/users/update-doctor-profile', {
-    uid: this.currentUser.uid,
-    name: this.name,
-    city: this.city,
-    address: this.address,
-    phone: this.phone,
-    specialty: this.specialty
-  }).subscribe({
-    next: (response) => {
-      console.log('doc updated', response);
-      window.location.reload();
-    }
-  })
-}
-
-
-deleteDoctorProfile() {
-  this.userService.deleteProfile(this.currentUser.uid).subscribe({
-    next: (response) => {
-      window.location.reload();
-    }
-  });
-
-  /*this.http.post('http://localhost:3000/api/users/delete-doctor-profile', {
-    uid: this.currentUser.uid
-  }).subscribe({
-    next: (response) => {
-      console.log(response);
-      window.location.reload();
-    }
-  });*/
-}
-
-deleteProfileUser() {
-  const confirmed = window.confirm('Biztosan törölni szeretnéd a profilodat? Ez a művelet nem visszavonható.');
-
-  if (confirmed) {
-    this.http.post('http://localhost:3000/delete-user', { uid: this.userId })
-      .subscribe({
-        next: () => {
-          console.log('Törölve');
-          alert('Profil sikeresen törölve.');
-          this.router.navigate(['/login']);
-        },
-        error: (err) => {
-          console.error('Hiba történt a törlés közben:', err);
-          alert('Hiba történt a profil törlése során.');
-        }
-      });
+  isStrongPassword(password: string): boolean {
+    const strongPasswordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    return strongPasswordRegex.test(password);
   }
-}
 
-uploadProfilePicture() {
-  if (this.selectedFile && this.fileTypes.includes(this.selectedFile.type)) {
-    this.errorMessage = "";
 
-    const formData = new FormData();
-    formData.append('file', this.selectedFile);
-    formData.append('userId', this.currentUser.uid);
-
-    this.userService.uploadProfilePicture(formData).subscribe({next: (response) => {
-      window.location.reload();
-    }
+  saveDoctorData() {
+    this.http.post('http://localhost:3000/api/users/save-doctor-data', {
+      uid: this.currentUser.uid
+    }).subscribe({
+      next: (response) => {
+        console.log(response);
+        window.location.reload();
+      }
     });
 
-    /*this.http.post('http://localhost:3000/api/upload-profilepic', formData).subscribe({next: (response) => {
-      console.log(response);
-      window.location.reload();
-    }
-    });*/
-  } else {
-    this.errorMessage = "Nem megfelelő file formátum";
-  }
-}
 
-fileSelect(event: any) {
-  this.selectedFile = event.target.files[0];
-}
+    this.http.post('http://localhost:3000/api/users/update-doctor-profile', {
+      uid: this.currentUser.uid,
+      name: this.name,
+      city: this.city,
+      address: this.address,
+      phone: this.phone,
+      specialty: this.specialty
+    }).subscribe({
+      next: (response) => {
+        window.location.reload();
+      }
+    })
+  }
+
+
+  deleteDoctorProfile() {
+    this.userService.deleteProfile(this.currentUser.uid).subscribe({
+      next: (response) => {
+        window.location.reload();
+      }
+    });
+  }
+
+  deleteProfileUser() {
+    const confirmed = window.confirm('Biztosan törölni szeretnéd a profilodat?');
+
+    if (confirmed) {
+      this.http.post('http://localhost:3000/delete-user', { uid: this.userId })
+        .subscribe({
+          next: () => {
+            alert('Profil sikeresen törölve.');
+            this.router.navigate(['/login']);
+          }
+        });
+    }
+  }
+
+  uploadProfilePicture() {
+    if (this.selectedFile && this.fileTypes.includes(this.selectedFile.type)) {
+      this.errorMessage = "";
+
+      const formData = new FormData();
+      formData.append('file', this.selectedFile);
+      formData.append('userId', this.currentUser.uid);
+
+      this.userService.uploadProfilePicture(formData).subscribe({next: (response) => {
+        window.location.reload();
+      }
+      });
+    } else {
+      this.errorMessage = "Nem megfelelő file formátum";
+    }
+  }
+
+  fileSelect(event: any) {
+    this.selectedFile = event.target.files[0];
+  }
 
 }

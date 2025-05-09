@@ -6,36 +6,7 @@ import { db } from '../config/firebase.mjs';
 
 const router = express.Router();
 
-//get doctor
-router.get('/get-all-doctors', async (req, res) => {
-    const snapshot = await db.collection('doctors').get();
-
-    const doctors = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-
-    res.status(200).send({ doctors });
-});
-
-router.post('/delete-doctor-profile', async (req, res) => {
-    const doctorsRef = await db.collection('doctors').get();
-
-    const doctorSnapshot = await doctorsRef.where('uid', '==', uid).limit(1).get();
-
-    const doctorDoc = doctorSnapshot.docs[0];
-
-    await doctorDoc.ref.update({
-      name,
-      city,
-      address,
-      phone,
-      specialty
-    });
-
-    res.status(200).send("doctor succesfully deleted");
-})
-
+//kesz
 //doc search
 router.post('/get-searched-doctors', async (req, res) => {
     const { searchkey } = req.body;
@@ -65,6 +36,7 @@ router.post('/get-searched-doctors', async (req, res) => {
     res.status(200).send(doctors);
 });
 
+//kesz
 router.post('/load-doctors', async (req, res) => {
     const { pageSize, lastVisibleDocId } = req.body;
     let queryRef = db.collection('doctors').orderBy('name').limit(pageSize);
@@ -94,17 +66,46 @@ router.post('/load-doctors', async (req, res) => {
     res.status(200).send({ doctors, lastVisible });
 });
 
+//kesz
+router.post('/load-doctors-uid', async (req, res) => {
+  const { pageSize, lastVisibleDocId } = req.body;
+  let queryRef = db.collection('doctors').where('uid', '!=', null).orderBy('uid').orderBy('name').limit(pageSize);
+  if (lastVisibleDocId) {
+    const lastVisibleDoc = await db.collection('doctors').doc(lastVisibleDocId).get();
+    queryRef = queryRef.startAfter(lastVisibleDoc);
+  }
+
+  const snapshot = await queryRef.get();
+  const doctors = [];
+
+  snapshot.forEach(doc => {
+    const docData = doc.data();
+    doctors.push({
+      id: doc.id,
+      name: docData["name"],
+      speciality: docData["specialty"],
+      city: docData["city"],
+      phone: docData["phone"],
+      address: docData["address"],
+      uid: docData["uid"]
+    });
+  });
+
+  const lastVisible = snapshot.docs[snapshot.docs.length - 1]?.id;
+
+  res.status(200).send({ doctors, lastVisible });
+});
+
+//kesz
 router.post('/load-doctors-next', async (req, res) => {
-    const { lastVisibleDocId, pageSize } = req.body;
+  const { lastVisibleDocId, pageSize } = req.body;
 
-    let queryRef = db.collection('doctors').orderBy('name').limit(pageSize);
+  let queryRef = db.collection('doctors').orderBy('name').limit(pageSize);
 
-    if (lastVisibleDocId) {
-      const lastDoc = await db.collection('doctors').doc(lastVisibleDocId).get();
-      if (lastDoc.exists) {
-        queryRef = queryRef.startAfter(lastDoc);
-      }
-    }
+  if (lastVisibleDocId) {
+    const lastDoc = await db.collection('doctors').doc(lastVisibleDocId).get();
+    queryRef = queryRef.startAfter(lastDoc);
+  }
 
     const snapshot = await queryRef.get();
     const doctors = snapshot.docs.map(doc => ({
@@ -120,6 +121,7 @@ router.post('/load-doctors-next', async (req, res) => {
     });
 });
 
+//kesz
 router.get('/ratings/:doctorId', async (req, res) => {
   const { doctorId } = req.params;
     const ratingsRef = db.collection('ratings');
@@ -205,38 +207,35 @@ router.get('/init-data', async (req, res) => {
 
 router.get('/search-doctors', async (req, res) => {
   const { name, specialty, city } = req.query;
-    let queryRef = db.collection('doctors');
+  let queryRef = db.collection('doctors');
 
-    if (specialty) {
-      queryRef = queryRef.where('specialty', '==', specialty);
-    }
+  if (specialty) queryRef = queryRef.where('specialty', '==', specialty);
+  if (city) queryRef = queryRef.where('city', '==', city);
 
-    if (city) {
-      queryRef = queryRef.where('city', '==', city);
-    }
+  queryRef = queryRef.orderBy('name');
 
-    let snapshot = await queryRef.get();
+  const snapshot = await queryRef.get();
+  const searchTerm = name ? name.trim().toLowerCase() : '';
 
-    let doctors = snapshot.docs
-      .map(doc => ({ id: doc.id, ...doc.data() }))
-      .filter(doc => {
-        if (name) {
-          const nameLower = name.toLowerCase();
-          return doc.name && doc.name.toLowerCase().startsWith(nameLower);
-        }
-        return true;
-      })
-      .map(doc => ({
-        id: doc.id,
-        name: doc.name,
-        speciality: doc.specialty,
-        city: doc.city,
-        phone: doc.phone,
-        address: doc.address
-      }));
+  const doctors = snapshot.docs
+    .map(doc => {
+      const d = doc.data();
+      return {
+        id:        doc.id,
+        name:      d.name,
+        specialty: d.specialty,
+        city:      d.city,
+        phone:     d.phone,
+        address:   d.address
+      };
+    })
+    .filter(doctor =>
+      !searchTerm || doctor.name.toLowerCase().includes(searchTerm)
+    );
 
-    res.json(doctors);
+  res.json({ count: doctors.length, data: doctors });
 });
+
 
 router.post('/submit-rating', async (req, res) => {
   const { doctorId, rating, comment, createdBy } = req.body;
@@ -248,7 +247,7 @@ router.post('/submit-rating', async (req, res) => {
       createdAt: new Date()
     });
 
-    res.json({ message: 'Értékelés mentve', id: docRef.id });
+    res.json({ message: 'saved', id: docRef.id });
 });
 
 

@@ -55,19 +55,12 @@ export class ProfilePageComponent {
         this.role = res.role;
       }
     });
-
-    /*this.http.post<{ userId: string, role: string }>('http://localhost:3000/api/get-user-data-by-username', { displayName: this.currentUser.displayName }).subscribe({
-      next: (res) => {
-        this.userId = res.userId;
-        this.role = res.role;
-      }
-    });*/
   }
   
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      this.profileUid = params.get('uid') || '';
+      this.profileUid = params.get('uid');
       this.loadProfileUser();
     });
   }
@@ -78,14 +71,6 @@ export class ProfilePageComponent {
         this.displayName = res.displayName;
       }
     });
-
-    /*this.http.post<{ displayName: string }>('http://localhost:3000/get-profile', {
-      uid: this.profileUid
-    }).subscribe({
-      next: (res) => {
-        this.displayName = res.displayName;
-      }
-    });*/
 
     this.userService.getProfilePicture(this.profileUid).subscribe({
       next: (res) => {
@@ -101,13 +86,6 @@ export class ProfilePageComponent {
         console.log('törölve');
       },
     });
-
-    /*this.http.post('http://localhost:3000/delete-user', { uid: this.userId })
-    .subscribe({
-      next: () => {
-        console.log('törölve');
-      },
-    });*/
   }
 
   openSavedResults(){

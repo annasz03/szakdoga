@@ -28,8 +28,8 @@
     display: flex;
     justify-content: flex-end;
     top: -3rem;
-  }
+}
   
-  .option-buttons{
-    margin: 0 !important;
-  }
+.option-buttons{
+ margin: 0 !important;
+}

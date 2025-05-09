@@ -43,11 +43,7 @@ export class ForumPostComponent implements OnInit, OnChanges {
 
   @Output() postDeleted = new EventEmitter<string>();
 
-  constructor(
-    private datePipe: DatePipe,
-    private router: Router,
-    private authService: AuthService, private http:HttpClient, private langService:LangService
-  ) {
+  constructor(private datePipe: DatePipe, private router: Router, private authService: AuthService, private langService:LangService){
     this.langService.currentLang$.subscribe((lang: string) => {
       this.currentLang=lang
     })
@@ -55,9 +51,9 @@ export class ForumPostComponent implements OnInit, OnChanges {
 
   checkIfLiked() {
     this.likedBy=this.post.likedBy
-    if (this.post && this.likedBy && this.currentUser) {
-      this.liked = this.likedBy.includes(this.currentUser.uid);
-    }
+      if (this.post && this.likedBy && this.currentUser) {
+        this.liked = this.likedBy.includes(this.currentUser.uid);
+      }
   }
   
 
@@ -66,15 +62,12 @@ export class ForumPostComponent implements OnInit, OnChanges {
       this.currentUser = user;
       this.checkIfLiked();
       this.loadComments();
-       this.date = this.post.date instanceof Timestamp ? this.post.date.toDate() : this.post.date;
-    this.formattedDate = this.datePipe.transform(this.date, 'yyyy-MM-dd HH:mm:ss');
-    this.likeCount = this.post.like || 0;
-    this.commentCount = this.post.comment || 0;
-    this.likedBy = this.post.likedBy || [];
+      this.date = this.post.date instanceof Timestamp ? this.post.date.toDate() : this.post.date;
+      this.formattedDate = this.datePipe.transform(this.date, 'yyyy-MM-dd HH:mm:ss');
+      this.likeCount = this.post.like || 0;
+      this.commentCount = this.post.comment || 0;
+      this.likedBy = this.post.likedBy || [];
     });
-
-    console.log(this.post)
-    
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -91,13 +84,6 @@ export class ForumPostComponent implements OnInit, OnChanges {
         this.comments = res.comments;
       },
     });
-
-    /*this.http.post<{ comments: IComment[] }>('http://localhost:3000/load-comments', { postid: this.post.id })
-      .subscribe({
-        next: (res) => {
-          this.comments = res.comments;
-        },
-      });*/
   }
   
 
@@ -125,16 +111,6 @@ export class ForumPostComponent implements OnInit, OnChanges {
         this.commentBody = '';
       }
     });
-
-    /*this.http.post('http://localhost:3000/add-comment', commentData)
-      .subscribe({
-        next: () => {
-          this.commentCount++;
-          this.updateCommentCount();
-          this.loadComments();
-          this.commentBody = '';
-        }
-      });*/
   }
   
   updateCommentCount() {
@@ -145,13 +121,6 @@ export class ForumPostComponent implements OnInit, OnChanges {
         console.log('updated');
       }
     });
-
-    /*this.http.post('http://localhost:3000/update-comment-count', postData)
-      .subscribe({
-        next: () => {
-          console.log('updated');
-        }
-      });*/
   }
   
 
@@ -168,14 +137,6 @@ export class ForumPostComponent implements OnInit, OnChanges {
         this.likeCount += this.liked ? 1 : -1;
       }
     });
-
-    /*this.http.post('http://localhost:3000/like-post', likeData)
-      .subscribe({
-        next: () => {
-          this.liked = !this.liked;
-          this.likeCount += this.liked ? 1 : -1;
-        }
-      });*/
   }
   
 
@@ -186,22 +147,15 @@ export class ForumPostComponent implements OnInit, OnChanges {
         this.postDeleted.emit(postid);
       }
     });
-
-    /*this.http.delete(`http://localhost:3000/api/delete-post/${this.post.id}`).subscribe({
-      next: (response) => {
-        this.postDeleted.emit(postid);
-      }
-    });*/
   }
 
   getTranslatedTag(tagId: string): string {
-  const disease = this.diseaseService.getDiseaseById(tagId);
-  if (!disease) return tagId; // fallback, ha még nincs betöltve vagy ismeretlen
-  return this.currentLang === 'hu' ? disease.name_hu : disease.name_en;
-}
+    const disease = this.diseaseService.getDiseaseById(tagId);
+    return this.currentLang === 'hu' ? disease!.name_hu : disease!.name_en;
+  }
   
   onCommentDeleted(postId: string) {
-    this.commentCount = Math.max(0, this.commentCount - 1);
+    this.commentCount = this.commentCount - 1;
     this.post.comment = this.commentCount;
     
     this.loadComments();

@@ -23,9 +23,7 @@ import { DiseaseService } from '../disease.service';
 @Component({
   selector: 'app-symptom-checker',
   standalone: true,
-  imports: [I18NextModule,CommonModule, FormsModule,MatInputModule,
-    MatSelectModule,
-    MatFormFieldModule, ReactiveFormsModule, HttpClientModule,MatAutocompleteModule,MatInputModule, MatIconModule,MatFormFieldModule, MatInputModule],
+  imports: [I18NextModule,CommonModule, FormsModule,MatInputModule, MatSelectModule,MatFormFieldModule, ReactiveFormsModule, HttpClientModule,MatAutocompleteModule,MatInputModule, MatIconModule,MatFormFieldModule, MatInputModule],
   templateUrl: './symptom-checker.component.html',
   styleUrls: ['./symptom-checker.component.css'],
 })
@@ -81,13 +79,6 @@ export class SymptomCheckerComponent {
         this.painLocation = painList;
       }
     });
-
-    /*this.http.post<string[]>('http://localhost:3000/api/get-all-pain', { lang })
-    .subscribe({
-      next: (painList) => {
-        this.painLocation = painList;
-      }
-    });*/
   }
   
 
@@ -124,7 +115,6 @@ export class SymptomCheckerComponent {
 
   addPain() {
     this.painLocationArray.push(this.fb.control('', Validators.required));
-    //this.filteredSymptoms = [...this.symptoms];
   }
 
   removePain(index: number): void {
@@ -151,8 +141,6 @@ export class SymptomCheckerComponent {
         next: (response) => {
           this.resultService.setResult(response);
           this.router.navigateByUrl('/symptom-checker-result');
-        }, error: (err) => {
-          this.errorMessage = err;
         }
       });
     }
@@ -169,14 +157,6 @@ export class SymptomCheckerComponent {
         this.filteredSymptoms = this.symptomArray.controls.map(() => [...this.symptoms]);
       }
     });
-
-    /*this.http.post<string[]>('http://localhost:3000/api/get-all-symptoms', { lang })
-    .subscribe({
-      next: (symptomList) => {
-        this.symptoms = symptomList;
-        this.filteredSymptoms = this.symptomArray.controls.map(() => [...this.symptoms]);
-      }
-    });*/
   }
   showAllSymptoms(index: number) {
     this.filteredSymptoms[index] = [...this.symptoms];

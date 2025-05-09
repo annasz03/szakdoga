@@ -55,9 +55,7 @@ export class DiseaseService {
   private diseasesMap: {[key: string]: {name_hu: string, name_en: string}} = {};
 
    getAllDiseaseNames(): Observable<{ [key: string]: DiseaseNames }> {
-    return this.http
-      .get<{ [key: string]: DiseaseNames }>(backendUrl + 'get-all-disease-names')
-      .pipe(
+    return this.http.get<{ [key: string]: DiseaseNames }>(backendUrl + 'get-all-disease-names').pipe(
         tap(map => this.diseasesMap = map)
       );
   }

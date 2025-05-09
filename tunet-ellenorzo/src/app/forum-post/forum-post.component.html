@@ -13,21 +13,12 @@
 
   <!-- kommentek -->
   <div *ngFor="let comment of comments" class="comments">
-  <app-forum-comment 
-    *ngIf="comment" 
-    [comment]="comment" 
-    (commentDeleted)="onCommentDeleted($event)"
-  ></app-forum-comment>
-</div>
+    <app-forum-comment *ngIf="comment" [comment]="comment" (commentDeleted)="onCommentDeleted($event)"></app-forum-comment>
+  </div>
 
   <div class="interaction-bar">
     <div class="like-section">
-      <img 
-        [src]="liked ? 'assets/heart-2.webp' : 'assets/heart-1.webp'" 
-        (click)="like()" 
-        class="like-icon"
-        loading="lazy"
-      />
+      <img [src]="liked ? 'assets/heart-2.webp' : 'assets/heart-1.webp'" (click)="like()" class="like-icon" loading="lazy" />
       <span>{{ likeCount }}</span>
     </div>
 

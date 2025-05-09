@@ -54,9 +54,9 @@ mat-paginator {
 
 mat-paginator {
     background-color: transparent;
-  }
+}
 
-  .profilePic {
+.profilePic {
     height: 3rem;
     width: 3rem;
-  }
+}

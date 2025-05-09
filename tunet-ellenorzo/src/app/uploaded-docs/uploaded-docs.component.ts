@@ -36,7 +36,7 @@ export class UploadedDocsComponent {
   documents:any;
   private authService= inject(AuthService)
 
-  constructor(private dataService: DataService, private firestore: Firestore, private http:HttpClient) {}
+  constructor(private dataService: DataService) {}
 
   ngOnInit() {
     this.authService.user$.subscribe(user => {
@@ -58,12 +58,6 @@ export class UploadedDocsComponent {
     this.documentService.getAllDocuments(this.currentUser.uid).subscribe(response => {
       this.documents=response
   });
-
-    /*this.http.post<{ user: any }>('http://localhost:3000/api/get-all-documents', {
-      uid:this.currentUser.uid
-    }).subscribe(response => {
-      this.documents=response
-  });*/
     
   }
 
@@ -108,12 +102,6 @@ export class UploadedDocsComponent {
           this.getAllDocuments();
         }
       });
-
-      /*this.http.post('http://localhost:3000/api/upload-document', formData).subscribe({
-        next: (res) => {
-          this.getAllDocuments();
-        }
-      });*/
     } else {
       this.errorMessage = "Nem megfelelő file formátum";
     }

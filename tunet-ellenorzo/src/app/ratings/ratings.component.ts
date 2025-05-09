@@ -2,11 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Component, inject, Input } from '@angular/core';
 import { collection, Firestore, getDocs } from '@angular/fire/firestore';
 import { UserService } from '../user.service';
+import { CommonModule } from '@angular/common';
+import { I18NextModule } from 'angular-i18next';
 
 @Component({
   selector: 'app-ratings',
   standalone: true,
-  imports: [],
+  imports: [CommonModule, I18NextModule],
   templateUrl: './ratings.component.html',
   styleUrl: './ratings.component.css'
 })
@@ -16,7 +18,7 @@ export class RatingsComponent {
   @Input() rating:any;
   username="";
   
-  constructor(private firestore: Firestore, private http:HttpClient){}
+  constructor(){}
 
   ngOnInit() {
     this.userService.getUsernameById(this.rating.createdBy).subscribe({
@@ -24,16 +26,5 @@ export class RatingsComponent {
         this.username = res.username;
       },
     });
-
-    /*
-    this.http.post<{ username: string }>('http://localhost:3000/api/get-username-by-id', {
-      uid: this.rating.createdBy
-    }).subscribe({
-      next: (res) => {
-        this.username = res.username;
-      },
-    });*/
   }
-  
-
 }

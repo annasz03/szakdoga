@@ -53,24 +53,3 @@
     font-weight: bold;
     transition: background 0.3s ease;
   }
-  
-  .alert-buttons button:first-child {
-    background: #ffc107;
-    color: #333;
-    margin-right: 5px;
-  }
-  
-  .alert-buttons button:first-child:hover {
-    background: #e0a800;
-  }
-  
-  .alert-buttons button:last-child {
-    background: #dc3545;
-    color: white;
-    margin-left: 5px;
-  }
-  
-  .alert-buttons button:last-child:hover {
-    background: #c82333;
-  }
-  

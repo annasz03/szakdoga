@@ -1,15 +1,15 @@
 import admin from 'firebase-admin';
-import { readFile } from 'fs/promises';
+import dotenv from 'dotenv';
+dotenv.config();
 
 let db;
 let messaging;
 
 async function initializeFirebase() {
-    const serviceAccount = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
-    const parsedServiceAccount = JSON.parse(serviceAccount);
+    const serviceAccount = JSON.parse(process.env.FIREBASE_CONFIG);
 
     admin.initializeApp({
-      credential: admin.credential.cert(parsedServiceAccount),
+      credential: admin.credential.cert(serviceAccount),
     });
 
     db = admin.firestore();

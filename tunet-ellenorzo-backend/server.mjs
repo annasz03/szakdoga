@@ -2,22 +2,17 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import './config/firebase.mjs';
-
 import diseaseRoutes from './routes/diseaseRoutes.mjs';
 import userRoutes from './routes/userRoutes.mjs';
+import cron from 'node-cron';
+import { sendScheduledAlerts } from './services/alertService.mjs';
 import resultRoutes from './routes/diseaseRoutes.mjs';
 import documentRoutes from './routes/documentRoutes.mjs';
 import forumPosts from './routes/forumPosts.mjs';
 import doctorRoutes from './routes/doctorRoutes.mjs';
 import alertRoutes from './routes/alertRoutes.mjs';
 
-import cron from 'node-cron';
-import { sendScheduledAlerts } from './services/alertService.mjs';
-
-import { onRequest } from 'firebase-functions/v2/https';
-
 const app = express();
-
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -39,6 +34,9 @@ app.use('/', doctorRoutes);
 app.use('/api', alertRoutes);
 app.use('/', alertRoutes);
 
-export const api = onRequest(app);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Szerver fut: ${PORT}`);
+});
 
 cron.schedule('* * * * *', sendScheduledAlerts);

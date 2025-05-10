@@ -61,6 +61,7 @@ router.post('/get-all-symptoms', async (req, res) => {
       }
     });
 
+  console.log(symptoms)
   res.status(200).send(symptoms);
 });
 
@@ -69,6 +70,8 @@ router.post('/get-all-pain', async (req, res) => {
   const { lang } = req.body;
   const painRef = db.collection('pain');
   const snapshot = await painRef.get();
+  console.log("snapshot")
+  console.log(snapshot)
   const painList = [];
 
     snapshot.forEach(doc => {
@@ -78,6 +81,7 @@ router.post('/get-all-pain', async (req, res) => {
       }
     });
 
+    console.log(painList)
   res.status(200).send(painList);
 });
 

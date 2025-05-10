@@ -77,6 +77,7 @@ export class SymptomCheckerComponent {
     this.diseaseService.getAllPain(lang).subscribe({
       next: (painList) => {
         this.painLocation = painList;
+        console.log(this.painLocation)
       }
     });
   }
@@ -155,6 +156,7 @@ export class SymptomCheckerComponent {
       next: (symptomList) => {
         this.symptoms = symptomList;
         this.filteredSymptoms = this.symptomArray.controls.map(() => [...this.symptoms]);
+        console.log(this.symptoms)
       }
     });
   }

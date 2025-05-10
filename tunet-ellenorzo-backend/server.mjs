@@ -11,6 +11,8 @@ import documentRoutes from './routes/documentRoutes.mjs';
 import forumPosts from './routes/forumPosts.mjs';
 import doctorRoutes from './routes/doctorRoutes.mjs';
 import alertRoutes from './routes/alertRoutes.mjs';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 app.use(cors());

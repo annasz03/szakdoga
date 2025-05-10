@@ -27,7 +27,7 @@
     </div>
 
     <div *ngIf="role==='admin'" class="admin-section">
-        <button class="option-buttons" (click)="reqDoc()">{{ 'docreq' | i18next }}</button>
+        <button class="option-buttons regdoc-button" (click)="reqDoc()">{{ 'docreq' | i18next }}</button>
         <div *ngIf="reqOpen" class="requests-container">
             <div *ngFor="let doc of docs_temp" class="request-item">
                 <div class="docCard">

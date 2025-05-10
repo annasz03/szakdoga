@@ -48,8 +48,8 @@
     </div>
 
     <div *ngIf="role==='admin'">
-        <button (click)="deleteRequest()">{{ 'delete' | i18next }}</button>
-        <button (click)="acceptRequest()">{{ 'accept' | i18next }}</button>
+        <button class="option-buttons" (click)="deleteRequest()">{{ 'delete' | i18next }}</button>
+        <button class="option-buttons" (click)="acceptRequest()">{{ 'accept' | i18next }}</button>
     </div>
 
 </div>

@@ -5,7 +5,8 @@ import { Auth, GoogleAuthProvider, signInWithPopup, updateProfile, user } from '
 import { UserInterface } from './user.interface';
 import { HttpClient } from '@angular/common/http';
 
-const backendUrl = 'http://localhost:3000/api/';
+const backendUrl = 'https://szakdoga-dlg2.onrender.com/api/';
+
 
 @Injectable({
   providedIn: 'root',

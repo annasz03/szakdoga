@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IDoctorResponse } from './doctorres.interface';
 import { Ratings } from './ratings';
-const backendUrl = 'http://localhost:3000/api/';
+const backendUrl = 'https://szakdoga-dlg2.onrender.com/api/';
+
 @Injectable({
   providedIn: 'root'
 })

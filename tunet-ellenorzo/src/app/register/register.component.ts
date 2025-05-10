@@ -12,7 +12,8 @@ import { HttpClient } from '@angular/common/http';
 import { LangService } from '../lang-service.service';
 import { MatRadioModule } from '@angular/material/radio';
 
-const backendUrl = 'http://localhost:3000/api/register';
+const backendUrl = 'https://szakdoga-dlg2.onrender.com/api/';
+
 
 @Component({
   selector: 'app-register',

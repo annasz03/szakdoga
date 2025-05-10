@@ -20,17 +20,17 @@ jobs:
 
       - name: frontend deps
         run: |
-          cd tunetellenorzo_frontend
+          cd tunetellenorzo
           npm install
 
       - name: build
         run: |
-          cd tunetellenorzo_frontend
+          cd tunetellenorzo
           ng build --prod
 
       - name: deploy frontend
         run: |
-          cd tunetellenorzo_frontend
+          cd tunetellenorzo
           firebase deploy --only hosting
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

@@ -6,7 +6,7 @@ import { UserInterface } from './user.interface';
 import { HttpClient } from '@angular/common/http';
 
 //const backendUrl = 'https://szakdoga-dlg2.onrender.com/api/';
-const backendUrl = 'https://localhost:3000/api/';
+const backendUrl = 'http://localhost:3000/api/';
 
 @Injectable({
   providedIn: 'root',

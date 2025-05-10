@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { IPost } from './ipost';
 import { IComment } from './icomment';
 //const backendUrl = 'https://szakdoga-dlg2.onrender.com/api/';
-const backendUrl = 'https://localhost:3000/api/';
+const backendUrl = 'http://localhost:3000/api/';
 @Injectable({
   providedIn: 'root'
 })

@@ -1,18 +1,18 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import './config/firebase.mjs';
+import '../config/firebase.mjs';
 
-import diseaseRoutes from './routes/diseaseRoutes.mjs';
-import userRoutes from './routes/userRoutes.mjs';
-import resultRoutes from './routes/diseaseRoutes.mjs';
-import documentRoutes from './routes/documentRoutes.mjs';
-import forumPosts from './routes/forumPosts.mjs';
-import doctorRoutes from './routes/doctorRoutes.mjs';
-import alertRoutes from './routes/alertRoutes.mjs';
+import diseaseRoutes from '../routes/diseaseRoutes.mjs';
+import userRoutes from '../routes/userRoutes.mjs';
+import resultRoutes from '../routes/diseaseRoutes.mjs';
+import documentRoutes from '../routes/documentRoutes.mjs';
+import forumPosts from '../routes/forumPosts.mjs';
+import doctorRoutes from '../routes/doctorRoutes.mjs';
+import alertRoutes from '../routes/alertRoutes.mjs';
 
 import cron from 'node-cron';
-import { sendScheduledAlerts } from './services/alertService.mjs';
+import { sendScheduledAlerts } from '../services/alertService.mjs';
 
 import { onRequest } from 'firebase-functions/v2/https';
 

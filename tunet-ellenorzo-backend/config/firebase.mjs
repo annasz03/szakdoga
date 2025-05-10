@@ -5,7 +5,7 @@ let db;
 let messaging;
 
 async function initializeFirebase() {
-    const serviceAccount = await readFile('C:/prog/szakdoga/tunet-ellenorzo-backend/tunet-ellenorzo-f8999-firebase-adminsdk-jdbfu-e892ce01ac.json', 'utf-8');
+    const serviceAccount = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
     const parsedServiceAccount = JSON.parse(serviceAccount);
 
     admin.initializeApp({

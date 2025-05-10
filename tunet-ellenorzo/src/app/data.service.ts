@@ -11,8 +11,7 @@ export class DataService {
 
   private refresh = new BehaviorSubject<boolean>(false);
   private profileSearch = new BehaviorSubject<string>("");
-
-    apiUrl = 'http://localhost:3000/';
+    apiUrl = 'https://szakdoga-dlg2.onrender.com/';
 
     constructor(private http: HttpClient){}
 

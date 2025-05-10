@@ -11,38 +11,36 @@ jobs:
 
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '20'
 
-      - name: frontend deps
-        run: |
-          cd tunet-ellenorzo
-          npm install
+      - name: install dependencies
+        working-directory: tunet-ellenorzo
+        run: npm ci
 
       - name: build
-        run: |
-          cd tunet-ellenorzo
-          ng build --prod
+        working-directory: tunet-ellenorzo
+        run: npm run build -- --configuration=production
 
-      - name: deploy frontend
-        run: |
-          cd tunet-ellenorzo
-          firebase deploy --only hosting
+      - name: Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: upload to firebase
+        working-directory: tunet-ellenorzo
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
       - name: backend deps
-        run: |
-          cd tunet-ellenorzo_backend/functions
-          npm install
+        working-directory: tunet-ellenorzo-backend
+        run: npm install
+          
 
       - name: deploy backend
-        run: |
-          cd tunet-ellenorzo_backend
-          firebase deploy --only functions
+        working-directory: tunet-ellenorzo-backend
+        run: firebase deploy --only functions
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

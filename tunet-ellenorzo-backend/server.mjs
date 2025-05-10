@@ -15,7 +15,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: 'https://tunet-ellenorzo-f8999.web.app'
+}));
 app.use(bodyParser.json());
 
 app.use('/', diseaseRoutes);

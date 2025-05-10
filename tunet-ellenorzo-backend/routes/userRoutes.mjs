@@ -125,7 +125,7 @@ router.post('/register', async (req, res) => {
       from: 'Tünetellenőrző',
       to: email,
       subject: 'Email megerősítés',
-      html: `Kérlek erősítsd meg az email címed: <a href="${verificationLink}">Link</a>`
+      html: `Erősítsd meg az email címed: <a href="${verificationLink}">Link</a>`
     });
 
     user.set({
@@ -138,7 +138,7 @@ router.post('/register', async (req, res) => {
       role: "user"
     });
 
-    res.status(201).json({ success: true, uid: userRecord.uid});
+    res.status(200).json({ success: true, uid: userRecord.uid});
 });
 
 //kesz
@@ -287,7 +287,7 @@ router.post('/upload-profilepic', upload.single('file'), async (req, res) => {
       profilepic: profilePicData,
     });
 
-    res.status(200).send({ message: 'sucess' });
+    res.status(200).send({ message: 'success' });
 });
 
 

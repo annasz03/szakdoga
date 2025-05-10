@@ -16,7 +16,6 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// get user by id - kesz
 router.post('/get-user', async (req, res) => {
   const { uid } = req.body;
     const snapshot = await db.collection('users').where('uid', '==', uid).get();
@@ -31,7 +30,6 @@ router.post('/get-user', async (req, res) => {
 });
 
 
-//kesz
 router.post('/get-user-profile-picture', async (req, res) => {
   const { uid } = req.body;
     const snapshot = await db.collection('users').where('uid', '==', uid).get();
@@ -40,8 +38,6 @@ router.post('/get-user-profile-picture', async (req, res) => {
     res.status(200).send({ user: { profilepic: userDoc.profilepic } });
 });
 
-//kesz
-//get user filter
 router.post('/get-user-search', async (req, res) => {
   const { search = '', page = 0, pageSize = 10 } = req.body;
   const p = parseInt(page, 10);
@@ -61,7 +57,6 @@ router.post('/get-user-search', async (req, res) => {
     totalCount
   });
 });
-//kesz
 router.post('/get-username-by-id', async (req, res) => {
     const { uid } = req.body;
 
@@ -74,8 +69,6 @@ router.post('/get-username-by-id', async (req, res) => {
     res.status(200).json({ username });
 });
 
-//kesz
-//get saved results
 router.post('/get-user-saved-results', async (req, res) => {
   const { uid } = req.body;
     const snapshot = await db.collection('savedResults').where('uid', '==', uid).get();
@@ -107,8 +100,6 @@ router.post('/get-user-saved-results', async (req, res) => {
 });
 
 
-//kesz
-//add user
 router.post('/register', async (req, res) => {
   const { email, password, username, birth, gender } = req.body;
     const userRecord = await admin.auth().createUser({
@@ -175,8 +166,6 @@ router.post('/update-user', async (req, res) => {
 });
 
 
-//kesz
-// delete user
 router.post('/delete-user', async (req, res) => {
   const { uid } = req.body;
     await admin.auth().deleteUser(uid);
@@ -186,8 +175,7 @@ router.post('/delete-user', async (req, res) => {
 
     res.status(200).send({ message: 'deleted' });
 });
-//kesz
-//delet doc
+
 router.post('/delete-doctor-profile', async (req, res) => {
   const { uid } = req.body;
 
@@ -207,8 +195,6 @@ router.post('/delete-doctor-profile', async (req, res) => {
   }
 );
 
-//kesz
-// get-user-data-by-username
 router.post('/api/get-user-data-by-username', async (req, res) => {
   const { displayName } = req.body;
 
@@ -218,7 +204,6 @@ router.post('/api/get-user-data-by-username', async (req, res) => {
 
     res.status(200).send({ userId: doc.id, role: userData.role, username: userData.username});
 });
-//kesz
 router.post('/get-profile', async (req, res) => {
   const { uid } = req.body;
   const snapshot = await db.collection('users').where('uid', '==', uid).get();
@@ -231,7 +216,6 @@ router.post('/get-profile', async (req, res) => {
   });
 });
 
-//kesz
 router.post('/saved-results', async (req, res) => {
     const { result, uid } = req.body;
 
@@ -253,7 +237,6 @@ router.post('/saved-results', async (req, res) => {
 });
 
 
-//kesz
 router.get('/export-results', async (req, res) => {
     const { lang = 'hu', keys } = req.query;
 
@@ -271,7 +254,6 @@ router.get('/export-results', async (req, res) => {
     res.status(200).json(results);
 });
 
-//kesz
 router.post('/upload-profilepic', upload.single('file'), async (req, res) => {
     const file = req.file;
     const userId = req.body.userId;

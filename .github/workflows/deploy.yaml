@@ -34,13 +34,3 @@ jobs:
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: firebase deploy --only hosting
-
-      - name: backend deps
-        working-directory: tunet-ellenorzo-backend
-        run: npm install
-
-      - name: deploy funcions
-        working-directory: tunet-ellenorzo-backend
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-        run: firebase deploy --only functions

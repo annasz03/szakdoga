@@ -46,48 +46,10 @@ export class SymptomCheckerComponent {
     painLocation: [],
   };
 
-  symptoms: string[] = [
-    "hasfájás",
-    "vérzés",
-    "véres vizelet",
-    "cserepes ajkak",
-    "mellkasi fájdalom",
-    "hidegrázás",
-    "lepedékes nyelv",
-    "köhögés",
-    "hasmenés",
-    "légzési nehézségek",
-    "nyelési nehézség",
-    "száraz köhögés",
-    "bő nyálfolyás",
-    "köpetürítés",
-    "láz",
-    "gyakori vizelet",
-    "fejfájás",
-    "halláscsökkenés",
-    "gyulladás",
-    "nyirokcsomó-duzzanatok",
-    "izomfájdalom",
-    "orrdugulás",
-    "fájdalmas ürítés",
-    "orrfolyás",
-    "hőemelkedés",
-    "tüsszögés",
-    "torokfájás",
-    "duzzadt mandulák",
-    "krákogás",
-    "elesettség",
-    "fogyás",
-    "sípoló légzés"
-];
+  symptoms: string[] = [];
 
 
-  painLocation: string[] = [
-    "has",
-    "mellkas",
-    "medence",
-    "torok"
-]
+  painLocation: string[] = []
 
   personalInformation = this.fb.group({
     age: [0, Validators.required],
@@ -102,8 +64,8 @@ export class SymptomCheckerComponent {
 
   constructor(private langService: LangService,private dataService: DataService,private resultService: ResultService, private http: HttpClient, private router:Router, private firestore: Firestore){
     this.langService.currentLang$.subscribe((lang) => {
-      //this.loadSymptoms(lang);
-      //this.loadPainLocation(lang);
+      this.loadSymptoms(lang);
+      this.loadPainLocation(lang);
     });
 
     this.addSymptom();

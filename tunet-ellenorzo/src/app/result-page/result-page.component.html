@@ -5,7 +5,15 @@
     </div>
   </div>
   <div>
+
+    <div *ngIf="errorMessage">
+      {{errorMessage}}
+    </div>
+
     <button class="option-buttons" (click)="saveResult()">{{ 'save' | i18next }}</button>
     <button class="option-buttons" (click)="exportResult()">{{ 'export' | i18next }}</button>
+    <div>
+      {{successMessage}}
+    </div>
   </div>
 </div>

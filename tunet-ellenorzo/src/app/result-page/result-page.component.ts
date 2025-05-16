@@ -22,23 +22,29 @@ import { UserService } from '../user.service';
 export class ResultPageComponent {
   userService = inject(UserService)
 
-  result: any;
+  result:any | undefined=undefined;
   currentUser: any;
   currentLang: string=""
+  successMessage="";
+  errorMessage="";
 
   constructor(private resultService: ResultService,private authService: AuthService, private langService: LangService, private http:HttpClient) {}
 
   ngOnInit() {
-    const resultData = this.resultService.getResult();
-    this.result = resultData.result;
+    if(this.result===undefined){
+      this.errorMessage="Nincs a megadott adatokhoz illeszkedő betegség az adabázisban."
+    }else{
+      const resultData = this.resultService.getResult();
+      this.result = resultData.result;
 
-    this.authService.user$.subscribe((user: any) => {
-      this.currentUser = user;
-    });
+      this.authService.user$.subscribe((user: any) => {
+        this.currentUser = user;
+      });
 
-    this.langService.currentLang$.subscribe((lang: string) => {
-      this.currentLang = lang;
-    });
+      this.langService.currentLang$.subscribe((lang: string) => {
+        this.currentLang = lang;
+      });
+    }
   }
 
   saveResult() {
@@ -47,7 +53,13 @@ export class ResultPageComponent {
       uid: this.currentUser.uid
     };
     this.userService.getSavedResults(body).subscribe({
-      next: () => console.log('success'),
+      next: () => {
+        if(this.currentLang==="en"){
+          this.successMessage="Result saved successfully!"
+        }else{
+          this.successMessage="Eredmény sikeresen mentve!"
+        }
+      },
     });
   }
 
@@ -62,7 +74,7 @@ export class ResultPageComponent {
     }
     
     doc.setFontSize(18);
-    doc.setFont("helvetica", "bold");
+    doc.setFont('Roboto-Regular');
     doc.text(title, 14, 20);
   
     let yPosition = 30;
@@ -71,7 +83,7 @@ export class ResultPageComponent {
     const diseaseKeys = this.result.map((item: any) => item.key);
     const queryParam = diseaseKeys.join(',');
   
-    const response = await fetch(`http://localhost:3000/export-results?lang=${lang}&keys=${queryParam}`);
+    const response = await fetch(`https://szakdoga-dlg2.onrender.com/export-results?lang=${lang}&keys=${queryParam}`);
     const data = await response.json();
   
     for (const disease of data) {
@@ -81,9 +93,8 @@ export class ResultPageComponent {
       }
   
       doc.setFontSize(14);
-      doc.setFont("times");
       if(lang==='hu'){
-        doc.text(`Betegseg: ${disease.name}`, 14, yPosition);
+        doc.text(`Betegség neve: ${disease.name}`, 14, yPosition);
       }else {
         doc.text(`Disease: ${disease.name}`, 14, yPosition);
       }
@@ -93,7 +104,7 @@ export class ResultPageComponent {
   
       if (disease.symptoms?.length) {
         if(lang==='hu'){
-          doc.text(`Tunetek:`, 14, yPosition);
+          doc.text(`Tünetek:`, 14, yPosition);
         }else {
           doc.text(`Symptoms:`, 14, yPosition);
         }
@@ -104,18 +115,18 @@ export class ResultPageComponent {
   
       if (disease.pain) {
         if(lang==='hu'){
-          doc.text(`Fajdalom:`, 14, yPosition);
+          doc.text(`Fájdalom:`, 14, yPosition);
         }else {
           doc.text(`Pain:`, 14, yPosition);
         }
         yPosition += 6;
-        doc.text(`  ${disease.pain}`, 16, yPosition);
+        doc.text(`  ${disease.pain}`, 20, yPosition);
         yPosition += 8;
       }
   
       if (disease.treatment) {
         if(lang==='hu'){
-          doc.text(`Kezeles:`, 14, yPosition);
+          doc.text(`Kezelés:`, 14, yPosition);
         }else { 
           doc.text(`Treatment:`, 14, yPosition);
         }
@@ -127,7 +138,7 @@ export class ResultPageComponent {
   
       if (disease.prevention?.length) {
         if(lang==='hu'){
-          doc.text(`Megelozes:`, 14, yPosition);
+          doc.text(`Megelőzés:`, 14, yPosition);
         }else {
           doc.text(`Treatment:`, 14, yPosition);
         }
@@ -139,7 +150,7 @@ export class ResultPageComponent {
   
       if (disease.riskFactors?.length) {
         if(lang==='hu'){
-          doc.text(`Kockazati tenyezok:`, 14, yPosition);
+          doc.text(`Kockázati tényezők:`, 14, yPosition);
         }else {
           doc.text(`Risk factors:`, 14, yPosition);
         }

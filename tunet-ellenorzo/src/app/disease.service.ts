@@ -22,12 +22,12 @@ export class DiseaseService {
     return this.http.get(backendUrl + `diseases/${lang}/${diseaseName}`);
   } 
 
-  getAllSymptoms(lang:any){
-    return this.http.post<string[]>(backendUrl + "get-all-symptoms", lang);
+  getAllSymptoms(lang: string): Observable<string[]> {
+    return this.http.post<string[]>(backendUrl + "get-all-symptoms", { lang })
   }
 
-  getAllPain(lang:any){
-    return this.http.post<string[]>(backendUrl + "get-all-pain", lang);
+  getAllPain(lang: string): Observable<string[]> {
+    return this.http.post<string[]>(backendUrl + "get-all-pain", { lang })
   }
 
   getDiseaseDataHu(diseaseId:any){

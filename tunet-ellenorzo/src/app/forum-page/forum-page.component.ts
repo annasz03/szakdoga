@@ -116,4 +116,9 @@ export class ForumPageComponent {
     this.totalItems = this.filteredPosts.length;
     this.currentPage = 0;
   }
+
+  onPostDeleted(postId: string) {
+    this.loadPosts();
+  }
+
 }

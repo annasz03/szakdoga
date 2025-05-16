@@ -39,7 +39,7 @@
     </div>
   
     <div *ngFor="let post of filteredPosts" >
-      <app-forum-post [post]="post" ></app-forum-post>
+      <app-forum-post (postDeleted)="onPostDeleted($event)" [post]="post" ></app-forum-post>
     </div>
     <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[5,10,20]" (page)="onPageChange($event)" showFirstLastButtons></mat-paginator>
 

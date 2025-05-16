@@ -106,7 +106,6 @@ export class ForumPostComponent implements OnInit, OnChanges {
     this.forumService.addComments(commentData).subscribe({
       next: () => {
         this.commentCount++;
-        this.updateCommentCount();
         this.loadComments();
         this.commentBody = '';
       }

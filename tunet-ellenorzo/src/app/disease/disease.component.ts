@@ -45,18 +45,30 @@ export class DiseaseComponent {
   }
 
   formatDataSource() {
-    const data = this.res;
-    this.dataSource = [];
+  const data = this.res;
+  this.dataSource = [];
 
-  
-    for (const key in data) {
-      this.dataSource.push({
-          key: key,
-          value: data[key]
-        });
+  for (const key in data) {
+    if (
+      key === 'id' ||
+      key === 'age' ||
+      data[key] === undefined ||
+      data[key] === null ||
+      (typeof data[key] === 'string' && data[key].trim() === '')
+    ) {
+      continue;
     }
-    this.dataSourceFormatting();
+
+
+    this.dataSource.push({
+      key: key,
+      value: data[key]
+    });
   }
+
+  this.dataSourceFormatting();
+}
+
 
   dataSourceFormatting() {
     this.dataSource.forEach(item => {

@@ -15,17 +15,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
-const allowedOrigins = [
-  'https://tunet-ellenorzo-f8999.web.app',
-  'http://localhost:4200'
-];
 
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    }
-  }
+  origin: ['https://tunet-ellenorzo-f8999.web.app', 'http://localhost:4200'],
 }));
 
 app.use(bodyParser.json());

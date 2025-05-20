@@ -1,15 +1,16 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { DataService } from '../data.service';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
 import { LangService } from '../lang-service.service';
 import { DiseaseService } from '../disease.service';
+import { I18NextModule } from 'angular-i18next';
 
 @Component({
   selector: 'app-disease',
   standalone: true,
-  imports: [CommonModule, MatTableModule],
+  imports: [CommonModule, MatTableModule, I18NextModule],
   templateUrl: './disease.component.html',
   styleUrls: ['./disease.component.css']
 })
@@ -23,6 +24,8 @@ export class DiseaseComponent {
   cols: string[] = ['label', 'data'];
   opened = false;
   lang:string = ""
+
+  @Output() diseaseDeleted = new EventEmitter<string>();
 
   constructor(private langService:LangService) {
     this.langService.currentLang$.subscribe((lang) => {
@@ -123,6 +126,14 @@ export class DiseaseComponent {
     };
   
     return labels[this.lang]?.[key] || key;
+  }
+
+  deleteDisease(): void {
+    this.diseaseService.deleteDisease(this.res.id).subscribe({
+      next: (response) => {
+        this.diseaseDeleted.emit(this.res.id);
+      }
+    });
   }
   
 }

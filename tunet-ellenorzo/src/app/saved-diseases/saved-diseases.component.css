@@ -1,0 +1,14 @@
+.saved-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+    margin-right: 2rem;
+}
+
+.saved-wrapper {
+  width: 100%;
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}

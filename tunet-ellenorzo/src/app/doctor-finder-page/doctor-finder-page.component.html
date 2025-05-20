@@ -1,102 +1,122 @@
 <div class="docFinder">
-    <div class="search-filters">
-        <mat-form-field>
-            <mat-label>{{ 'name' | i18next }}</mat-label>
-            <input matInput type="text" [(ngModel)]="nameValue">
-        </mat-form-field>
-    
-        <mat-form-field>
-            <mat-label>{{ 'city' | i18next }}</mat-label>
-            <select matNativeControl [(ngModel)]="selectedArea">
-                <option value="">{{ 'city' | i18next }}</option>
-                <option *ngFor="let a of area" [value]="a.value">{{ a.value }}</option>
-            </select>
-        </mat-form-field>
-    
-        <mat-form-field>
-            <mat-label>{{ 'specialty' | i18next }}</mat-label>
-            <select matNativeControl [(ngModel)]="selectedSpec">
-                <option value="">{{ 'specialty' | i18next }}</option>
-                <option *ngFor="let s of specList" [value]="s.value">{{ s.value }}</option>
-            </select>
-        </mat-form-field>
-        <div class="form-buttons">
-            <button class="option-buttons" (click)="search()">{{ 'search' | i18next }}</button>
-            <button class="option-buttons" (click)="removeFilters()">{{ 'delfilter' | i18next }}</button>
+  <div class="search-filters">
+    <mat-form-field>
+      <mat-label>{{ 'name' | i18next }}</mat-label>
+      <input matInput type="text" [(ngModel)]="nameValue" />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>{{ 'city' | i18next }}</mat-label>
+      <select matNativeControl [(ngModel)]="selectedArea">
+        <option value="">{{ 'city' | i18next }}</option>
+        <option *ngFor="let a of area" [value]="a.value">{{ a.value }}</option>
+      </select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>{{ 'specialty' | i18next }}</mat-label>
+      <select matNativeControl [(ngModel)]="selectedSpec">
+        <option value="">{{ 'specialty' | i18next }}</option>
+        <option *ngFor="let s of specList" [value]="s.value">{{ s.value }}</option>
+      </select>
+    </mat-form-field>
+
+    <div class="form-buttons">
+      <button class="option-buttons" (click)="search()">
+        {{ 'search' | i18next }}
+      </button>
+      <button class="option-buttons" (click)="removeFilters()">
+        {{ 'delfilter' | i18next }}
+      </button>
+    </div>
+  </div>
+
+  <div class="registration-section">
+    <div *ngIf="role === 'admin'" class="admin-section">
+      <button class="option-buttons regdoc-button req" (click)="reqDoc()">
+        {{ 'docreq' | i18next }}
+      </button>
+
+      <div *ngIf="reqOpen" class="requests-container">
+        <div *ngFor="let doc of docs_temp" class="request-item">
+          <div class="docFinder2">
+            <app-doctor [doc]="doc" [role]="role" [temp]="temp"></app-doctor>
+          </div>
         </div>
+      </div>
     </div>
 
-    <div *ngIf="role==='admin'" class="admin-section">
-        <button class="option-buttons regdoc-button" (click)="reqDoc()">{{ 'docreq' | i18next }}</button>
-        <div *ngIf="reqOpen" class="requests-container">
-            <div *ngFor="let doc of docs_temp" class="request-item">
-                <div class="docCard">
-                    <app-doctor [doc]="doc" [role]="role"></app-doctor>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div *ngIf="role !== 'admin'">
+      <button class="option-buttons regdoc-button" (click)="openDocReg = !openDocReg">
+        {{ openDocReg ? ('cancel' | i18next) : ('registerdoc' | i18next) }}
+      </button>
 
-    <div class="registration-section">
-        <button class="option-buttons regdoc-button" (click)="openDocReg = !openDocReg">
-            {{ openDocReg ? ('cancel' | i18next) : ('registerdoc' | i18next) }}
+      <div *ngIf="openDocReg" class="registration-form">
+        <mat-form-field>
+          <mat-label>{{ 'name' | i18next }}</mat-label>
+          <input matInput type="text" [(ngModel)]="newDocName" required />
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ 'phone' | i18next }}</mat-label>
+          <input matInput type="text" [(ngModel)]="newDocPhone" required />
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ 'city' | i18next }}</mat-label>
+          <select matNativeControl [(ngModel)]="newDocCity" required>
+            <option value="">{{ 'city' | i18next }}</option>
+            <option *ngFor="let a of area" [value]="a.value">{{ a.value }}</option>
+          </select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ 'address' | i18next }}</mat-label>
+          <input matInput type="text" [(ngModel)]="newDocAddress" required />
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ 'specialty' | i18next }}</mat-label>
+          <select matNativeControl [(ngModel)]="newDocSpecialty" required>
+            <option value="">{{ 'specialty' | i18next }}</option>
+            <option *ngFor="let s of specList" [value]="s.value">{{ s.value }}</option>
+          </select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ 'nyilv' | i18next }}</mat-label>
+          <input matInput type="text" [(ngModel)]="newDocNumber" required />
+          <mat-hint>5-6 {{ 'letters' | i18next }}</mat-hint>
+        </mat-form-field>
+
+        <div *ngIf="errorMsg" class="error-message">{{ errorMsg }}</div>
+
+        <button
+          (click)="registerDocProfile()"
+          [disabled]="!newDocName || !newDocPhone || !newDocCity || !newDocAddress || !newDocSpecialty || !newDocNumber"
+        >
+          {{ 'regist' | i18next }}
         </button>
+      </div>
+    </div>
+  </div>
 
-        <div *ngIf="openDocReg" class="registration-form">
-            <mat-form-field>
-                <mat-label>{{ 'name' | i18next }}</mat-label>
-                <input matInput type="text" [(ngModel)]="newDocName" required>
-            </mat-form-field>
-
-            <mat-form-field>
-                <mat-label>{{ 'phone' | i18next }}</mat-label>
-                <input matInput type="text" [(ngModel)]="newDocPhone" required>
-            </mat-form-field>
-
-            <mat-form-field>
-                <mat-label>{{ 'city' | i18next }}</mat-label>
-                <select matNativeControl [(ngModel)]="newDocCity" required>
-                    <option value="">Válassz várost</option>
-                    <option *ngFor="let a of area" [value]="a.value">{{ a.value }}</option>
-                </select>
-            </mat-form-field>
-
-            <mat-form-field>
-                <mat-label>{{ 'address' | i18next }}</mat-label>
-                <input matInput type="text" [(ngModel)]="newDocAddress" required>
-            </mat-form-field>
-
-            <mat-form-field>
-                <mat-label>{{ 'specialty' | i18next }}</mat-label>
-                <select matNativeControl [(ngModel)]="newDocSpecialty" required>
-                    <option value="">{{ 'specialty' | i18next }}</option>
-                    <option *ngFor="let s of specList" [value]="s.value">{{ s.value }}</option>
-                </select>
-            </mat-form-field>
-
-            <mat-form-field>
-                <mat-label>{{ 'nyilv' | i18next }}</mat-label>
-                <input matInput type="text" [(ngModel)]="newDocNumber" required>
-                <mat-hint>5-6 {{ 'letters' | i18next }}</mat-hint>
-            </mat-form-field>
-
-            <div *ngIf="errorMsg" class="error-message">{{errorMsg}}</div>
-
-            <button  (click)="registerDocProfile()"  [disabled]="!newDocName || !newDocPhone || !newDocCity || !newDocAddress || !newDocSpecialty || !newDocNumber">
-                    {{ 'regist' | i18next }}
-            </button>
-        </div>
+  <div class="doctors-list">
+    <div *ngIf="doctors.length === 0" class="no-results">
+      {{ 'nodoc' | i18next }}
     </div>
 
-    <div class="doctors-list">
-  <div *ngIf="doctors.length === 0" class="no-results">
-    {{ 'nodoc' | i18next }}
-  </div>
+    <div *ngFor="let doc of doctors" class="docFinder2">
+      <app-doctor [doc]="doc"></app-doctor>
+    </div>
 
-  <div *ngFor="let doc of doctors" class="docFinder">
-    <app-doctor [doc]="doc"></app-doctor>
+    <mat-paginator
+      #paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageIndex]="currentPageIndex"
+      [pageSizeOptions]="[10, 20, 50]"
+      (page)="onPageChange($event)"
+    ></mat-paginator>
   </div>
-
-  <mat-paginator #paginator [length]="totalItems" [pageSize]="pageSize" [pageIndex]="currentPageIndex" [pageSizeOptions]="[10, 20, 50]" (page)="onPageChange($event)"></mat-paginator>
-</div>
 </div>

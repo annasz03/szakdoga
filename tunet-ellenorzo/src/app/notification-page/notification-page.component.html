@@ -1,5 +1,8 @@
 <button class="option-buttons" (click)="openDialog()">+</button>
 <p></p>
+<div class="notifs" *ngIf="alerts.length !== 0">
+    {{ 'notifs' | i18next }}
+</div>
 <div *ngFor="let alert of alerts">
     <app-notification (alertDeleted)="getAlerts()" [alert]="alert" ></app-notification>
     <p></p>

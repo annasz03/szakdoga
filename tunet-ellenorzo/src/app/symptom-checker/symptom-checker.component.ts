@@ -17,6 +17,9 @@ import { MatIconButton } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { DiseaseService } from '../disease.service';
+import { UserService } from '../user.service';
+import { AuthService } from '../auth.service';
+import { Iuser } from '../iuser';
 
 
 
@@ -29,6 +32,11 @@ import { DiseaseService } from '../disease.service';
 })
 export class SymptomCheckerComponent {
   diseaseService =inject(DiseaseService)
+  userService =inject(UserService)
+  authService =inject(AuthService)
+
+  currentUser:any;
+  role:any
 
   fb = inject(FormBuilder);
   errorMessage='';
@@ -68,6 +76,15 @@ export class SymptomCheckerComponent {
       this.loadPainLocation(lang);
     });
 
+     this.authService.user$.subscribe(user => {
+    this.currentUser = user;
+    this.userService.getUserData(user!.uid).subscribe(res => {
+      this.role = res.user.role;
+    });
+
+  });
+
+
     this.addSymptom();
     this.addPain();
   }
@@ -77,7 +94,6 @@ export class SymptomCheckerComponent {
     this.diseaseService.getAllPain(lang).subscribe({
       next: (painList) => {
         this.painLocation = painList;
-        console.log(this.painLocation)
       }
     });
   }

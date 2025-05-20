@@ -20,7 +20,7 @@ import { AlertService } from '../alert.service';
 @Component({
   selector: 'app-notification-page',
   standalone: true,
-  imports: [CommonModule, NotificationComponent,MatFormFieldModule,MatInputModule,MatSelectModule,MatOptionModule,MatDialogModule],
+  imports: [CommonModule,I18NextModule, NotificationComponent,MatFormFieldModule,MatInputModule,MatSelectModule,MatOptionModule,MatDialogModule],
   templateUrl: './notification-page.component.html',
   styleUrl: './notification-page.component.css'
 })
@@ -63,7 +63,7 @@ export class NotificationPageComponent {
   selector: 'notification-dialog',
   templateUrl: './notification-dialog.component.html',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatFormFieldModule,I18NextModule, MatInputModule, MatSelectModule, MatOptionModule, MatDialogModule],
+  imports: [CommonModule,I18NextModule, FormsModule, MatFormFieldModule,I18NextModule, MatInputModule, MatSelectModule, MatOptionModule, MatDialogModule],
   styleUrl: './notification-page.component.css'
 })
 export class NotificationDialog {

@@ -11,7 +11,9 @@ export class UserService {
   constructor(private http:HttpClient) { }
 
   getUserData(uid: any){
-    return this.http.post<{ user: any }>(backendUrl + "get-user", {uid:uid});
+    return this.http.post<{
+      role: any; user: any 
+}>(backendUrl + "get-user", {uid:uid});
   }
 
   getProfilePicture(uid: any){

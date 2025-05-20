@@ -1,3 +1,66 @@
-.card{
-    margin: 2%;
+.card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin: auto;
+  max-width: 800px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+th {
+  text-align: left;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  background-color: #f0f0f0;
+  color: #333;
+  font-size: 0.95rem;
+  border-bottom: 2px solid #ccc;
+}
+
+td {
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #e0e0e0;
+  color: #444;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 1rem;
+    max-width: 95%;
+    font-size: 0.9rem;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  th, td {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .option-buttons {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  .del-button {
+    margin-top: 1rem;
+    width: 100%;
+  }
 }

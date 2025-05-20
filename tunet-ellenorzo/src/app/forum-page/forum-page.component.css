@@ -1,4 +1,5 @@
 .docFinder{
+    margin-top: 2rem !important;
     margin: 5%;
     padding: 5%;
     background-color: rgba(255, 255, 255, 0.803);
@@ -40,15 +41,6 @@
     width:6rem;
 }
 
-.option-buttons{
-    height: 56px;
-    white-space: nowrap;
-    width:6rem;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-    margin-left: 0 !important;
-}
-
 
 .registration-section {
     margin-top: 2rem;
@@ -88,12 +80,134 @@
     width: 200px !important;
 }
 
-.new-post-section {
-  margin-bottom: 2rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid #ccc;
-}
-
 .full-width {
   width: 100%;
 }
+
+mat-paginator {
+    background-color: transparent;
+}
+
+.new-post-section {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.new-post-section h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+}
+
+.new-post-section mat-form-field {
+  width: 100%;
+}
+
+.new-post-section textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.option-buttons {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: white;
+  background-color: #0288D1;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.option-buttons:hover {
+  background-color: #145ca8;
+}
+
+
+
+
+
+.search-filters {
+  padding: 1.5rem 2rem;
+  border-radius: 15px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.search-filters mat-form-field {
+  flex: 1 1 250px;
+  min-width: 200px;
+  width: 100%;
+}
+
+.search-filters input,
+.search-filters mat-select {
+  border-radius: 6px;
+}
+
+.search-filters button.option-buttons {
+  padding: 0.3rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+  border: none;
+  font-size: 1.2rem;
+  background-color: #0288D1;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  height: 56px;
+  white-space: nowrap;
+  width: 6rem;
+  margin-top: -1.5rem !important;
+}
+
+.search-filters button.option-buttons:hover {
+  background-color: #145ca8;
+}
+
+mat-form-field.full-width {
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .form-buttons {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .form-buttons button,
+  .search-filters button.option-buttons {
+    width: 100% !important;
+    margin-top: 0 !important;
+  }
+
+  .search-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-filters mat-form-field {
+    width: 100% !important;
+  }
+}
+

@@ -1,6 +1,6 @@
 {
     "message": "magyar üzenet",
-    "title": "Tünetellenörző",
+    "title": "Tünetellenőrző",
     "signout": "Kijelentkezés",
     "forum": "Fórum",
     "docfinder": "Orvos kereső",
@@ -9,7 +9,7 @@
     "welcome": "Üdvözlünk a Tünetellenőrző alkalmazásban!",
     "welcometext": "Szerezz azonnali segítséget tüneteid azonosításában az alkalmazáson keresztül a nap 24 órájában.",
     "welcomewarning": "*Vedd figyelembe, hogy az alkalmazás nem helyettesíti az orvosi diagnózist!",
-    "tosc": "Tovább a tünetellenörzőre",
+    "tosc": "Tovább a tünetellenőrzőre",
 
     "postcomment": "Hozzászólás közlése",
     "newpost": "Új bejegyzés létrehozása:",
@@ -80,6 +80,7 @@
     "shared": "Megosztott dokumentumok",
     "upload": "Feltöltés",
     "pic": "KÉP",
+    "savedSolution": "mentett megoldás",
 
 
 
@@ -129,7 +130,12 @@
         "accept": "Elfogadás",
         "posttext": "Bejegyzés szövege",
         "searchtag": "Tag",
-        "anon" : "Anoním felhasználó"
+        "anon" : "Anoním felhasználó",
+        "results": "Találatok",
+        "notifs": "Notifications: ",
+        "24h": "24 órás elérhetőség",
+        "free": "Ingyenes regisztráció",
+        "multilang": "Angol nyelvi támogatás"
 
     
 

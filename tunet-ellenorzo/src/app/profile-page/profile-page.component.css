@@ -21,9 +21,14 @@
     font-size: 1.8rem;
     font-weight: bold;
   }
-  
+.profile-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+  margin-top: 0.5rem;
+}
   .profileData button {
-    margin-left: auto;
     margin-top: 0.5rem; 
     background-color: #0288D1;
     color: white;
@@ -32,8 +37,8 @@
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s;
+    width: 120px;
   }
-  
   .profileData button:hover {
     background-color: #125a9c;
   }
@@ -55,6 +60,10 @@
   
     .right {
       flex: 2;
+    }
+
+    .profile{
+      margin-top: 2rem;
     }
   }
   

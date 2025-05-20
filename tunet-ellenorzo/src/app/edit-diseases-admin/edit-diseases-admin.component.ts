@@ -288,22 +288,21 @@ export class EditDiseasesAdminComponent {
     array.removeAt(index);
   }
 
-  deleteDisease(diseaseId: string): void {
+  onDiseaseDeleted(deletedId: string) {
+    this.loadDiseases('hu');
+    this.loadDiseases('en');
+  }
+
+
+  /*deleteDisease(diseaseId: string): void {
     this.diseaseService.deleteDisease(diseaseId).subscribe({
       next: (response) => {
         this.loadDiseases('hu');
         this.loadDiseases('en');
       }
     });
+  }*/
 
-    /*this.http.post('http://localhost:3000/delete-disease', { diseaseId })
-      .subscribe({
-        next: (response) => {
-          this.loadDiseases('hu');
-          this.loadDiseases('en');
-        }
-      });*/
-  }
   async editDisease(diseaseId: string): Promise<void> {
     this.selectedDiseaseId = diseaseId;
   }
@@ -329,21 +328,6 @@ export class EditDiseasesAdminComponent {
         this.totalDiseases = response.totalCount;
         this.loading = false;
       }})
-
-    /*this.http.post<{ diseases: any[], lastVisible: string, totalCount: number }>
-      ('http://localhost:3000/api/load-diseases', requestData)
-      .subscribe({
-        next: (response) => {
-          this.allDiseases = response.diseases;
-          this.lastVisible = response.lastVisible ? { id: response.lastVisible } : null;
-          this.totalDiseases = response.totalCount;
-          this.loading = false;
-        },
-        error: (err) => {
-          console.error(err);
-          this.loading = false;
-        }
-      });*/
   }
 
   onPageChange(event: PageEvent) {
@@ -369,13 +353,6 @@ export class EditDiseasesAdminComponent {
         this.totalDiseases = response.totalCount;
       }
     });
-
-    /*this.http.post<{ totalCount: number }>('http://localhost:3000/api/disease-total-count', { lang })
-      .subscribe({
-        next: (response) => {
-          this.totalDiseases = response.totalCount;
-        }
-      });*/
   }
   
 }

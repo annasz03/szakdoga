@@ -26,6 +26,7 @@ export class DoctorComponent {
   selectedRating = 0;
   comment = '';
   currentUser:any;
+  @Input() temp:boolean = false;
   private authService = inject(AuthService);
 
   constructor(){

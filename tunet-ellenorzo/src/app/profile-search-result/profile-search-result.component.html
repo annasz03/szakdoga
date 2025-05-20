@@ -1,4 +1,8 @@
 <div class="backg">
+    <div class="result-text">
+        {{ 'results' | i18next }}:
+    </div>
+    <p></p>
     <div *ngFor="let profile of profiles" class="profile-item" (click)="goToUserProfile(profile.uid)">
         <div class="profile-info">
             <img class="profilePic" [src]="profile.profilepic || '../../assets/avatar.webp'" class="profilePic" loading="lazy">
@@ -7,3 +11,4 @@
     </div>
     <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageIndex]="currentPage" [pageSizeOptions]="[5, 10, 20]" (page)="onPageChange($event)" showFirstLastButtons></mat-paginator>
 </div>
+<div style="height: 50px; background:  #e2e2e2;"></div>

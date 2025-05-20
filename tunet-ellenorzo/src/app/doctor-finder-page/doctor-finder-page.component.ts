@@ -60,6 +60,7 @@ export class DoctorFinderPageComponent {
   doc_uid="";
   lastVisible: any = null;
   currentPageIndex = 0;
+  temp:boolean = false;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   private authService = inject(AuthService);
@@ -97,6 +98,7 @@ export class DoctorFinderPageComponent {
 
     this.doctorService.loadDoctors(requestData).subscribe({
       next: (response) => {
+        this.temp=false;
         this.doctors = response.doctors; 
         this.lastVisible = response.lastVisible;
         this.loading = false;
@@ -108,6 +110,7 @@ export class DoctorFinderPageComponent {
     this.loading = true;
     this.doctorService.loadDoctorsNext( this.lastVisible, this.pageSize).subscribe({
       next: response => {
+        this.temp=false;
         this.doctors = response.doctors;
         this.lastVisible = response.lastVisible;
         this.loading = false;
@@ -145,6 +148,7 @@ export class DoctorFinderPageComponent {
   reqDoc() {
     this.doctorService.getDoctorTemp().subscribe(docs => {
       this.docs_temp = docs;
+      this.temp=true;
       this.reqOpen = !this.reqOpen;
     });    
   }

@@ -42,6 +42,13 @@
     border-radius: 4px;
     border: gray;
   }
+
+  .inputForm{
+    margin-left: -1rem !important;
+    width: 90% !important;
+    box-shadow: rgba(0, 0, 0, 0.058) 0 8px 15px !important;
+    margin-left: 1rem !important;
+  }
   
   .disease-form button {
     background-color: #0288D1;
@@ -108,9 +115,21 @@
     float: right;
   }
 
-  .disease-card{
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+.disease-card {
+  position: relative;
+  left: 0; 
+  transition: left 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .disease-form-container {
+    flex-direction: column;
+    margin-top: 1rem;
+    margin-right: 2rem;
   }
+
+  .disease-form {
+    width: 100%;
+  }
+
+}

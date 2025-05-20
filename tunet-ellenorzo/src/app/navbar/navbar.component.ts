@@ -18,7 +18,7 @@ import { UserService } from '../user.service';
 export class NavbarComponent {
   authService = inject(AuthService)
   userService = inject(UserService)
-
+  menuActive = false;
   hamMenu:any;
   offScreen:any;
   currentUser:any;
@@ -35,6 +35,10 @@ export class NavbarComponent {
         }
       });
     });
+  }
+
+  toggleMenu() {
+    this.menuActive = !this.menuActive;
   }
 
   ngAfterViewInit() {

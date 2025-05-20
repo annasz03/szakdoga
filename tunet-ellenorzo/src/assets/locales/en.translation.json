@@ -127,7 +127,13 @@
       "export":"Export to PDF",
       "submit_rating": "OK",
       "ratings": "Ratings",
-      "anon": "Anon"
+      "anon": "Anon",
+      "results": "Results",
+      "savedSolution": "saved result",
+      "notifs": "Beállított értesítések",
+      "24h": "24 hour availability",
+        "free": "Free registration",
+        "multilang": "Multiple language support"
 
 
 

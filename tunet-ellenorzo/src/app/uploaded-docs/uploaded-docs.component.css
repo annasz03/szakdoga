@@ -78,3 +78,9 @@
     border-radius: 6px;
     font-size: 0.95rem;
   }
+
+  @media screen and (max-width: 600px) {
+  .doc-container {
+    grid-template-columns: 1fr;
+  }
+}

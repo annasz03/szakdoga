@@ -16,3 +16,10 @@
 .option-buttons{
     width: 200px !important;
 }
+
+@media (max-width: 768px) {
+    .result{
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+}

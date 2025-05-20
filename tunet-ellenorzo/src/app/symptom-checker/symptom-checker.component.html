@@ -26,12 +26,12 @@
         <button class="button-small" type="submit" (click)="formVisible()">
           {{ 'next' | i18next }}
         </button>
-        <button class="button-small disease-managemet-button" (click)="goToEditDiseases()">
-          {{ 'diseasecrud' | i18next }}
-        </button>
       </div>
     </form>
   </div>
+  <button *ngIf="role === 'admin'" class="button-small disease-managemet-button" (click)="goToEditDiseases()">
+          {{ 'diseasecrud' | i18next }}
+        </button>
 
   <!-- symp -->
   <div *ngIf="!personalFromVisible" class="pain-section">

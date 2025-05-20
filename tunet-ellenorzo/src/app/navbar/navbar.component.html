@@ -2,24 +2,24 @@
 <div class="off-screen-menu" id="offScreenMenu">
   <div class="menu-content">
       <div class="menu-items">
-        <a class="menu-item" (click)="navigateSymptomChecker()">{{ 'title' | i18next }}</a>
-        <a class="menu-item" (click)="navigateProfile()">{{ 'profile' | i18next }}</a>
-        <a class="menu-item" (click)="navigateDoctorFinder()">{{ 'docfinder' | i18next }}</a>
-        <a class="menu-item" (click)="navigateForum()">{{ 'forum' | i18next }}</a>
+        <a class="menu-item" (click)="navigateSymptomChecker()"><img src="../../assets/search-alt.webp" alt="">{{ 'title' | i18next }}</a>
+        <a class="menu-item" (click)="navigateProfile()"><img src="../../assets/user.webp" alt="">{{ 'profile' | i18next }}</a>
+        <a class="menu-item" (click)="navigateDoctorFinder()"><img src="../../assets/address-book.webp" alt="">{{ 'docfinder' | i18next }}</a>
+        <a class="menu-item" (click)="navigateForum()"><img src="../../assets/comment-alt.webp" alt="">{{ 'forum' | i18next }}</a>
       </div>
-      <a class="menu-item signout" (click)="navigateSignOut()">{{ 'signout' | i18next }}</a>
+      <a class="menu-item signout" (click)="navigateSignOut()"><img src="../../assets/exit.webp" alt="">{{ 'signout' | i18next }}</a>
     </div>
   </div>
       
   <div class="top-menu">
     <nav>
-      <div class="navbar" id="navbar">
+      <div class="navbar" id="navbar" (click)="toggleMenu()">
         <span></span>
         <span></span>
         <span></span>
       </div>
       <div class="title">
-        <a (click)="navigateHome()">{{ 'title' | i18next }}</a>
+        <a (click)="navigateHome()"><img src="../../assets/title.png" alt="" class="title-pic"></a>
       </div>
       <div class="search-container">
         <input matInput type="text" [(ngModel)]="name">

@@ -6,6 +6,15 @@
     font-weight: 500 !important;
 }
 
+.docFinder2{
+    margin-top: 2%;
+    padding: 2%;
+    background-color: rgba(255, 255, 255, 0.803);
+    border-radius: 20px;
+    font-weight: 500 !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
 .docCard{
     margin-top: 1rem;
     background-color: rgb(255, 255, 255);
@@ -50,17 +59,29 @@
 
 
 .registration-section {
-    margin-top: 2rem;
+    margin-top: 3rem;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.registration-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    color: #333;
 }
 
 .registration-form {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
+    gap: 1.5rem;
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     margin-top: 1rem;
-    padding: 1rem;
-    background-color: rgba(245, 245, 245, 0.95);
-    border-radius: 12px;
 }
 
 .registration-form mat-form-field {
@@ -69,19 +90,34 @@
 
 .registration-form button {
     grid-column: span 2;
-    width: fit-content;
-    justify-self: start;
-    padding: 0.5rem 1.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
     font-weight: bold;
     background-color: #1976d2;
-    color: white;
+    color: #fff;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.2s ease;
+    justify-self: start;
 }
 
+.registration-form button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
 
+.error-message {
+    grid-column: span 2;
+    color: #d32f2f;
+    font-weight: bold;
+    margin-top: -1rem;
+    margin-bottom: 0.5rem;
+}
 .regdoc-button{
     width: 200px !important;
+}
+
+mat-paginator {
+    background-color: transparent;
 }

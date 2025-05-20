@@ -2,7 +2,7 @@
     <div class="description">
         <h1>{{ 'welcome' | i18next }}</h1>
         <p>{{ 'welcometext' | i18next }}</p>
-        <div>
+        <div class="warning">
             <small>{{ 'welcomewarning' | i18next }}</small>
         </div>
     </div>
@@ -10,4 +10,20 @@
     <button class="button" (click)="navigateToSymptomChecker()">
         {{ 'tosc' | i18next }}
     </button>
+
+     <div class="info-table">
+        <div class="info-item">
+            <img src="../../assets/clock.webp" alt="">
+            <p></p>
+            {{ '24h' | i18next }}</div>
+        <div class="info-item">
+            <img src="../../assets/user-add.webp" alt="">
+            <p></p>
+            {{ 'free' | i18next }}</div>
+        <div class="info-item">
+            <img src="../../assets/globe.webp" alt="">
+            <p></p>
+            {{ 'multilang' | i18next }}</div>
+    </div>
+
 </div>

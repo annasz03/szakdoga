@@ -1,55 +1,48 @@
-<div class="form">
-    <div class="name">
-        {{doc.name}}
-    </div>
-    {{doc.speciality}}
-    <div *ngFor="let d of doc.cities">
+<div class="doctor-card">
+  <div class="doctor-header">
+    <div class="doctor-name">{{ doc.name }}</div>
+    <div class="doctor-speciality">{{ doc.speciality }}</div>
+    <div class="doctor-speciality">{{ doc.specialty }}</div>
+      <div *ngFor="let d of doc.cities">
             {{d}},
     </div>
+    <div class="doctor-speciality">
+        {{doc.city}}
+    </div>
+  <button class="option-buttons" (click)="openMoreData()">
+    {{ 'more' | i18next }}
+  </button>
 
-    {{doc.city}}
+  <div *ngIf="opened" class="doctor-details">
 
-    <button class="option-buttons" (click)="openMoreData()">{{ 'more' | i18next }}</button>
+    <div><strong>{{ 'address' | i18next }}</strong> {{ doc.address }}</div>
+    <div><strong>Tel.:</strong> {{ doc.phone }}</div>
+    <div><strong>Nyílvántartási szám:</strong> {{ doc.number }}</div>
 
-    <div *ngIf="opened">
-        {{ 'gender' | i18next }} {{doc.gender}}<br>
-        {{ 'availability' | i18next }} 
-        <br>
-        <div *ngFor="let d of doc.available">
-            {{d.day}}: {{d.city}} - {{d.address}}
-        </div>
-        {{ 'address' | i18next }}: {{doc.address}} <br>
-        Tel.: {{doc.phone}}<br>
-
-        <p></p>
-        {{ 'ratings' | i18next }}:
-        <div *ngFor="let rating of ratings">
-            <app-ratings [rating]="rating"></app-ratings>
-        </div>
-
-            <div *ngIf="role !== 'admin'">
-                <h4>{{ 'rate_doctor' | i18next }}</h4>
-            
-                <div class="stars">
-                    <span *ngFor="let star of [1, 2, 3, 4, 5]" (click)="setRating(star)">
-                      <img [src]="star <= selectedRating ? 'assets/star.webp' : 'assets/star2.webp'" alt="star" class="star-icon" />
-                    </span>
-                  </div>
-                  
-                  
-
-                  <div class="add-comment">
-                    <input type="text" [(ngModel)]="comment">
-                    <button (click)="submitRating()">{{ 'submit_rating' | i18next }}</button>
-                  </div>
-                
-            </div>
-  
+    <div *ngIf="!temp" class="ratings-section">
+      <strong>{{ 'ratings' | i18next }}:</strong>
+      <div *ngFor="let rating of ratings">
+        <app-ratings [rating]="rating"></app-ratings>
+      </div>
     </div>
 
-    <div *ngIf="role==='admin'">
-        <button class="option-buttons" (click)="deleteRequest()">{{ 'delete' | i18next }}</button>
-        <button class="option-buttons" (click)="acceptRequest()">{{ 'accept' | i18next }}</button>
-    </div>
+    <div *ngIf="role !== 'admin'" class="rating-form">
+      <h4>{{ 'rate_doctor' | i18next }}</h4>
+      <div class="stars">
+        <span *ngFor="let star of [1, 2, 3, 4, 5]" (click)="setRating(star)">
+          <img [src]="star <= selectedRating ? 'assets/star.webp' : 'assets/star2.webp'" alt="star" class="star-icon" />
+        </span>
+      </div>
 
+      <div class="add-comment">
+        <input type="text" [(ngModel)]="comment" placeholder="{{ 'write_comment' | i18next }}">
+        <button (click)="submitRating()">{{ 'submit_rating' | i18next }}</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="role === 'admin'" class="admin-buttons">
+    <button class="option-buttons" (click)="deleteRequest()">{{ 'delete' | i18next }}</button>
+    <button class="option-buttons" (click)="acceptRequest()">{{ 'accept' | i18next }}</button>
+  </div>
 </div>

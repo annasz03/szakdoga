@@ -7,11 +7,12 @@ import { CommonModule } from '@angular/common';
 import { MatPaginator, MatPaginatorIntl, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { LangService } from '../lang-service.service';
 import { UserService } from '../user.service';
+import { I18NextModule } from 'angular-i18next';
 
 @Component({
   selector: 'app-profile-search-result',
   standalone: true,
-  imports: [CommonModule, MatPaginatorModule],
+  imports: [CommonModule, MatPaginatorModule,I18NextModule],
   templateUrl: './profile-search-result.component.html',
   styleUrl: './profile-search-result.component.css',
 })

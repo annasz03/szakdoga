@@ -27,15 +27,25 @@ export class ResultPageComponent {
   currentLang: string=""
   successMessage="";
   errorMessage="";
+  currLang:any;
 
-  constructor(private resultService: ResultService,private authService: AuthService, private langService: LangService, private http:HttpClient) {}
+  constructor(private resultService: ResultService,private authService: AuthService, private langService: LangService, private http:HttpClient) {
+    this.langService.currentLang$.subscribe((lang) => {
+      this.currLang=lang
+    });
+  }
 
   ngOnInit() {
-    if(this.result===undefined){
-      this.errorMessage="Nincs a megadott adatokhoz illeszkedő betegség az adabázisban."
-    }else{
+    
       const resultData = this.resultService.getResult();
       this.result = resultData.result;
+      if(this.result===undefined){
+      if(this.currLang==='hu'){
+        this.errorMessage="Nincs a megadott adatokhoz illeszkedő betegség az adabázisban."
+      }else {
+        this.errorMessage="There isn't any diseases matching these symptoms in the database."
+      }
+    }
 
       this.authService.user$.subscribe((user: any) => {
         this.currentUser = user;
@@ -44,7 +54,7 @@ export class ResultPageComponent {
       this.langService.currentLang$.subscribe((lang: string) => {
         this.currentLang = lang;
       });
-    }
+    
   }
 
   saveResult() {

@@ -40,7 +40,7 @@
       <div *ngIf="reqOpen" class="requests-container">
         <div *ngFor="let doc of docs_temp" class="request-item">
           <div class="docFinder2">
-            <app-doctor [doc]="doc" [role]="role" [temp]="temp"></app-doctor>
+            <app-doctor [doc]="doc" [role]="role" [temp]="true"></app-doctor>
           </div>
         </div>
       </div>
@@ -102,12 +102,9 @@
   </div>
 
   <div class="doctors-list">
-    <div *ngIf="doctors.length === 0" class="no-results">
-      {{ 'nodoc' | i18next }}
-    </div>
 
     <div *ngFor="let doc of doctors" class="docFinder2">
-      <app-doctor [doc]="doc"></app-doctor>
+      <app-doctor [doc]="doc" [temp]="false"></app-doctor>
     </div>
 
     <mat-paginator

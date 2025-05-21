@@ -9,6 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { LangService } from '../lang-service.service';
 import { UserService } from '../user.service';
 import { ForumService } from '../forum.service';
+import { DiseaseService } from '../disease.service';
 
 @Component({
   selector: 'app-user-posts',
@@ -19,12 +20,14 @@ import { ForumService } from '../forum.service';
 })
 export class UserPostsComponent {
   forumService = inject(ForumService)
+  diseaseService = inject(DiseaseService)
 
   currentUserId: string = '';
   displayName: string = '';
   posts: IPost[] = [];
   filteredPosts: IPost[] = [];
   errorMessage="";
+  illnesses: Array<{id: string, name: string}> = [];
   currLang:any;
 
   constructor(private route: ActivatedRoute,private firestore: Firestore,private authService: AuthService,private http: HttpClient, private langService:LangService) {
@@ -35,6 +38,8 @@ export class UserPostsComponent {
       }
     });
 
+
+    
     this.authService.user$.subscribe(user => {
       if (user?.uid === this.currentUserId) {
         this.displayName = user.displayName || '';
@@ -42,8 +47,14 @@ export class UserPostsComponent {
       }
     });
 
-    this.langService.currentLang$.subscribe((lang) => {
-      this.currLang=lang
+    this.langService.currentLang$.subscribe((lang: string) => {
+      this.currLang = lang;
+      this.diseaseService.getAllDiseaseNames().subscribe(response => {
+        this.illnesses = Object.entries(response).map(([id, names]) => ({
+          id: id,
+          name: lang === 'hu' ? names.name_hu : names.name_en
+        }));
+      });
     });
   }
 

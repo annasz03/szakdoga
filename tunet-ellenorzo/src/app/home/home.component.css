@@ -7,8 +7,6 @@
     text-align: center;
     padding: 20px;
     margin-top: -4rem;
-    background: #E2E2E2;
-background: linear-gradient(90deg, rgba(226, 226, 226, 1) 0%, rgba(174, 219, 252, 1) 100%);
 }
 
 .warning{
@@ -78,8 +76,7 @@ small {
     width: 100vw;
     margin-top: 0;
     box-sizing: border-box;
-    background: #E2E2E2;
-/*background: linear-gradient(90deg, rgba(226, 226, 226, 1) 0%, rgba(174, 219, 252, 1) 100%);*/
+
   }
 
   h1 {

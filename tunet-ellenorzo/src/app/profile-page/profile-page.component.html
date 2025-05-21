@@ -7,7 +7,7 @@
 
         <div class="profile-buttons">
         <ng-container *ngIf="currentUser?.uid === profileUid">
-            <button (click)="profileDataModifying()">{{ 'editProfile' | i18next }}</button>
+            <button class="editButton" (click)="profileDataModifying()">{{ 'editProfile' | i18next }}</button>
         </ng-container>
         <ng-container *ngIf="role === 'admin' && currentUser?.uid !== profileUid">
             <button class="deleteButton" (click)="deleteProfileAdmin()">{{ 'deleteProfile' | i18next }}</button>

@@ -5,7 +5,7 @@
     <div class="post-date">{{ formattedDate }}</div>
     <div class="post-tag">{{ getTranslatedTag(post.tag) }}</div>
     <div *ngIf="currentUser?.uid === post.uid" class="del-button">
-      <button (click)="deletePost(post.id)" class="option-buttons delete">{{ 'delete' | i18next }}</button>
+      <img src="../../assets/trash.webp" alt="" (click)="deletePost(post.id)">
     </div>
     
   </div>

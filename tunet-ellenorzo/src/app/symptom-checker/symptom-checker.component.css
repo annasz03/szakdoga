@@ -27,6 +27,7 @@ select{
 
 .disease-managemet-button{
     width: 200px !important;
+    float: right;
 }
 
 .form {

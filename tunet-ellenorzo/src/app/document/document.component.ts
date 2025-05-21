@@ -18,7 +18,7 @@ import { DoctorService } from '../doctor.service';
 @Component({
   selector: 'app-document',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, I18NextModule],
   templateUrl: './document.component.html',
   styleUrl: './document.component.css'
 })

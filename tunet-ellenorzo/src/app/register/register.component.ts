@@ -6,14 +6,11 @@ import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Firestore, addDoc, collection, doc, setDoc } from '@angular/fire/firestore';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { LangService } from '../lang-service.service';
 import { MatRadioModule } from '@angular/material/radio';
-
-const backendUrl = 'https://szakdoga-dlg2.onrender.com/api/';
-//const backendUrl = 'https://localhost:3000/api/';
 
 @Component({
   selector: 'app-register',
@@ -49,6 +46,11 @@ export class RegisterComponent {
   });
 
   onSubmit(event: Event): void {
+      if (this.form.invalid || !this.formatCheck()) {
+        this.errorMessage = this.errorMessage || (this.lang === 'en' ? 'Please fill all fields!' : 'Kérjük, töltsön ki minden mezőt!');
+        return;
+      }
+
     const rawForm = this.form.getRawValue();
 
     this.authService.register(rawForm).subscribe({
@@ -120,4 +122,10 @@ export class RegisterComponent {
   templateUrl: './validate-dialog.component.html',
   styleUrl: './register.component.css',
 })
-export class ValidateDialog {}
+export class ValidateDialog {
+  dialogRef = inject(MatDialogRef<ValidateDialog>);
+  
+  close() {
+    this.dialogRef.close();
+  }
+}

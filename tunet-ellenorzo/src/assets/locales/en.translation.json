@@ -61,6 +61,7 @@
     "id": "ID:",
      "rate_doctor": "Rate doctor",
         "accept": "Accept",
+        "less": "Less",
 
 
 
@@ -121,7 +122,7 @@
         "letters": "numbers",
         "regist": "Register",
         "nodoc": "Can't find doctors with there requirements.",
-        "nyilv": "medical registration number"
+        "nyilv": "Medical registration number"
       ,
 
       "export":"Export to PDF",
@@ -133,7 +134,9 @@
       "notifs": "Beállított értesítések",
       "24h": "24 hour availability",
         "free": "Free registration",
-        "multilang": "Multiple language support"
+        "multilang": "Multiple language support",
+        "sharedoc": "Share with doctor",
+        "write_comment": "Write a comment"
 
 
 

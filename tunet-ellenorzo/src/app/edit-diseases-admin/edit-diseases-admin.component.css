@@ -35,19 +35,19 @@
   .disease-form input,
   .disease-form select,
   .disease-form button {
-    width: 100%;
     padding: 8px;
     margin: 5px 0;
     font-size: 14px;
     border-radius: 4px;
     border: gray;
+    width: 90% ;
+    margin-left: 1rem !important;
+    box-sizing: border-box;
   }
 
   .inputForm{
-    margin-left: -1rem !important;
     width: 90% !important;
     box-shadow: rgba(0, 0, 0, 0.058) 0 8px 15px !important;
-    margin-left: 1rem !important;
   }
   
   .disease-form button {

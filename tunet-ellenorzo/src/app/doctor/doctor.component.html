@@ -9,25 +9,36 @@
     <div class="doctor-speciality">
         {{doc.city}}
     </div>
-  <button class="option-buttons" (click)="openMoreData()">
-    {{ 'more' | i18next }}
-  </button>
+
+    <div *ngIf="!opened">
+      <button class="option-buttons" (click)="openMoreData()">
+        {{ 'more' | i18next }}
+      </button>
+    </div>
+    <div *ngIf="opened">
+      <button class="option-buttons" (click)="openMoreData()">
+          {{ 'less' | i18next }}
+        </button>
+    </div>
 
   <div *ngIf="opened" class="doctor-details">
 
     <div><strong>{{ 'address' | i18next }}</strong> {{ doc.address }}</div>
     <div><strong>Tel.:</strong> {{ doc.phone }}</div>
-    <div><strong>Nyílvántartási szám:</strong> {{ doc.number }}</div>
+    <div *ngIf="temp">
+      <div><strong>{{ 'nyilv' | i18next }}:</strong> {{ doc.number }}</div>
+    </div>
 
     <div *ngIf="!temp" class="ratings-section">
       <strong>{{ 'ratings' | i18next }}:</strong>
-      <div *ngFor="let rating of ratings">
-        <app-ratings [rating]="rating"></app-ratings>
+      <div *ngIf="ratings.length !== 0">
+        <div *ngFor="let rating of ratings">
+          <app-ratings [rating]="rating"></app-ratings>
+        </div>
       </div>
     </div>
 
     <div *ngIf="role !== 'admin'" class="rating-form">
-      <h4>{{ 'rate_doctor' | i18next }}</h4>
       <div class="stars">
         <span *ngFor="let star of [1, 2, 3, 4, 5]" (click)="setRating(star)">
           <img [src]="star <= selectedRating ? 'assets/star.webp' : 'assets/star2.webp'" alt="star" class="star-icon" />

@@ -34,6 +34,7 @@
         <label>{{ 'description' | i18next }} <br><input class="inputForm" formControlName="description" /></label>
 
         <label>{{ 'gender' | i18next }}
+          <br>
           <select class="inputForm" formControlName="gender">
             <option value="Both">{{ 'both' | i18next }}</option>
             <option value="Male">{{ 'male' | i18next }}</option>
@@ -45,7 +46,7 @@
 
         
         <div *ngIf="diseaseFormHu.get('painful')?.value" formArrayName="painLocation">
-          {{ 'painLocation' | i18next }}
+         <label for="">{{ 'painLocation' | i18next }}</label>
           <div *ngFor="let control of painLocationArrayHu.controls; let i = index">
             <select class="inputForm" [formControlName]="i">
               <option *ngFor="let location of painLocationH" [value]="location">{{ location }}</option>
@@ -55,7 +56,7 @@
           <button type="button" (click)="addControl(painLocationArrayHu)">+ {{ 'add' | i18next }}</button>
         </div>
 
-        {{ 'prevention' | i18next }}
+        <label for="">{{ 'prevention' | i18next }}</label>
         <div formArrayName="prevention">
           <div *ngFor="let control of preventionArrayHu.controls; let i = index">
             <input class="inputForm" [formControlName]="i" />
@@ -64,7 +65,7 @@
           <button type="button" (click)="addControl(preventionArrayHu)">+ {{ 'add' | i18next }}</button>
         </div>
 
-        {{ 'riskFactors' | i18next }}
+        <label for="">{{ 'riskFactors' | i18next }}</label>
         <div formArrayName="riskFactors">
           <div *ngFor="let control of riskFactorsArrayHu.controls; let i = index">
             <input class="inputForm" [formControlName]="i" />
@@ -73,7 +74,7 @@
           <button type="button" (click)="addControl(riskFactorsArrayHu)">+ {{ 'add' | i18next }}</button>
         </div>
 
-        {{ 'treatment' | i18next }}
+        <label for="">{{ 'treatment' | i18next }}</label>
         <div formArrayName="treatment">
           <div *ngFor="let control of treatmentArrayHu.controls; let i = index">
             <input class="inputForm" [formControlName]="i" />
@@ -115,9 +116,9 @@
         </div>
 
 
-        <label>{{ 'description' | i18next }} <input formControlName="description" /></label>
+        <label>{{ 'description' | i18next }} <br> <input formControlName="description" /></label>
 
-        <label>{{ 'gender' | i18next }}
+        <label>{{ 'gender' | i18next }} <br>
           <select class="inputForm" formControlName="gender">
             <option value="Both">{{ 'both' | i18next }}</option>
             <option value="Male">{{ 'male' | i18next }}</option>
@@ -129,7 +130,7 @@
 
         
         <div *ngIf="diseaseFormEn.get('painful')?.value" formArrayName="painLocation">
-          {{ 'painLocation' | i18next }}
+          <label for="">{{ 'painLocation' | i18next }}</label>
           <div *ngFor="let control of painLocationArrayEn.controls; let i = index">
             <select class="inputForm" [formControlName]="i">
               <option *ngFor="let location of painLocationE" [value]="location">{{ location }}</option>
@@ -139,7 +140,7 @@
           <button type="button" (click)="addControl(painLocationArrayEn)">+ {{ 'add' | i18next }}</button>
         </div>
 
-        {{ 'prevention' | i18next }}
+        <label for="">{{ 'prevention' | i18next }}</label>
         <div formArrayName="prevention">
           <div *ngFor="let control of preventionArrayEn.controls; let i = index">
             <input class="inputForm" [formControlName]="i" />
@@ -149,7 +150,7 @@
         </div>
 
 
-        {{ 'riskFactors' | i18next }}
+        <label for="">{{ 'riskFactors' | i18next }}</label>
         <div formArrayName="riskFactors">
           <div *ngFor="let control of riskFactorsArrayEn.controls; let i = index">
             <input class="inputForm" [formControlName]="i" />
@@ -158,7 +159,7 @@
           <button type="button" (click)="addControl(riskFactorsArrayEn)">+ {{ 'add' | i18next }}</button>
         </div>
 
-        {{ 'treatment' | i18next }}
+        <label for="">{{ 'treatment' | i18next }}</label>
         <div formArrayName="treatment">
           <div *ngFor="let control of treatmentArrayEn.controls; let i = index">
             <input class="inputForm" [formControlName]="i" />
@@ -175,11 +176,7 @@
     <app-disease [diseaseName]="d.id" (diseaseDeleted)="onDiseaseDeleted($event)"></app-disease>
     
   </div>
-  <mat-paginator [length]="totalDiseases" 
-               [pageSize]="pageSize"
-               [pageIndex]="currentPage"
-               [pageSizeOptions]="[5, 10, 20]"
-               (page)="onPageChange($event)">
+  <mat-paginator [length]="totalDiseases" [pageSize]="pageSize" [pageIndex]="currentPage" [pageSizeOptions]="[5, 10, 20]" (page)="onPageChange($event)">
 </mat-paginator>
 
 </div>

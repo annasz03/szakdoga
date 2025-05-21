@@ -25,7 +25,7 @@
     "personaldata": "Személyes adatok",
     "age": "Kor",
     "male": "Férfi",
-    "female": "nő",
+    "female": "Nő",
     "next": "Tovább",
     "symptoms": "Tünetek:",
     "yes": "Igen",
@@ -135,7 +135,10 @@
         "notifs": "Notifications: ",
         "24h": "24 órás elérhetőség",
         "free": "Ingyenes regisztráció",
-        "multilang": "Angol nyelvi támogatás"
+        "multilang": "Angol nyelvi támogatás",
+        "sharedoc": "Megosztás orvossal",
+        "write_comment": "Hozzászólás írása",
+        "less": "Kevesebb"
 
     
 

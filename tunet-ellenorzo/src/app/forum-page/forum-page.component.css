@@ -16,6 +16,7 @@
 
 .search-filters {
     display: flex;
+    background-color: white;
     align-items: flex-end;
     flex-wrap: wrap;
     gap: 1rem;
@@ -127,6 +128,7 @@ mat-paginator {
   font-weight: 500;
   color: white;
   background-color: #0288D1;
+  width: 150px !important;
   border: none;
   border-radius: 6px;
   cursor: pointer;

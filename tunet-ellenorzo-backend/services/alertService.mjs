@@ -23,6 +23,7 @@ export async function sendScheduledAlerts() {
     console.log(alert.times)
     if (shouldSend) {
       console.log("sending")
+      console.log(alert.fcmToken)
       messages.push({
         token: alert.fcmToken,
         notification: {

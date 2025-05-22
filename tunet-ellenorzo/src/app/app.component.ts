@@ -87,6 +87,7 @@ export class AppComponent{
       }).then((currentToken) => {
         if (currentToken) {
           this.updateAlertTokens(currentToken, this.firestore);
+          console.log(currentToken)
         }
       })
     })

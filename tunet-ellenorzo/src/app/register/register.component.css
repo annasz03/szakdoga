@@ -19,13 +19,32 @@
     width: 100%;
 }
 .dialog-header {
+  position: relative;
+  padding: 1.5rem 2rem 1rem 2rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 0.5rem;
+  border-bottom: 1px solid #ccc;
 }
 
-.dialog-header button {
-  margin-left: auto;
+.dialog-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  flex-grow: 1;
 }
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  color: #555;
+}
+
+.close-button:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
 

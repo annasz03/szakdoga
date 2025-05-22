@@ -17,8 +17,9 @@ export async function sendScheduledAlerts() {
     if (times.includes(currentTime)) {
       shouldSend=true;
     }
-
+    console.log(alert.times)
     if (shouldSend) {
+      console.log("sending")
       messages.push({
         token: alert.fcmToken,
         notification: {
@@ -33,7 +34,6 @@ export async function sendScheduledAlerts() {
     for (const message of messages) {
         const response = await messaging.send(message);
         console.log(`kikuldve: ${response}`);
-        console.log(message)
     }
   }
 }

@@ -53,6 +53,7 @@ export class ProfilePageComponent {
       next: (res) => {
         this.userId = res.userId;
         this.role = res.role;
+
       }
     });
   }
@@ -81,7 +82,7 @@ export class ProfilePageComponent {
   }
 
   deleteProfileAdmin(){
-    this.userService.deleteProfile(this.userId).subscribe({
+    this.userService.deleteProfile(this.profileUid).subscribe({
       next: () => {
         console.log('törölve');
       },

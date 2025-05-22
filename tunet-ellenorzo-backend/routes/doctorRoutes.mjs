@@ -280,5 +280,14 @@ router.post('/doctors-temp', async (req, res) => {
     res.status(200).json({ message: 'success' });
 });
 
+router.post('/doctor-data', async (req, res) => {
+  const uid = req.body.uid;
+    const querySnapshot = await db.collection('doctors').where('uid', '==', uid).limit(1).get();
+    const doc = querySnapshot.docs[0];
+    const doctorData = { id: doc.id, ...doc.data() };
+    return res.status(200).json(doctorData);
+});
+
+
 
 export default router;

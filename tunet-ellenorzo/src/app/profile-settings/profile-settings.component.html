@@ -46,6 +46,12 @@
   <h3>{{ 'newPass' | i18next }}</h3>
   <div class="form-group">
     <mat-form-field>
+      <mat-label>{{ 'currentPass' | i18next }}</mat-label>
+      <input matInput type="password" [(ngModel)]="currentPass">
+    </mat-form-field>
+
+
+    <mat-form-field>
       <mat-label>{{ 'pass' | i18next }}</mat-label>
       <input matInput type="password" [(ngModel)]="pass">
     </mat-form-field>
@@ -107,7 +113,7 @@
       {{ 'save' | i18next }}
     </button>
 
-    <br>
+    <p>
     <button class="deleteButton" (click)="deleteDoctorProfile()">
       {{ 'delDocProfile' | i18next }}
     </button>

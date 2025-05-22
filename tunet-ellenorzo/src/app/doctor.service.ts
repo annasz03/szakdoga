@@ -78,4 +78,8 @@ export class DoctorService {
   postDoctorTemp(newDoc:any){
     return this.http.post(backendUrl + "doctors-temp", newDoc);
   }
+
+  getDoctorDataByUid(uid:string){
+    return this.http.post(backendUrl + "doctor-data", uid);
+  }
 }

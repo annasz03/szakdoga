@@ -2,7 +2,7 @@
     <div class="comment-uid">{{ username }}</div>
     <div class="comment-date">{{ formattedDate }}</div>
     <div class="comment-body">{{ comment.body }}</div>
-    <div *ngIf="comment?.uid===currentUser?.uid"  class="del-button ">
+    <div *ngIf="comment?.uid===currentUser?.uid || role === 'admin'"  class="del-button ">
         <img src="../../assets/trash.webp" alt="" (click)="deleteComment(comment.uid)">
     </div>
 </div>

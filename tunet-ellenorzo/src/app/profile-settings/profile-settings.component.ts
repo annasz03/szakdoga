@@ -17,6 +17,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { Router } from '@angular/router';
 import { UserService } from '../user.service';
+import { DoctorService } from '../doctor.service';
 
 @Component({
   selector: 'app-profile-settings',
@@ -28,6 +29,7 @@ import { UserService } from '../user.service';
 export class ProfileSettingsComponent {
   private authService = inject(AuthService);
   private userService = inject(UserService);
+  private doctorService = inject(DoctorService);
 
   currentUser:any;
   displayName: any;
@@ -40,7 +42,7 @@ export class ProfileSettingsComponent {
   gender: string = '';
   birth: string = '';
 
-
+  currentPass: string = '';
   pass:any;
   passAgain:any;
   passError:any;
@@ -72,6 +74,12 @@ export class ProfileSettingsComponent {
           this.role = userData.role;
         }
       })
+
+      this.doctorService.getDoctorDataByUid(this.currentUser.uid).subscribe({
+        next: (response) => {
+
+        }
+      })
     })
   }
 
@@ -94,25 +102,36 @@ export class ProfileSettingsComponent {
   }
 
 
-  saveNewPassword() {
-    if (this.pass !== this.passAgain) {
-      this.passError = "A jelszavak nem egyeznek";
-    } else if (!this.isStrongPassword(this.pass)) {
-      this.passError = "A jelszónak tartalmaznia kell legalább egy nagybetűt, számot és speciális karaktert, és minimum 8 karakter hosszúnak kell lennie.";
-    } else {
-      this.passError = null;
-    }
-
-    const auth = getAuth();
-    const user = auth.currentUser;
-    const credential = EmailAuthProvider.credential(user!.email!, this.pass);
-
-    reauthenticateWithCredential(user!, credential).then(() => {
-        updatePassword(user!, this.pass).then(() => {
-            window.location.reload();
-          })
-      })
+ saveNewPassword() {
+  if (this.pass !== this.passAgain) {
+    this.passError = "A jelszavak nem egyeznek";
+    return;
   }
+
+  if (!this.isStrongPassword(this.pass)) {
+    this.passError = "A jelszónak tartalmaznia kell legalább egy nagybetűt, számot és speciális karaktert, és minimum 8 karakter hosszúnak kell lennie.";
+    return;
+  }
+
+  this.passError = null;
+
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  if (!user || !user.email) {
+    this.passError = "Hiba történt: nem található bejelentkezett felhasználó.";
+    return;
+  }
+
+  const credential = EmailAuthProvider.credential(user.email, this.currentPass);
+
+    reauthenticateWithCredential(user, credential).then(() => {
+      updatePassword(user, this.pass).then(() => {
+        alert("Sikeres jelszóváltoztatás");
+        window.location.reload();
+      })})
+  }
+
 
   isStrongPassword(password: string): boolean {
     const strongPasswordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
@@ -121,17 +140,16 @@ export class ProfileSettingsComponent {
 
 
   saveDoctorData() {
-    this.http.post('http://localhost:3000/api/users/save-doctor-data', {
+    this.http.post('https://szakdoga-dlg2.onrender.com/api/users/save-doctor-data', {
       uid: this.currentUser.uid
     }).subscribe({
       next: (response) => {
-        console.log(response);
         window.location.reload();
       }
     });
 
 
-    this.http.post('http://localhost:3000/api/users/update-doctor-profile', {
+    this.http.post('https://szakdoga-dlg2.onrender.com/api/users/update-doctor-profile', {
       uid: this.currentUser.uid,
       name: this.name,
       city: this.city,
@@ -158,7 +176,7 @@ export class ProfileSettingsComponent {
     const confirmed = window.confirm('Biztosan törölni szeretnéd a profilodat?');
 
     if (confirmed) {
-      this.http.post('http://localhost:3000/delete-user', { uid: this.userId })
+      this.http.post('https://szakdoga-dlg2.onrender.com/api/delete-user', { uid: this.userId })
         .subscribe({
           next: () => {
             alert('Profil sikeresen törölve.');

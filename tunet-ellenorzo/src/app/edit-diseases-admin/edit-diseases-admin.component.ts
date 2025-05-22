@@ -180,19 +180,6 @@ export class EditDiseasesAdminComponent {
         this.symptomsE = symptoms;
       }
     });
-
-    /*this.http.post<string[]>('http://localhost:3000/api/get-all-symptoms', { lang: 'hu' })
-    .subscribe({
-      next: (symptoms) => {
-        this.symptomsH = symptoms;
-      }
-    });
-    
-    this.http.post<string[]>('http://localhost:3000/api/get-all-symptoms', { lang: 'en' })
-    .subscribe({
-      next: (symptoms) => {
-        this.symptomsE = symptoms;
-      }});*/
   }
 
   async loadPainLocation() {
@@ -208,19 +195,6 @@ export class EditDiseasesAdminComponent {
       }
     });
 
-    /*this.http.post<string[]>('http://localhost:3000/api/get-all-pain', { lang: 'hu' })
-    .subscribe({
-      next: (painList) => {
-        this.painLocationH = painList;
-      }
-    });
-    
-    this.http.post<string[]>('http://localhost:3000/api/get-all-pain', { lang: 'en' })
-    .subscribe({
-      next: (painList) => {
-        this.painLocationE = painList;
-      }
-    });*/
   }
 
 

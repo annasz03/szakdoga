@@ -40,7 +40,7 @@
       <div *ngIf="reqOpen" class="requests-container">
         <div *ngFor="let doc of docs_temp" class="request-item">
           <div class="docFinder2">
-            <app-doctor [doc]="doc" [role]="role" [temp]="true"></app-doctor>
+            <app-doctor  (requestHandled)="reqDoc()" [doc]="doc" [role]="role" [temp]="true"></app-doctor>
           </div>
         </div>
       </div>
@@ -91,10 +91,7 @@
 
         <div *ngIf="errorMsg" class="error-message">{{ errorMsg }}</div>
 
-        <button
-          (click)="registerDocProfile()"
-          [disabled]="!newDocName || !newDocPhone || !newDocCity || !newDocAddress || !newDocSpecialty || !newDocNumber"
-        >
+        <button (click)="registerDocProfile()">
           {{ 'regist' | i18next }}
         </button>
       </div>

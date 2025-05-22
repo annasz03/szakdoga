@@ -11,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
 import { ForumService } from '../forum.service';
 import { DiseaseService } from '../disease.service';
 import { LangService } from '../lang-service.service';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-forum-post',
@@ -23,6 +24,7 @@ import { LangService } from '../lang-service.service';
 export class ForumPostComponent implements OnInit, OnChanges {
   forumService = inject(ForumService)
   diseaseService = inject(DiseaseService)
+  userService = inject(UserService)
 
   @Input() post!: any;
 
@@ -39,13 +41,15 @@ export class ForumPostComponent implements OnInit, OnChanges {
   comments: IComment[] = [];
 
   currentUser: any;
-  currentLang:any
+  currentLang:any;
+  role:any;
 
   @Output() postDeleted = new EventEmitter<string>();
 
   constructor(private datePipe: DatePipe, private router: Router, private authService: AuthService, private langService:LangService){
     this.langService.currentLang$.subscribe((lang: string) => {
       this.currentLang=lang
+      
     })
   }
 
@@ -60,6 +64,9 @@ export class ForumPostComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
+      this.userService.getUserDataByUsername(this.currentUser.displayName).subscribe((res) => {
+        this.role = res.role;
+      })
       this.checkIfLiked();
       this.loadComments();
       this.date = this.post.date instanceof Timestamp ? this.post.date.toDate() : this.post.date;

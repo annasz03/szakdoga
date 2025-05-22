@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { addDoc, collection, deleteDoc, doc, Firestore, getDocs, updateDoc } from '@angular/fire/firestore';
 import { I18NEXT_SERVICE, I18NextModule, ITranslationService } from 'angular-i18next';
 import { AuthService } from '../auth.service';
@@ -28,6 +28,7 @@ export class DoctorComponent {
   currentUser:any;
   @Input() temp:boolean = false;
   private authService = inject(AuthService);
+  @Output() requestHandled = new EventEmitter<void>();
 
   constructor(){
     this.authService.user$.subscribe(user => {
@@ -51,12 +52,13 @@ export class DoctorComponent {
 
   deleteRequest() {
     this.doctorService.deleteDoctorTemp(this.doc.id).subscribe(() => {
+      this.requestHandled.emit();
     });
   }
 
   acceptRequest() {
     this.doctorService.acceptDoctorTemp(this.doc,this.currentUser.displayName).subscribe(() => {
-      console.log('accepted');
+      this.requestHandled.emit();
     });
   }
   

@@ -24,12 +24,16 @@ export class ForumCommentComponent {
   date:any;
   username:any;
   currentUser:any;
+  role:any;
 
   @Output() commentDeleted = new EventEmitter<string>();
 
   constructor(private datePipe: DatePipe, private authService: AuthService){
     this.authService.user$.subscribe(user => {
         this.currentUser = user;
+        this.userService.getUserDataByUsername(this.currentUser.displayName).subscribe((res) => {
+        this.role = res.role;
+      })
     });
   }
 

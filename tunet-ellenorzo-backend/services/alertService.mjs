@@ -9,7 +9,6 @@ export async function sendScheduledAlerts() {
   const messages = [];
 
   snapshot.forEach(doc => {
-    console.log(doc)
     const alert = doc.data();
     const freq = alert.frequency;
     const times = alert.times;

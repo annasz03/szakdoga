@@ -65,6 +65,21 @@ router.post('/get-all-symptoms', async (req, res) => {
   res.status(200).send(symptoms);
 });
 
+router.get('/get-all-symptoms-both', async (req, res) => {
+  const sympref = db.collection('symptoms');
+  const snapshot = await sympref.get();
+  const symptoms = [];
+
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    symptoms.push(data);
+  });
+
+  console.log(symptoms)
+  res.status(200).send(symptoms);
+});
+
+
 //get all pain
 router.post('/get-all-pain', async (req, res) => {
   const { lang } = req.body;

@@ -49,6 +49,7 @@
         <input type="text" [(ngModel)]="comment" placeholder="{{ 'write_comment' | i18next }}">
         <button (click)="submitRating()">{{ 'submit_rating' | i18next }}</button>
       </div>
+      {{errorMessage}}
     </div>
   </div>
 

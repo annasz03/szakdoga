@@ -28,10 +28,12 @@
 }
 
 .dialog-title {
-  font-size: 1.2rem;
-  font-weight: bold;
-  text-align: center;
-  flex-grow: 1;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    flex-grow: 1;
 }
 
 .close-button {

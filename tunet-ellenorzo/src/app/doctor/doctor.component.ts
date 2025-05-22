@@ -8,6 +8,7 @@ import { Ratings } from '../ratings';
 import { RatingsComponent } from '../ratings/ratings.component';
 import { HttpClient } from '@angular/common/http';
 import { DoctorService } from '../doctor.service';
+import { LangService } from '../lang-service.service';
 
 @Component({
   selector: 'app-doctor',
@@ -18,6 +19,7 @@ import { DoctorService } from '../doctor.service';
 })
 export class DoctorComponent {
   doctorService = inject(DoctorService)
+  langService = inject(LangService)
   @Input() doc: any;
   @Input() role: any;
   ratings: Ratings[]=[];
@@ -29,10 +31,15 @@ export class DoctorComponent {
   @Input() temp:boolean = false;
   private authService = inject(AuthService);
   @Output() requestHandled = new EventEmitter<void>();
+  lang:any;
+  errorMessage:any;
 
   constructor(){
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
+    });
+    this.langService.currentLang$.subscribe((lang) => {
+      this.lang=lang
     });
   }
 
@@ -67,10 +74,18 @@ export class DoctorComponent {
   }
 
   async submitRating() {
-    this.doctorService.submitRating(this.doc.id,this.selectedRating,this.comment,this.currentUser.uid).subscribe(() => {
+    if(this.selectedRating===0){
+      if(this.lang==='hu'){
+        this.errorMessage="Válasszon ki egy értékelést."
+      }else{
+        this.errorMessage="Please select a rating."
+      }
+    }else{
+      this.doctorService.submitRating(this.doc.id,this.selectedRating,this.comment,this.currentUser.uid).subscribe(() => {
       this.selectedRating = 0;
       this.comment = '';
       this.getRatings()
-    });    
+    });  
+    }  
   }
 }

@@ -73,108 +73,149 @@ export class ResultPageComponent {
     });
   }
 
-  async exportResult() {
-    const doc = new jsPDF();
-    const lang = this.currentLang === 'en' ? 'en' : 'hu';
-    let title="";
-    if(lang==="hu"){
-      title = "Eredmények";
-    }else{
-      title= "Results"
-    }
-    
-    doc.setFontSize(18);
-    doc.setFont('Roboto-Regular');
-    doc.text(title, 14, 20);
+
+async exportResult() {
+  const doc = new jsPDF({
+    orientation: "portrait",
+    unit: "mm",
+    format: "a4",
+    putOnlyUsedFonts: true,
+    filters: ["ASCIIHexEncode"]
+  });
+  await this.loadFonts(doc);
+  doc.setFont('Roboto-Regular', 'normal');
+  const lang = this.currentLang === 'en' ? 'en' : 'hu';
+  const title = lang === 'hu' ? "Eredmények" : "Results";
+  const margin = { left: 14, right: 14, top: 20, bottom: 280 };
+  let yPosition = margin.top;
+
+  doc.setFontSize(18);
+  const titleLines = doc.splitTextToSize(title, 180);
+  doc.text(titleLines, margin.left, yPosition);
+  yPosition += titleLines.length * 10;
+
+  const diseaseKeys = this.result.map((item: any) => item.key);
+  const queryParam = diseaseKeys.join(',');
+  let symptomsMap=[];
   
-    let yPosition = 30;
-    const marginBottom = 280;
-  
-    const diseaseKeys = this.result.map((item: any) => item.key);
-    const queryParam = diseaseKeys.join(',');
-  
-    const response = await fetch(`https://szakdoga-dlg2.onrender.com/export-results?lang=${lang}&keys=${queryParam}`);
-    const data = await response.json();
-  
-    for (const disease of data) {
-      if (yPosition > marginBottom) {
-        doc.addPage();
-        yPosition = 20;
-      }
-  
-      doc.setFontSize(14);
-      if(lang==='hu'){
-        doc.text(`Betegség neve: ${disease.name}`, 14, yPosition);
-      }else {
-        doc.text(`Disease: ${disease.name}`, 14, yPosition);
-      }
-      yPosition += 8;
-  
-      doc.setFontSize(12);
-  
-      if (disease.symptoms?.length) {
-        if(lang==='hu'){
-          doc.text(`Tünetek:`, 14, yPosition);
-        }else {
-          doc.text(`Symptoms:`, 14, yPosition);
-        }
-        yPosition += 6;
-        doc.text(`  ${disease.symptoms.join(", ")}`, 16, yPosition);
-        yPosition += 8;
-      }
-  
-      if (disease.pain) {
-        if(lang==='hu'){
-          doc.text(`Fájdalom:`, 14, yPosition);
-        }else {
-          doc.text(`Pain:`, 14, yPosition);
-        }
-        yPosition += 6;
-        doc.text(`  ${disease.pain}`, 20, yPosition);
-        yPosition += 8;
-      }
-  
-      if (disease.treatment) {
-        if(lang==='hu'){
-          doc.text(`Kezelés:`, 14, yPosition);
-        }else { 
-          doc.text(`Treatment:`, 14, yPosition);
-        }
-  
-        yPosition += 6;
-        doc.text(`  ${disease.treatment}`, 16, yPosition);
-        yPosition += 8;
-      }
-  
-      if (disease.prevention?.length) {
-        if(lang==='hu'){
-          doc.text(`Megelőzés:`, 14, yPosition);
-        }else {
-          doc.text(`Treatment:`, 14, yPosition);
-        }
-        
-        yPosition += 6;
-        doc.text(`  ${disease.prevention.join(", ")}`, 16, yPosition);
-        yPosition += 8;
-      }
-  
-      if (disease.riskFactors?.length) {
-        if(lang==='hu'){
-          doc.text(`Kockázati tényezők:`, 14, yPosition);
-        }else {
-          doc.text(`Risk factors:`, 14, yPosition);
-        }
-        yPosition += 6;
-        doc.text(`  ${disease.riskFactors.join(", ")}`, 16, yPosition);
-        yPosition += 8;
-      }
-  
-      yPosition += 4;
-    }
-  
-    doc.save('eredmenyek_betegsegek.pdf');
-    
+  const response = await fetch(`https://szakdoga-dlg2.onrender.com/export-results?lang=${lang}&keys=${queryParam}`);
+  if(lang==='hu'){
+    const resp = await fetch(`https://szakdoga-dlg2.onrender.com/get-all-symptoms-both`);
+    console.log(resp)
+    symptomsMap = await resp.json();
   }
+  const data = await response.json();
+
+  for (const disease of data) {
+    if (yPosition > margin.bottom) {
+      doc.addPage();
+      yPosition = margin.top;
+    }
+    doc.setFontSize(14);
+    const diseaseTitle = lang === 'hu' ? `Betegség neve: ${disease.name}` : `Disease: ${disease.name}`;
+    const titleLines = doc.splitTextToSize(diseaseTitle, 180);
+    doc.text(titleLines, margin.left, yPosition);
+    yPosition += titleLines.length * 7;
+ 
+    if (disease.symptoms?.length) {
+      let symptomsText: string;
+      if (lang === 'hu') {
+        const translated = disease.symptoms.map((s: string) =>
+          symptomsMap[s] || s
+        );
+        symptomsText = translated.join(', ');
+      } else {
+        symptomsText = disease.symptoms.join(', ');
+      }
+
+      yPosition = this.addSection(
+        doc,
+        lang === 'hu' ? 'Tünetek:' : 'Symptoms:',
+        symptomsText,
+        yPosition,
+        margin,
+        lang
+      );
+    }
+ 
+    if (disease.treatment) {
+      yPosition = this.addSection(
+        doc,
+        lang === 'hu' ? 'Kezelés:' : 'Treatment:',
+        disease.treatment,
+        yPosition,
+        margin,
+        lang
+      );
+    }
+ 
+    if (disease.prevention?.length) {
+      yPosition = this.addSection(
+        doc,
+        lang === 'hu' ? 'Megelőzés:' : 'Prevention:',
+        disease.prevention.join(", "),
+        yPosition,
+        margin,
+        lang
+      );
+    }
+ 
+    if (disease.riskFactors?.length) {
+      yPosition = this.addSection(
+        doc,
+        lang === 'hu' ? 'Kockázati tényezők:' : 'Risk factors:',
+        disease.riskFactors.join(", "),
+        yPosition,
+        margin,
+        lang
+      );
+    }
+
+    yPosition += 10;
+  }
+ 
+  doc.save(lang === 'hu' ? 'eredmenyek.pdf' : 'results.pdf');
+}
+
+private async loadFonts(doc: jsPDF) {
+    const robotoRegular = await fetch('/assets/fonts/Roboto-Regular.ttf')
+      .then(res => res.arrayBuffer());
+    
+    doc.addFileToVFS('Roboto-Regular.ttf', this.arrayBufferToBase64(robotoRegular));
+    doc.addFont('Roboto-Regular.ttf', 'Roboto-Regular', 'normal');
+    
+}
+
+private arrayBufferToBase64(buffer: ArrayBuffer) {
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  for (let i = 0; i < bytes.byteLength; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return window.btoa(binary);
+}
+
+private addSection(
+  doc: jsPDF,
+  label: string,
+  content: string,
+  yPos: number,
+  margin: { left: number; right: number },
+  lang: string
+): number {
+  doc.setFontSize(12);
+   
+  const labelLines = doc.splitTextToSize(label, 180);
+  doc.text(labelLines, margin.left, yPos);
+  yPos += labelLines.length * 6;
+ 
+  doc.setFontSize(11);
+  const contentLines = doc.splitTextToSize(content, 180);
+  doc.text(contentLines, margin.left + 4, yPos);
+  yPos += contentLines.length * 6 + 8;
+
+  return yPos;
+}
   
   
 }

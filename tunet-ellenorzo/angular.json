@@ -24,7 +24,8 @@
               "src/assets",
               "src/favicon.ico",
               "src/firebase-messaging-sw.js",
-              "src/manifest.json"
+              "src/manifest.json",
+               { "glob": "**/*.ttf", "input": "src/assets/fonts/", "output": "/assets/fonts/" }
             ]
             ,
             "styles": [

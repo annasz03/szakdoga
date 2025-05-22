@@ -162,7 +162,7 @@ router.post('/doctors_temp/accept', async (req, res) => {
     for (const userDoc of usersSnapshot.docs) {
       const userData = userDoc.data();
       if (userData.username === currentUsername) {
-        await db.collection('users').doc(userDoc.id).update({
+        await db.collection('users').doc(doc.uid).update({
           role: 'doctor'
         });
         break;

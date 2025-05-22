@@ -96,14 +96,17 @@ async exportResult() {
 
   const diseaseKeys = this.result.map((item: any) => item.key);
   const queryParam = diseaseKeys.join(',');
-  let symptomsMap=[];
+  let symptomsMap: { [key: string]: string } = {};
   
   const response = await fetch(`https://szakdoga-dlg2.onrender.com/export-results?lang=${lang}&keys=${queryParam}`);
-  if(lang==='hu'){
-    const resp = await fetch(`https://szakdoga-dlg2.onrender.com/get-all-symptoms-both`);
-    console.log(resp)
-    symptomsMap = await resp.json();
-  }
+  if (lang === 'hu') {
+  const resp = await fetch(`https://szakdoga-dlg2.onrender.com/get-all-symptoms-both`);
+  const symptomsList: Array<{en: string, hu: string}> = await resp.json();
+  symptomsMap = symptomsList.reduce((acc: { [key: string]: string }, curr) => {
+    acc[curr.en] = curr.hu;
+    return acc;
+  }, {});
+}
   const data = await response.json();
 
   for (const disease of data) {
@@ -117,26 +120,27 @@ async exportResult() {
     doc.text(titleLines, margin.left, yPosition);
     yPosition += titleLines.length * 7;
  
-    if (disease.symptoms?.length) {
-      let symptomsText: string;
-      if (lang === 'hu') {
-        const translated = disease.symptoms.map((s: string) =>
-          symptomsMap[s] || s
-        );
-        symptomsText = translated.join(', ');
-      } else {
-        symptomsText = disease.symptoms.join(', ');
-      }
-
-      yPosition = this.addSection(
-        doc,
-        lang === 'hu' ? 'Tünetek:' : 'Symptoms:',
-        symptomsText,
-        yPosition,
-        margin,
-        lang
-      );
+      if (disease.symptoms?.length) {
+    let symptomsText: string;
+    if (lang === 'hu') {
+      const translated = disease.symptoms.map((s: string) => {
+      console.log(`Keresett kulcs: ${s}, Talált érték: ${symptomsMap[s]}`);
+      return symptomsMap[s] || s;
+    });
+      symptomsText = translated.join(', ');
+    } else {
+      symptomsText = disease.symptoms.join(', ');
     }
+
+    yPosition = this.addSection(
+      doc,
+      lang === 'hu' ? 'Tünetek:' : 'Symptoms:',
+      symptomsText,
+      yPosition,
+      margin,
+      lang
+    );
+  }
  
     if (disease.treatment) {
       yPosition = this.addSection(

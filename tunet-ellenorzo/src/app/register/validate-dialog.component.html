@@ -1,6 +1,6 @@
-<div class="form">
-        {{ 'verif' | translate }}    
-        <button mat-button (click)="close()">
-        X
-        </button>
+<div class="dialog-header">
+  <span>{{ 'verif' | translate }}</span>
+  <button mat-icon-button (click)="close()" aria-label="Close">
+    <mat-icon>close</mat-icon>
+  </button>
 </div>

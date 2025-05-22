@@ -11,6 +11,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { LangService } from '../lang-service.service';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-register',
@@ -118,7 +119,7 @@ export class RegisterComponent {
 @Component({
   selector: 'app-validate-dialog',
   standalone: true,
-  imports: [MatDialogModule, CommonModule, TranslateModule],
+  imports: [MatDialogModule, CommonModule, TranslateModule, MatIconModule],
   templateUrl: './validate-dialog.component.html',
   styleUrl: './register.component.css',
 })

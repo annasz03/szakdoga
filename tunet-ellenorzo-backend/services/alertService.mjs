@@ -2,6 +2,7 @@ import { db, messaging } from '../config/firebase.mjs';
 
 export async function sendScheduledAlerts() {
   const now = new Date();
+  now.setHours(now.getHours() + 2);
   const currentHour = now.getHours().toString().padStart(2, '0');
   const currentMinute = now.getMinutes().toString().padStart(2, '0');
   const currentTime = `${currentHour}:${currentMinute}`;

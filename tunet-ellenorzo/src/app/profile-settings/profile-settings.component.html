@@ -88,9 +88,12 @@
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>{{ 'city' | i18next }}</mat-label>
-      <input matInput [(ngModel)]="city" name="city">
-    </mat-form-field>
+          <mat-label>{{ 'city' | i18next }}</mat-label>
+          <select matNativeControl [(ngModel)]="city" required>
+            <option value="">{{ 'city' | i18next }}</option>
+            <option *ngFor="let a of area" [value]="a.value">{{ a.value }}</option>
+          </select>
+        </mat-form-field>
 
     <mat-form-field>
       <mat-label>{{ 'address' | i18next }}</mat-label>
@@ -102,10 +105,14 @@
       <input matInput [(ngModel)]="phone" name="phone">
     </mat-form-field>
 
+
     <mat-form-field>
-      <mat-label>{{ 'specialty' | i18next }}</mat-label>
-      <input matInput [(ngModel)]="specialty" name="specialty">
-    </mat-form-field>
+          <mat-label>{{ 'specialty' | i18next }}</mat-label>
+          <select matNativeControl [(ngModel)]="specialty" required>
+            <option value="">{{ 'specialty' | i18next }}</option>
+            <option *ngFor="let s of specList" [value]="s.value">{{ s.value }}</option>
+          </select>
+        </mat-form-field>
   </div>
 
   <div class="button-group">

@@ -57,6 +57,8 @@ export class ProfileSettingsComponent {
   address: string = '';
   phone: string = '';
   specialty: string = '';
+  area:any;
+  specList:any;
   constructor(private http:HttpClient, private router:Router){}
 
   ngOnInit() {
@@ -73,6 +75,12 @@ export class ProfileSettingsComponent {
           this.birth = userData.birth;
           this.gender = userData.gender;
           this.role = userData.role;
+          if(this.role==='doctor'){
+            this.doctorService.initData(this.currentUser.displayName).subscribe((data: any) => {
+              this.area = data.area;
+              this.specList = data.specList;
+            });
+          }
         }
       })
 

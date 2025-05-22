@@ -77,7 +77,7 @@ export class ProfileSettingsComponent {
 
       this.doctorService.getDoctorDataByUid(this.currentUser.uid).subscribe({
         next: (response) => {
-
+          console.log(response)
         }
       })
     })

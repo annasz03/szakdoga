@@ -288,6 +288,25 @@ router.post('/doctor-data', async (req, res) => {
     return res.status(200).json(doctorData);
 });
 
+router.post('/update-doctor-profile', async (req, res) => {
+    const { uid, name, city, address, phone, specialty } = req.body;
+    const doctorsRef = db.collection('doctors');
+    const snapshot = await doctorsRef.where('uid', '==', uid).get();
+
+    const docRef = snapshot.docs[0].ref;
+
+    await docRef.update({
+      name,
+      city,
+      address,
+      phone,
+      specialty,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    return res.status(200).json({ message: 'Doctor profile updated successfully' });
+});
+
 
 
 export default router;

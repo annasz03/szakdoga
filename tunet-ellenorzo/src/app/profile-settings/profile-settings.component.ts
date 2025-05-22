@@ -18,6 +18,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { Router } from '@angular/router';
 import { UserService } from '../user.service';
 import { DoctorService } from '../doctor.service';
+import { Idoctor } from '../idoctor';
 
 @Component({
   selector: 'app-profile-settings',
@@ -77,9 +78,15 @@ export class ProfileSettingsComponent {
 
       this.doctorService.getDoctorDataByUid(this.currentUser.uid).subscribe({
         next: (response) => {
-          console.log(response)
+          const doctor = response as Idoctor;
+          this.name = doctor.name;
+          this.city = doctor.city;
+          this.address = doctor.address;
+          this.phone = doctor.phone;
+          this.specialty = doctor.specialty;
         }
       })
+
     })
   }
 
@@ -140,28 +147,21 @@ export class ProfileSettingsComponent {
 
 
   saveDoctorData() {
-    this.http.post('https://szakdoga-dlg2.onrender.com/api/users/save-doctor-data', {
-      uid: this.currentUser.uid
-    }).subscribe({
-      next: (response) => {
-        window.location.reload();
-      }
-    });
+  const doctorData = {
+    uid: this.currentUser.uid,
+    name: this.name,
+    city: this.city,
+    address: this.address,
+    phone: this.phone,
+    specialty: this.specialty
+  };
 
-
-    this.http.post('https://szakdoga-dlg2.onrender.com/api/users/update-doctor-profile', {
-      uid: this.currentUser.uid,
-      name: this.name,
-      city: this.city,
-      address: this.address,
-      phone: this.phone,
-      specialty: this.specialty
-    }).subscribe({
-      next: (response) => {
-        window.location.reload();
-      }
-    })
-  }
+  this.doctorService.updateDoctorProfile(doctorData).subscribe({
+    next: (response) => {
+      window.location.reload();
+    }
+  });
+}
 
 
   deleteDoctorProfile() {

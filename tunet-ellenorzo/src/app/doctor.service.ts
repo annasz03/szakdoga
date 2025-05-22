@@ -82,4 +82,15 @@ export class DoctorService {
   getDoctorDataByUid(uid:string){
     return this.http.post(backendUrl + "doctor-data", {uid:uid});
   }
+
+  updateDoctorProfile(data: {
+  uid: string;
+  name: string;
+  city: string;
+  address: string;
+  phone: string;
+  specialty: string;
+}) {
+  return this.http.post(backendUrl + 'update-doctor-profile', data);
+}
 }

@@ -9,6 +9,7 @@ export async function sendScheduledAlerts() {
   const messages = [];
 
   snapshot.forEach(doc => {
+    console.log(doc)
     const alert = doc.data();
     const freq = alert.frequency;
     const times = alert.times;
@@ -32,6 +33,7 @@ export async function sendScheduledAlerts() {
     for (const message of messages) {
         const response = await messaging.send(message);
         console.log(`kikuldve: ${response}`);
+        console.log(message)
     }
   }
 }

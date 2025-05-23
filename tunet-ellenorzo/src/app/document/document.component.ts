@@ -33,7 +33,7 @@ export class DocumentComponent {
   height="100";
   width="100";
   inFocus=false;
-@Input() shared = false;
+  @Input() shared = false;
   currentUser:any;
 
   @Input() docType="";
@@ -46,10 +46,6 @@ export class DocumentComponent {
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
     });
-  }
-
-  getUrl(){
-    return `http://localhost:3000/uploads/${this.file}`;
   }
 
   delete(){
@@ -69,9 +65,27 @@ export class DocumentComponent {
   }
 
   openPdf(): void {
-    const url = this.getUrl();
-    window.open(url, '_blank', 'noopener,noreferrer');
+  if (!this.file) {
+    console.error('Nincs fájl megadva!');
+    return;
   }
+
+  if (this.file.startsWith('data:application/pdf;base64,')) {
+    const base64Data = this.file.split(',')[1];
+    const byteCharacters = atob(base64Data);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank', 'noopener,noreferrer');
+  } else {
+    window.open(this.file, '_blank', 'noopener,noreferrer');
+  }
+}
+
 
   openDialog(): void {
     const dialogRef = this.dialog.open(ShareDialog, {

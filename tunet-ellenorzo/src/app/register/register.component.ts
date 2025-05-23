@@ -58,6 +58,9 @@ export class RegisterComponent {
       next: (response: any) => {
         this.dialog.open(ValidateDialog);
         this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        this.errorMessage = err.error?.message || 'Ismeretlen hiba történt a regisztráció során.';
       }
     });
   }

@@ -60,7 +60,15 @@ export class RegisterComponent {
         this.router.navigate(['/login']);
       },
       error: (err) => {
-        this.errorMessage = err.error?.message || 'Ismeretlen hiba történt a regisztráció során.';
+        if (err.error?.message === 'Email already in use') {
+          this.errorMessage = this.lang === 'hu'
+            ? 'Ez az emailcím már használatban van.'
+            : 'This email address is already in use.';
+        } else {
+          this.errorMessage = this.lang === 'hu'
+            ? 'Ismeretlen hiba történt a regisztráció során.'
+            : 'An unknown error occurred during registration.';
+        }
       }
     });
   }

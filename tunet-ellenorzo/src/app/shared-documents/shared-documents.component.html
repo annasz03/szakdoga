@@ -6,7 +6,7 @@
   </div>
 
   <div class="doc" *ngFor="let doc of documents">
-    <app-document  [docType]="doc.type" [fileName]="doc.filename" [text]="doc.text" [file]="doc.file" [id]="doc.id"></app-document>
+    <app-document [shared]="true" [docType]="doc.type" [fileName]="doc.filename" [text]="doc.text" [file]="doc.file" [id]="doc.id"></app-document>
 </div>   
   
 <div>

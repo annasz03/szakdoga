@@ -33,7 +33,7 @@ export class DocumentComponent {
   height="100";
   width="100";
   inFocus=false;
-
+@Input() shared = false;
   currentUser:any;
 
   @Input() docType="";

@@ -124,7 +124,6 @@ export class ResultPageComponent {
         let symptomsText: string;
         if (lang === 'hu') {
           const translated = disease.symptoms.map((s: string) => {
-          console.log(`Keresett kulcs: ${s}, Talált érték: ${symptomsMap[s]}`);
           return symptomsMap[s] || s;
         });
           symptomsText = translated.join(', ');

@@ -186,7 +186,6 @@ export class SymptomCheckerComponent {
       next: (symptomList) => {
         this.symptoms = symptomList;
         this.filteredSymptoms = this.symptomArray.controls.map(() => [...this.symptoms]);
-        console.log(this.symptoms)
       }
     });
   }

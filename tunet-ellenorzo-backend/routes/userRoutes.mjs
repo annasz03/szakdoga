@@ -70,8 +70,11 @@ router.post('/get-username-by-id', async (req, res) => {
 });
 
 router.post('/get-user-saved-results', async (req, res) => {
-  const { uid } = req.body;
-    const snapshot = await db.collection('savedResults').where('uid', '==', uid).get();
+    const { uid } = req.body;
+    const snapshot = await db
+      .collection('savedResults')
+      .where('uid', '==', uid)
+      .get();
 
     if (snapshot.empty) {
       return res.status(200).json({ savedDiseases: [] });
@@ -85,14 +88,16 @@ router.post('/get-user-saved-results', async (req, res) => {
 
       if (Array.isArray(resultMap)) {
         savedDiseases.push(resultMap);
-      } else if (typeof resultMap === 'object' && resultMap !== null) {
+      } else if (resultMap && typeof resultMap === 'object') {
+        const group = [];
         Object.values(resultMap).forEach((item) => {
           if (typeof item === 'string') {
-            savedDiseases.push([item]);
+            group.push(item);
           } else if (Array.isArray(item)) {
-            savedDiseases.push(item);
+            group.push(...item);
           }
         });
+        savedDiseases.push(group);
       }
     });
 

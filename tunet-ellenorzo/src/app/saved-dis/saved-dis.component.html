@@ -1,8 +1,11 @@
 <div class="card">
-    <button class="button-small" (click)="openSaved()">{{i+1}}. {{ 'savedSolution' | i18next }}</button>
+  <button class="button-small" (click)="openSaved()">
+    {{ i + 1 }}. {{ 'savedSolution' | i18next }}
+  </button>
+
+  <div *ngIf="opened">
     <div *ngFor="let s of saved; let j = index">
-        <div *ngIf="opened">
-            <app-disease [diseaseName]="s" [i]="j"></app-disease>
-        </div>
+      <app-disease [diseaseName]="s" [i]="j"></app-disease>
     </div>
+  </div>
 </div>

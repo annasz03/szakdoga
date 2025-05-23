@@ -36,6 +36,7 @@ export class SavedDiseasesComponent {
     this.userService.getSavedResult(this.currentUser.uid).subscribe({
       next: (response) => {
         this.savedDiseases = response.savedDiseases;
+        console.log(this.savedDiseases)
       }
     });
   }

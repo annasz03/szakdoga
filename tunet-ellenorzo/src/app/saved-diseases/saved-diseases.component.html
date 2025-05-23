@@ -2,7 +2,7 @@
   {{errorMessage}}
 </div>
 <div class="saved-container">
-  <div *ngFor="let saved of savedDiseases; let i = index" class="saved-wrapper">
-    <app-saved-dis [saved]="saved" [i]="i"></app-saved-dis>
+  <div class="saved-wrapper">
+    <app-saved-dis [saved]="savedDiseases"></app-saved-dis>
   </div>
 </div>

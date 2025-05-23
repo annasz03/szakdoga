@@ -200,26 +200,39 @@ export class ResultPageComponent {
   }
 
   private addSection(
-    doc: jsPDF,
-    label: string,
-    content: string,
-    yPos: number,
-    margin: { left: number; right: number },
-    lang: string
-  ): number {
-    doc.setFontSize(12);
-    
-    const labelLines = doc.splitTextToSize(label, 180);
-    doc.text(labelLines, margin.left, yPos);
-    yPos += labelLines.length * 6;
-  
-    doc.setFontSize(11);
-    const contentLines = doc.splitTextToSize(content, 180);
-    doc.text(contentLines, margin.left + 4, yPos);
-    yPos += contentLines.length * 6 + 8;
+  doc: jsPDF,
+  label: string,
+  content: string,
+  yPos: number,
+  margin: { left: number; right: number; top: number; bottom: number },
+  lang: string
+): number {
+  const lineHeightLabel = 6;
+  const lineHeightContent = 6;
+  const maxWidth = doc.internal.pageSize.getWidth() - margin.left - margin.right;
 
-    return yPos;
+  const labelLines = doc.splitTextToSize(label, maxWidth);
+  const labelHeight = labelLines.length * lineHeightLabel;
+
+  const contentLines = doc.splitTextToSize(content, maxWidth);
+  const contentHeight = contentLines.length * lineHeightContent;
+
+  if (yPos + labelHeight + contentHeight > margin.bottom) {
+    doc.addPage();
+    yPos = margin.top;
   }
+
+  doc.setFontSize(12);
+  doc.text(labelLines, margin.left, yPos);
+  yPos += labelHeight;
+
+  doc.setFontSize(11);
+  doc.text(contentLines, margin.left + 4, yPos);
+  yPos += contentHeight + 8;
+
+  return yPos;
+}
+
   
   
 }

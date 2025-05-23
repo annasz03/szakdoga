@@ -125,8 +125,8 @@
             <option value="Female">{{ 'female' | i18next }}</option>
           </select>
         </label>
-
-        <label>{{ 'painful' | i18next }} <br> <input class="inputForm" type="checkbox" formControlName="painful" (change)="onPainfulChange($event, 'en')" /></label>
+        
+        <label>{{ 'painful' | i18next }}  <input type="checkbox" formControlName="painful" (change)="onPainfulChange($event, 'en')" /></label>
 
         
         <div *ngIf="diseaseFormEn.get('painful')?.value" formArrayName="painLocation">

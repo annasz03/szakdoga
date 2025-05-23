@@ -90,8 +90,7 @@
         </mat-form-field>
 
         <div *ngIf="errorMsg" class="error-message">{{ errorMsg }}</div>
-
-        <button (click)="registerDocProfile()">
+        <button class="option-buttons"  (click)="registerDocProfile()">
           {{ 'regist' | i18next }}
         </button>
       </div>

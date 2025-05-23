@@ -101,11 +101,6 @@
     justify-self: start;
 }
 
-.registration-form button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
 .error-message {
     grid-column: span 2;
     color: #d32f2f;

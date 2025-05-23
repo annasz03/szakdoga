@@ -38,14 +38,13 @@ export class ForumCommentComponent {
   }
 
   ngOnChanges() {
-  if (this.comment) {
-    this.date = this.comment.date instanceof Timestamp ? this.comment.date.toDate() : this.comment.date;
-    this.formattedDate = this.datePipe.transform(this.date, 'yyyy-MM-dd HH:mm:ss');
+    if (this.comment) {
+      this.date = this.comment.date instanceof Timestamp ? this.comment.date.toDate() : this.comment.date;
+      this.formattedDate = this.datePipe.transform(this.date, 'yyyy-MM-dd HH:mm:ss');
 
-    this.getUsernameByUid(this.comment.uid);
+      this.getUsernameByUid(this.comment.uid);
+    }
   }
-}
-
 
   getUsernameByUid(uid: string) {
     this.userService.getDisplayName(uid).subscribe({

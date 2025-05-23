@@ -84,13 +84,13 @@ export class DoctorService {
   }
 
   updateDoctorProfile(data: {
-  uid: string;
-  name: string;
-  city: string;
-  address: string;
-  phone: string;
-  specialty: string;
-}) {
-  return this.http.post(backendUrl + 'update-doctor-profile', data);
-}
+    uid: string;
+    name: string;
+    city: string;
+    address: string;
+    phone: string;
+    specialty: string;
+  }) {
+    return this.http.post(backendUrl + 'update-doctor-profile', data);
+  }
 }

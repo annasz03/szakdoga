@@ -104,13 +104,6 @@
       <app-doctor [doc]="doc" [temp]="false"></app-doctor>
     </div>
 
-    <mat-paginator
-      #paginator
-      [length]="totalItems"
-      [pageSize]="pageSize"
-      [pageIndex]="currentPageIndex"
-      [pageSizeOptions]="[10, 20, 50]"
-      (page)="onPageChange($event)"
-    ></mat-paginator>
+    <mat-paginator #paginator [length]="totalItems" [pageSize]="pageSize" [pageIndex]="currentPageIndex" [pageSizeOptions]="[10, 20, 50]" (page)="onPageChange($event)"></mat-paginator>
   </div>
 </div>

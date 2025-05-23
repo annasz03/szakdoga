@@ -29,7 +29,6 @@ export class NotificationComponent  {
   }
 
   editAlert(alert: Alerts) {
-    console.log(alert)
     const dialogRef = this.dialog.open(NotificationDialog, {
       width: '400px',
       data: { ...alert },

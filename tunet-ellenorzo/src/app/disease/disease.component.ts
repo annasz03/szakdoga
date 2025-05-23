@@ -48,29 +48,22 @@ export class DiseaseComponent {
   }
 
   formatDataSource() {
-  const data = this.res;
-  this.dataSource = [];
+    //adatok formazasa a tablazathoz
+    const data = this.res;
+    this.dataSource = [];
 
-  for (const key in data) {
-    if (
-      key === 'id' ||
-      key === 'age' ||
-      data[key] === undefined ||
-      data[key] === null ||
-      (typeof data[key] === 'string' && data[key].trim() === '')
-    ) {
-      continue;
+    for (const key in data) {
+      if ( key === 'id' || key === 'age' || data[key] === undefined || data[key] === null || (typeof data[key] === 'string' && data[key].trim() === '')) {
+        continue;
+      }
+      this.dataSource.push({
+        key: key,
+        value: data[key]
+      });
     }
 
-
-    this.dataSource.push({
-      key: key,
-      value: data[key]
-    });
+    this.dataSourceFormatting();
   }
-
-  this.dataSourceFormatting();
-}
 
 
   dataSourceFormatting() {
@@ -94,6 +87,7 @@ export class DiseaseComponent {
   }
 
   getName(key: string): string {
+    //tablazat adatok labelek
     const labels: { [lang: string]: { [key: string]: string } } = {
       hu: {
         name: 'Név: ',

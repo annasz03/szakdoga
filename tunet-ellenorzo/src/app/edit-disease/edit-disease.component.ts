@@ -15,6 +15,7 @@ import { DiseaseService } from "../disease.service";
   imports: [CommonModule, ReactiveFormsModule, I18NextModule]
 })
 export class EditDiseaseComponent {
+  //vegul nem lett hasznalva
   diseaseService =inject(DiseaseService)
   @Input() diseaseId: any;
 
@@ -61,12 +62,6 @@ export class EditDiseaseComponent {
   loadData() {
     this.diseaseService.getDiseaseDataHu(this.diseaseId).subscribe(data => this.patchForm(this.diseaseFormHu, data));
     this.diseaseService.getDiseaseDataEn(this.diseaseId).subscribe(data => this.patchForm(this.diseaseFormEn, data));
-
-    /*this.http.post<Idisease>('http://localhost:3000/api/get-disease-data-hu', { diseaseId: this.diseaseId })
-      .subscribe(data => this.patchForm(this.diseaseFormHu, data));
-    
-    this.http.post<Idisease>('http://localhost:3000/api/get-disease-data-en', { diseaseId: this.diseaseId })
-      .subscribe(data => this.patchForm(this.diseaseFormEn, data));*/
   }
 
   patchForm(form: FormGroup, data: Idisease) {
@@ -130,16 +125,10 @@ export class EditDiseaseComponent {
 
   loadSymptoms(lang: string) {
     this.diseaseService.getAllSymptoms(lang).subscribe(symptoms => this.symptoms = symptoms);
-    
-    /*this.http.post<string[]>('http://localhost:3000/api/get-all-symptoms', { lang })
-      .subscribe(symptoms => this.symptoms = symptoms);*/
   }
 
   loadPainLocation(lang: string) {
     this.diseaseService.getAllPain(lang).subscribe(painList => this.painLocation = painList);
-
-    /*this.http.post<string[]>('http://localhost:3000/api/get-all-pain', { lang })
-      .subscribe(painList => this.painLocation = painList);*/
   }
 
   onSubmit(lang: 'hu' | 'en') {

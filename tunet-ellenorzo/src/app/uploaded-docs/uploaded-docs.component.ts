@@ -9,6 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { I18NextModule } from 'angular-i18next';
 import { DoctorService } from '../doctor.service';
 import { DocumentService } from '../document.service';
+import { LangService } from '../lang-service.service';
 
 
 @Component({
@@ -36,7 +37,13 @@ export class UploadedDocsComponent {
   documents:any;
   private authService= inject(AuthService)
 
-  constructor(private dataService: DataService) {}
+  lang:any;
+
+  constructor(private dataService: DataService, private langService: LangService) {
+    this.langService.currentLang$.subscribe((lang) => {
+      this.lang=lang
+    });
+  }
 
   ngOnInit() {
     this.authService.user$.subscribe(user => {
@@ -103,7 +110,11 @@ export class UploadedDocsComponent {
         }
       });
     } else {
-      this.errorMessage = "Nem megfelelő file formátum";
+      if(this.lang==='hu'){
+        this.errorMessage = "Nem megfelelő file formátum";
+      }else{
+        this.errorMessage = "File format is not correct"
+      }
     }
   }
 

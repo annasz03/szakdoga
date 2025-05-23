@@ -56,6 +56,7 @@ export class SymptomCheckerComponent {
 
   symptoms: string[] = [];
 
+  lang:any;
 
   painLocation: string[] = []
 
@@ -72,6 +73,7 @@ export class SymptomCheckerComponent {
 
   constructor(private langService: LangService,private dataService: DataService,private resultService: ResultService, private http: HttpClient, private router:Router, private firestore: Firestore){
     this.langService.currentLang$.subscribe((lang) => {
+      this.lang = lang
       this.loadSymptoms(lang);
       this.loadPainLocation(lang);
     });
@@ -119,7 +121,11 @@ export class SymptomCheckerComponent {
 
   formVisible() {
     if(this.personalInformation.invalid){
-      this.errorMessage="Kérem megfelelően töltse ki a kért adatokat!"
+      if(this.lang==='hu'){
+        this.errorMessage="Kérem megfelelően töltse ki a kért adatokat!"
+      }else{
+        this.errorMessage = "Please fill it correctly!"
+      }
     }else{
       this.errorMessage="";
       this.personalFromVisible = !this.personalFromVisible;
@@ -150,9 +156,17 @@ export class SymptomCheckerComponent {
       painLocation:painLocation as string[] || [],
     };
     if(this.symptomRes.symptoms.length===1 && this.symptomRes.symptoms[0]===''){
-      this.errorMessage="Kérem megfelelően töltse ki a kért adatokat!"
+      if(this.lang==='hu'){
+        this.errorMessage="Kérem megfelelően töltse ki a kért adatokat!"
+      }else{
+        this.errorMessage = "Please fill the form with correct data!"
+      }
     }else if(age!<0 || age!>150){
-      this.errorMessage="Nem megfelelő az adott életkor!"
+      if(this.lang==='hu'){
+        this.errorMessage="Nem megfelelő az adott életkor!"
+      }else{
+        this.errorMessage="Age is not correct!"
+      }
     } else {
       this.dataService.symptomCheckerReq(this.symptomRes).subscribe({
         next: (response) => {

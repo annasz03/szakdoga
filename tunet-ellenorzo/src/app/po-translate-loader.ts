@@ -18,7 +18,6 @@ export class PoTranslateLoader implements TranslateLoader {
 
   private parsePo(po: string): Record<string, string> {
     const translations: Record<string, string> = {};
-    // Egyszerű regex a msgid/msgstr párokra
     const pattern = /msgid\s+"([^"]+)"\s+msgstr\s+"([^"]*)"/g;
     let match: RegExpExecArray | null;
     while ((match = pattern.exec(po)) !== null) {

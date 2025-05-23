@@ -19,6 +19,7 @@ import { Router } from '@angular/router';
 import { UserService } from '../user.service';
 import { DoctorService } from '../doctor.service';
 import { Idoctor } from '../idoctor';
+import { LangService } from '../lang-service.service';
 
 @Component({
   selector: 'app-profile-settings',
@@ -52,6 +53,8 @@ export class ProfileSettingsComponent {
   errorMessage = "";
   userId:any;
 
+  lang:any;
+
   name: string = '';
   city: string = '';
   address: string = '';
@@ -59,7 +62,11 @@ export class ProfileSettingsComponent {
   specialty: string = '';
   area:any;
   specList:any;
-  constructor(private http:HttpClient, private router:Router){}
+  constructor(private http:HttpClient, private router:Router, private langService:LangService){
+    this.langService.currentLang$.subscribe((lang) => {
+      this.lang=lang
+    });
+  }
 
   ngOnInit() {
     this.authService.user$.subscribe(user => {
@@ -119,12 +126,20 @@ export class ProfileSettingsComponent {
 
  saveNewPassword() {
   if (this.pass !== this.passAgain) {
-    this.passError = "A jelszavak nem egyeznek";
+    if(this.lang === 'hu'){
+      this.passError = "A jelszavak nem egyeznek";
+    }else{
+      this.passError = "Passwords do not match";
+    }
     return;
   }
 
   if (!this.isStrongPassword(this.pass)) {
-    this.passError = "A jelszónak tartalmaznia kell legalább egy nagybetűt, számot és speciális karaktert, és minimum 8 karakter hosszúnak kell lennie.";
+    if(this.lang==='hu'){
+      this.passError = "A jelszónak tartalmaznia kell legalább egy nagybetűt, számot és speciális karaktert, és minimum 8 karakter hosszúnak kell lennie.";
+    }else{
+      this.passError="The password has to contain at least one capital letter, number and special character and has to be at least 8 character long."
+    }
     return;
   }
 
@@ -134,7 +149,11 @@ export class ProfileSettingsComponent {
   const user = auth.currentUser;
 
   if (!user || !user.email) {
-    this.passError = "Hiba történt: nem található bejelentkezett felhasználó.";
+    if(this.lang==='hu'){
+      this.passError = "Nem található bejelentkezett felhasználó.";
+    }else{
+      this.passError = "Cannot find logged in user."
+    }
     return;
   }
 
@@ -142,7 +161,12 @@ export class ProfileSettingsComponent {
 
     reauthenticateWithCredential(user, credential).then(() => {
       updatePassword(user, this.pass).then(() => {
-        alert("Sikeres jelszóváltoztatás");
+        if(this.lang==='hu'){
+          alert("Sikeres jelszóváltoztatás");
+        }else {
+          alert("Password change was succesful");
+        }
+        
         window.location.reload();
       })})
   }
@@ -187,7 +211,11 @@ export class ProfileSettingsComponent {
       this.http.post('https://szakdoga-dlg2.onrender.com/api/delete-user', { uid: this.userId })
         .subscribe({
           next: () => {
-            alert('Profil sikeresen törölve.');
+            if(this.lang==='hu'){
+              alert("Sikeres törlés");
+            }else {
+              alert("Success!");
+            }
             this.router.navigate(['/login']);
           }
         });
@@ -207,7 +235,11 @@ export class ProfileSettingsComponent {
       }
       });
     } else {
-      this.errorMessage = "Nem megfelelő file formátum";
+      if(this.lang==='hu'){
+        this.errorMessage = "Nem megfelelő file formátum";
+      }else{
+        this.errorMessage = "File format is not correct"
+      }
     }
   }
 

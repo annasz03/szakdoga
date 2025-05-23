@@ -4,7 +4,7 @@
   <div *ngIf="opened">
       <table mat-table [dataSource]="dataSource">
           <ng-container matColumnDef="label">
-              <th mat-header-cell *matHeaderCellDef>Betegségadatok: </th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'disease_data' | i18next }}: </th>
               <td mat-cell *matCellDef="let data">
                   <div *ngIf="data.key !== 'age'">
                       {{ getName(data.key) }}

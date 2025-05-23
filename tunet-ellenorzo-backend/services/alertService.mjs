@@ -14,16 +14,10 @@ export async function sendScheduledAlerts() {
     const freq = alert.frequency;
     const times = alert.times;
     let shouldSend = false;
-    console.log("current time:")
-    console.log(currentTime)
     if (times.includes(currentTime)) {
       shouldSend=true;
     }
-    console.log("alert time:")
-    console.log(alert.times)
     if (shouldSend) {
-      console.log("sending")
-      console.log(alert.fcmToken)
       messages.push({
         token: alert.fcmToken,
         notification: {

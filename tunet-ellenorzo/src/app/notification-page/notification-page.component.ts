@@ -16,6 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { I18NextModule } from 'angular-i18next';
 import { AlertService } from '../alert.service';
+import { LangService } from '../lang-service.service';
 
 @Component({
   selector: 'app-notification-page',
@@ -30,14 +31,18 @@ export class NotificationPageComponent {
   alerts: Alerts[] = [];
   currentUser: any;
 
-  constructor(private dialog: MatDialog, private authService: AuthService, ) {}
+  lang:any;
+
+  constructor(private dialog: MatDialog, private authService: AuthService, private langService:LangService) {}
 
   ngOnInit() {
     this.authService.user$.subscribe(user => {
       this.currentUser = user;
       this.getAlerts();
     });
-    
+    this.langService.currentLang$.subscribe((lang) => {
+      this.lang=lang
+    });
   }
 
   openDialog(): void {
@@ -89,27 +94,35 @@ export class NotificationDialog {
   buttonTitle = "Hozzáadás";
   times: string[] = [];
 
-  alertService= inject(AlertService)
+  lang:any;
 
-  constructor(public dialogRef: MatDialogRef<NotificationDialog>, private authService: AuthService, private fcmService: FcmService, @Inject(MAT_DIALOG_DATA) public data?: any) { }
+  alertService= inject(AlertService)
+  langService= inject(LangService)
+
+  constructor(public dialogRef: MatDialogRef<NotificationDialog>, private authService: AuthService, private fcmService: FcmService, @Inject(MAT_DIALOG_DATA) public data?: any) {
+    this.langService.currentLang$.subscribe((lang) => {
+      this.lang=lang
+    });
+   }
 
   ngOnInit() {
     this.authService.user$.subscribe(u => this.currentUser = u);
     if (this.data && this.data.frequency) {
       const match = this.frequencies.find(f => f.key === this.data.frequency);
       this.frequency = match ? match.value : 'once';
-      this.name      = this.data.name;
-      this.times     = Array.isArray(this.data.times) ? [...this.data.times] : [''];
-      this.timeDiv   = this.times.length;
+      this.name = this.data.name;
+      this.times = Array.isArray(this.data.times) ? [...this.data.times] : [''];
+      this.timeDiv = this.times.length;
       this.timeArray = Array(this.timeDiv).fill(0).map((_, i) => i);
-      this.id        = this.data.id;
-      this.buttonTitle = 'Módosítás';
+      this.id = this.data.id;
+      this.buttonTitle = this.lang === 'hu' ? 'Hozzáadás' : 'Add';
     } else {
       this.frequency = 'once';
-      this.times     = [''];
-      this.timeDiv   = 1;
+      this.times = [''];
+      this.timeDiv = 1;
       this.timeArray = [0];
-      this.buttonTitle = 'Hozzáadás';
+      this.buttonTitle = this.lang === 'hu' ? 'Hozzáadás' : 'Add';
+
     }
   }
 
@@ -140,7 +153,11 @@ export class NotificationDialog {
 
   saveAlert() {
     if (this.times.some(time => !time)) {
-      alert('Kérjük, töltse ki az összes időpontot!');
+      if(this.lang==='hu'){
+        alert('Kérjük, töltse ki az összes időpontot!');
+      }else{
+        alert('Please, fill at options!');
+      }
       return;
     }
 

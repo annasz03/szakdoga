@@ -22,7 +22,7 @@ export class UserService {
   getUserSearch(search: string, page: number, pageSize: number) {
   return this.http.post<{
     users: Iuser[];
-    totalCount: number;
+    totalCount: number; 
   }>(backendUrl + "get-user-search", {
     search,
     page,

@@ -204,13 +204,6 @@ export class EditDiseasesAdminComponent {
         console.log('saved:', response);
       }
     });
-
-    /*this.http.post('http://localhost:3000/api/save-disease', {diseaseData,lang,diseaseId})
-      .subscribe({
-        next: (response) => {
-          console.log('saved:', response);
-        }
-      });*/
   }
   
 
@@ -266,16 +259,6 @@ export class EditDiseasesAdminComponent {
     this.loadDiseases('hu');
     this.loadDiseases('en');
   }
-
-
-  /*deleteDisease(diseaseId: string): void {
-    this.diseaseService.deleteDisease(diseaseId).subscribe({
-      next: (response) => {
-        this.loadDiseases('hu');
-        this.loadDiseases('en');
-      }
-    });
-  }*/
 
   async editDisease(diseaseId: string): Promise<void> {
     this.selectedDiseaseId = diseaseId;

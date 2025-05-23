@@ -37,7 +37,7 @@ describe('LoginComponent', () => {
         MatFormFieldModule,
         MatInputModule,
         RouterTestingModule,
-        TranslateModule.forRoot(), // A fordítást teszteléshez mockolni kell
+        TranslateModule.forRoot(), 
       ],
       providers: [
         { provide: AuthService, useClass: MockAuthService },

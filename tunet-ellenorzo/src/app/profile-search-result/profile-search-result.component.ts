@@ -55,9 +55,9 @@ export class ProfileSearchResultComponent extends MatPaginatorIntl {
       this.currentPage,
       this.pageSize).subscribe({
         next: ({ users, totalCount }) => {
-          this.profiles   = users;
+          this.profiles = users;
           this.totalItems = totalCount;
-          this.loading    = false;
+          this.loading = false;
         }
       });
   }
